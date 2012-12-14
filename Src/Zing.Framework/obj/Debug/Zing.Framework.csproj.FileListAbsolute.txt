@@ -1,5 +1,0 @@
-e:\Programming\GitWorking\Zing\Src\Zing.Framework\bin\Debug\Zing.Framework.dll
-e:\Programming\GitWorking\Zing\Src\Zing.Framework\bin\Debug\Zing.Framework.pdb
-e:\Programming\GitWorking\Zing\Src\Zing.Framework\obj\Debug\ResolveAssemblyReference.cache
-e:\Programming\GitWorking\Zing\Src\Zing.Framework\obj\Debug\Zing.Framework.dll
-e:\Programming\GitWorking\Zing\Src\Zing.Framework\obj\Debug\Zing.Framework.pdb
