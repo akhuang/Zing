@@ -1,5 +1,4 @@
-﻿using Zing.Localization;
-using Zing.Logging;
+﻿using Zing.Logging;
 
 namespace Zing {
     /// <summary>
@@ -31,10 +30,9 @@ namespace Zing {
     public abstract class Component : IDependency {
         protected Component() {
             Logger = NullLogger.Instance;
-            T = NullLocalizer.Instance;
         }
 
         public ILogger Logger { get; set; }
-        public Localizer T { get; set; }
+
     }
 }

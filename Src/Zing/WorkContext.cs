@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
-using Zing.Settings;
-using Zing.Security;
-using Zing.Environment.Extensions.Models;
 
 namespace Zing
 {
@@ -52,32 +49,24 @@ namespace Zing
             set { SetState("Layout", value); }
         }
 
-        /// <summary>
-        /// Settings of the site corresponding to the work context
-        /// </summary>
-        public ISite CurrentSite
-        {
-            get { return GetState<ISite>("CurrentSite"); }
-            set { SetState("CurrentSite", value); }
-        }
 
-        /// <summary>
-        /// The user, if there is any corresponding to the work context
-        /// </summary>
-        public IUser CurrentUser
-        {
-            get { return GetState<IUser>("CurrentUser"); }
-            set { SetState("CurrentUser", value); }
-        }
+        ///// <summary>
+        ///// The user, if there is any corresponding to the work context
+        ///// </summary>
+        //public IUser CurrentUser
+        //{
+        //    get { return GetState<IUser>("CurrentUser"); }
+        //    set { SetState("CurrentUser", value); }
+        //}
 
-        /// <summary>
-        /// The theme used in the work context
-        /// </summary>
-        public ExtensionDescriptor CurrentTheme
-        {
-            get { return GetState<ExtensionDescriptor>("CurrentTheme"); }
-            set { SetState("CurrentTheme", value); }
-        }
+        ///// <summary>
+        ///// The theme used in the work context
+        ///// </summary>
+        //public ExtensionDescriptor CurrentTheme
+        //{
+        //    get { return GetState<ExtensionDescriptor>("CurrentTheme"); }
+        //    set { SetState("CurrentTheme", value); }
+        //}
 
         /// <summary>
         /// Active culture of the work context
