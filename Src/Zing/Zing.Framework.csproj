@@ -119,14 +119,26 @@
     <Compile Include="Mvc\ViewEngines\IViewEngineProvider.cs" />
     <Compile Include="Mvc\ViewEngines\Razor\WebViewPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Resources\IResourceManager.cs" />
+    <Compile Include="UI\Resources\IResourceManifest.cs" />
+    <Compile Include="UI\Resources\IResourceManifestProvider.cs" />
+    <Compile Include="UI\Resources\LinkEntry.cs" />
+    <Compile Include="UI\Resources\MetaEntry.cs" />
+    <Compile Include="UI\Resources\RequireSettings.cs" />
+    <Compile Include="UI\Resources\ResourceDefinition.cs" />
+    <Compile Include="UI\Resources\ResourceFilter.cs" />
+    <Compile Include="UI\Resources\ResourceLocation.cs" />
+    <Compile Include="UI\Resources\ResourceManager.cs" />
+    <Compile Include="UI\Resources\ResourceManifest.cs" />
+    <Compile Include="UI\Resources\ResourceManifestBuilder.cs" />
+    <Compile Include="UI\Resources\ResourceRegister.cs" />
+    <Compile Include="UI\Resources\ResourceRequiredContext.cs" />
     <Compile Include="WorkContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
