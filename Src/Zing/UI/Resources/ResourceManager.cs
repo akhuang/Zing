@@ -8,7 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Autofac.Features.Metadata;
-using Orchard.Environment.Extensions.Models;
+using Zing.Environment.Extensions.Models;
 
 namespace Zing.UI.Resources {
     public class ResourceManager : IResourceManager, IUnitOfWorkDependency {

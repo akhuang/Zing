@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using Orchard.Environment.Extensions.Models;
+using Zing.Environment.Extensions.Models;
 
 namespace Zing.UI.Resources {
     public class ResourceManifest : IResourceManifest {

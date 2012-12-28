@@ -1,5 +1,4 @@
 using System.Web.Mvc;
-using Orchard.DisplayManagement;
 using Orchard.Mvc.Filters;
 
 namespace Zing.UI.Resources {
