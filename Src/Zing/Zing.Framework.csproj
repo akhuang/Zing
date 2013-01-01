@@ -105,6 +105,7 @@
     <Compile Include="Environment\Extensions\Models\FeatureDescriptor.cs" />
     <Compile Include="Environment\HostEnvironment.cs" />
     <Compile Include="Environment\IHostEnvironment.cs" />
+    <Compile Include="Environment\ZingStarter.cs" />
     <Compile Include="IDependency.cs" />
     <Compile Include="IWorkContextAccessor.cs" />
     <Compile Include="Logging\CastleLogger.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="UI\Resources\ResourceRegister.cs" />
     <Compile Include="UI\Resources\ResourceRequiredContext.cs" />
     <Compile Include="WorkContext.cs" />
+    <Compile Include="WorkContextExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

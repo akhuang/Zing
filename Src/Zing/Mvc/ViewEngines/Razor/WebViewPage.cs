@@ -24,6 +24,16 @@ namespace Zing.Mvc.ViewEngines.Razor
         public new dynamic Layout { get { return _layout; } }
         public WorkContext WorkContext { get { return _workContext; } }
 
+        public override void InitHelpers()
+        {
+            base.InitHelpers();
+
+            _workContext = ViewContext.GetWorkContext();
+
+            //_display = DisplayHelperFactory.CreateHelper(ViewContext, this);
+            //_layout = _workContext.Layout;
+        }
+
         public ScriptRegister Script
         {
             get
@@ -36,7 +46,10 @@ namespace Zing.Mvc.ViewEngines.Razor
         private IResourceManager _resourceManager;
         public IResourceManager ResourceManager
         {
-            get { return _resourceManager ?? (_resourceManager = _workContext.Resolve<IResourceManager>()); }
+            get
+            {
+                return _resourceManager ?? (_resourceManager = _workContext.Resolve<IResourceManager>());
+            }
         }
 
         public ResourceRegister Style

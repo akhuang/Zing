@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Autofac;
+using Zing.Environment;
 
 namespace Zing.Web
 {
@@ -19,6 +21,15 @@ namespace Zing.Web
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            ZingStarter.CreateHostContainer(MvcSingletons);
+        }
+
+        static void MvcSingletons(ContainerBuilder builder)
+        {
+            builder.Register(ctx => RouteTable.Routes).SingleInstance();
+            builder.Register(ctx => ModelBinders.Binders).SingleInstance();
+            builder.Register(ctx => ViewEngines.Engines).SingleInstance();
         }
     }
 }
