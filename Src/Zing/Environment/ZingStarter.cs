@@ -15,6 +15,10 @@ namespace Zing.Environment
             var builder = new ContainerBuilder();
             builder.RegisterModule(new LoggingModule());
             builder.RegisterType<ResourceManager>().As<IResourceManager>();
+
+            builder.RegisterModule(new WorkContextModule());
+            builder.RegisterType<WorkContextAccessor>().As<IWorkContextAccessor>();
+
             registrations(builder);
 
             var container = builder.Build();
