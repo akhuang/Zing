@@ -99,12 +99,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Environment\Configuration\ShellSettings.cs" />
+    <Compile Include="Environment\Configuration\TenantState.cs" />
     <Compile Include="Environment\Extensions\Models\DefaultExtensionTypes.cs" />
     <Compile Include="Environment\Extensions\Models\ExtensionDescriptor.cs" />
     <Compile Include="Environment\Extensions\Models\Feature.cs" />
     <Compile Include="Environment\Extensions\Models\FeatureDescriptor.cs" />
     <Compile Include="Environment\HostEnvironment.cs" />
     <Compile Include="Environment\IHostEnvironment.cs" />
+    <Compile Include="Environment\IZingHost.cs" />
+    <Compile Include="Environment\ShellBuilder\CompositionStrategy.cs" />
+    <Compile Include="Environment\ShellBuilder\Models\ShellBlueprint.cs" />
+    <Compile Include="Environment\ShellBuilder\ShellContainerFactory.cs" />
+    <Compile Include="Environment\ShellBuilder\ShellContext.cs" />
+    <Compile Include="Environment\ShellBuilder\ShellContextFactory.cs" />
     <Compile Include="Environment\WorkContextAccessor.cs" />
     <Compile Include="Environment\WorkContextImplementation.cs" />
     <Compile Include="Environment\WorkContextModule.cs" />
