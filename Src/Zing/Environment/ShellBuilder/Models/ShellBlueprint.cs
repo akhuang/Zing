@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Zing.Environment.Descriptor.Models;
+using Zing.Environment.Configuration;
 
 namespace Zing.Environment.ShellBuilder.Models
 {

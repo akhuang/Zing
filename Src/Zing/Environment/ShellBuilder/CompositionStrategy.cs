@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.Configuration;
+using Zing.Environment.Descriptor.Models;
+using Zing.Environment.Extensions;
+using Zing.Logging;
+using Zing.Environment.Extensions.Models;
+using Autofac.Core;
+using System.Web.Mvc;
+using System.Web.Http.Controllers;
 
 namespace Zing.Environment.ShellBuilder
 {
@@ -38,7 +46,7 @@ namespace Zing.Environment.ShellBuilder
             var enabledFeatures = _extensionManager.EnabledFeatures(descriptor);
             var features = _extensionManager.LoadFeatures(enabledFeatures);
 
-            if (descriptor.Features.Any(feature => feature.Name == "Orchard.Framework"))
+            if (descriptor.Features.Any(feature => feature.Name == "Zing.Framework"))
                 features = features.Concat(BuiltinFeatures());
 
             var excludedTypes = GetExcludedTypes(features);
@@ -72,7 +80,7 @@ namespace Zing.Environment.ShellBuilder
             {
                 foreach (Type type in feature.ExportedTypes)
                 {
-                    foreach (OrchardSuppressDependencyAttribute replacedType in type.GetCustomAttributes(typeof(OrchardSuppressDependencyAttribute), false))
+                    foreach (ZingSuppressDependencyAttribute replacedType in type.GetCustomAttributes(typeof(ZingSuppressDependencyAttribute), false))
                     {
                         excludedTypes.Add(replacedType.FullName);
                     }
@@ -88,16 +96,16 @@ namespace Zing.Environment.ShellBuilder
             {
                 Descriptor = new FeatureDescriptor
                 {
-                    Id = "Orchard.Framework",
+                    Id = "Zing.Framework",
                     Extension = new ExtensionDescriptor
                     {
-                        Id = "Orchard.Framework"
+                        Id = "Zing.Framework"
                     }
                 },
                 ExportedTypes =
-                    typeof(OrchardStarter).Assembly.GetExportedTypes()
+                    typeof(ZingStarter).Assembly.GetExportedTypes()
                     .Where(t => t.IsClass && !t.IsAbstract)
-                    .Except(new[] { typeof(DefaultOrchardHost) })
+                    .Except(new[] { typeof(DefaultZingHost) })
                     .ToArray()
             };
         }
@@ -172,12 +180,13 @@ namespace Zing.Environment.ShellBuilder
 
         private static bool IsRecord(Type type)
         {
-            return ((type.Namespace ?? "").EndsWith(".Models") || (type.Namespace ?? "").EndsWith(".Records")) &&
-                   type.GetProperty("Id") != null &&
-                   (type.GetProperty("Id").GetAccessors() ?? Enumerable.Empty<MethodInfo>()).All(x => x.IsVirtual) &&
-                   !type.IsSealed &&
-                   !type.IsAbstract &&
-                   (!typeof(IContent).IsAssignableFrom(type) || typeof(ContentPartRecord).IsAssignableFrom(type));
+            //return ((type.Namespace ?? "").EndsWith(".Models") || (type.Namespace ?? "").EndsWith(".Records")) &&
+            //       type.GetProperty("Id") != null &&
+            //       (type.GetProperty("Id").GetAccessors() ?? Enumerable.Empty<MethodInfo>()).All(x => x.IsVirtual) &&
+            //       !type.IsSealed &&
+            //       !type.IsAbstract &&
+            //       (!typeof(IContent).IsAssignableFrom(type) || typeof(ContentPartRecord).IsAssignableFrom(type));
+            return false;
         }
 
         private static RecordBlueprint BuildRecord(Type type, Feature feature, ShellSettings settings)

@@ -3,6 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autofac;
+using Zing.Environment.Configuration;
+using Zing.Environment.ShellBuilder.Models;
+using Autofac.Core;
+using Zing.Environment.AutofacUtil.DynamicProxy2;
+using Autofac.Features.Indexed;
+using Zing.Events;
+using System.Web.Mvc;
+using System.Web.Http.Controllers;
+using System.Web.Hosting;
+using Autofac.Configuration;
+using System.IO;
+using Autofac.Builder;
 
 namespace Zing.Environment.ShellBuilder
 {

@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Zing.Environment.Configuration;
+using Zing.Environment.Descriptor.Models;
+using Zing.Environment.Descriptor;
+using Zing.Logging;
 
 namespace Zing.Environment.ShellBuilder
 {
@@ -87,7 +91,7 @@ namespace Zing.Environment.ShellBuilder
                 Descriptor = currentDescriptor,
                 Blueprint = blueprint,
                 LifetimeScope = shellScope,
-                Shell = shellScope.Resolve<IOrchardShell>(),
+                Shell = shellScope.Resolve<IZingShell>(),
             };
         }
 
@@ -144,7 +148,7 @@ namespace Zing.Environment.ShellBuilder
                 Descriptor = shellDescriptor,
                 Blueprint = blueprint,
                 LifetimeScope = shellScope,
-                Shell = shellScope.Resolve<IOrchardShell>(),
+                Shell = shellScope.Resolve<IZingShell>(),
             };
         }
     }
