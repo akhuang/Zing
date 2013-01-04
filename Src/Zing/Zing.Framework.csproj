@@ -185,12 +185,18 @@
     <Compile Include="Environment\ZingHostContainerRegistry.cs" />
     <Compile Include="Environment\ZingStarter.cs" />
     <Compile Include="Events\DefaultZingEventBus.cs" />
+    <Compile Include="Events\EventsInterceptor.cs" />
+    <Compile Include="Events\EventsModule.cs" />
+    <Compile Include="Events\EventsRegistrationSource.cs" />
     <Compile Include="Events\IEventBus.cs" />
     <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Exceptions\DefaultExceptionPolicy.cs" />
     <Compile Include="Exceptions\IExceptionPolicy.cs" />
     <Compile Include="FileSystems\AppData\AppDataFolder.cs" />
     <Compile Include="FileSystems\AppData\IAppDataFolder.cs" />
     <Compile Include="FileSystems\AppData\IAppDataFolderRoot.cs" />
+    <Compile Include="FileSystems\Dependencies\DefaultDependenciesFolder.cs" />
+    <Compile Include="FileSystems\Dependencies\DefaultExtensionDependenciesManager.cs" />
     <Compile Include="FileSystems\Dependencies\IDependenciesFolder.cs" />
     <Compile Include="FileSystems\Dependencies\IExtensionDependenciesManager.cs" />
     <Compile Include="FileSystems\VirtualPath\DefaultVirtualPathMonitor.cs" />
@@ -266,6 +272,10 @@
     <Compile Include="Tasks\BackgroundService.cs" />
     <Compile Include="Tasks\IBackgroundTask.cs" />
     <Compile Include="Tasks\ISweepGenerator.cs" />
+    <Compile Include="UI\Notify\Notifier.cs" />
+    <Compile Include="UI\Notify\NotifierExtensions.cs" />
+    <Compile Include="UI\Notify\NotifyEntry.cs" />
+    <Compile Include="UI\Notify\NotifyFilter.cs" />
     <Compile Include="UI\Resources\IResourceManager.cs" />
     <Compile Include="UI\Resources\IResourceManifest.cs">
       <SubType>Code</SubType>

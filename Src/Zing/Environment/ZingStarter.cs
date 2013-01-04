@@ -24,6 +24,10 @@ using System.Web.Http;
 using Zing.WebApi;
 using Zing.Mvc.DataAnnotations;
 using Zing.Environment.ShellBuilderss;
+using Zing.FileSystems.AppData;
+using Zing.Services;
+using Zing.Exceptions;
+using Zing.FileSystems.Dependencies;
 
 namespace Zing.Environment
 {
@@ -33,6 +37,7 @@ namespace Zing.Environment
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule(new LoggingModule());
+            builder.RegisterModule(new EventsModule());
             builder.RegisterModule(new CacheModule());
 
             // a single default host implementation is needed for bootstrapping a web app domain
@@ -44,9 +49,17 @@ namespace Zing.Environment
             builder.RegisterType<DefaultAsyncTokenProvider>().As<IAsyncTokenProvider>().SingleInstance();
             builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>().SingleInstance();
             builder.RegisterType<DefaultHostLocalRestart>().As<IHostLocalRestart>().SingleInstance();
-            //builder.RegisterType<DefaultBuildManager>().As<IBuildManager>().SingleInstance();
-
+            builder.RegisterType<DefaultBuildManager>().As<IBuildManager>().SingleInstance();
+            builder.RegisterType<DefaultExceptionPolicy>().As<IExceptionPolicy>().SingleInstance();
             builder.RegisterType<ResourceManager>().As<IResourceManager>();
+            builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
+            builder.RegisterType<DefaultAssemblyLoader>().As<IAssemblyLoader>().SingleInstance();
+            RegisterVolatileProvider<DefaultExtensionDependenciesManager, IExtensionDependenciesManager>(builder);
+            RegisterVolatileProvider<Clock, IClock>(builder);
+            RegisterVolatileProvider<DefaultDependenciesFolder, IDependenciesFolder>(builder);
+            RegisterVolatileProvider<AppDataFolder, IAppDataFolder>(builder);
+            RegisterVolatileProvider<DefaultVirtualPathMonitor, IVirtualPathMonitor>(builder);
+            RegisterVolatileProvider<DefaultVirtualPathProvider, IVirtualPathProvider>(builder);
 
             builder.RegisterType<DefaultZingHost>().As<IZingHost>().As<IEventHandler>().SingleInstance();
             {

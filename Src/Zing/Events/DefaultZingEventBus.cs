@@ -19,7 +19,7 @@ namespace Zing.Events
         public DefaultZingEventBus(Func<IEnumerable<IEventHandler>> eventHandlers, IExceptionPolicy exceptionPolicy)
         {
             _eventHandlers = eventHandlers;
-            _exceptionPolicy = exceptionPolicy;
+            //_exceptionPolicy = exceptionPolicy;
             T = NullLocalizer.Instance;
         }
 
