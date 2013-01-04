@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Zing.Environment;
+using Zing.WarmupStarter;
 
 namespace Zing.Web
 {
@@ -14,6 +15,8 @@ namespace Zing.Web
     // visit http://go.microsoft.com/?LinkId=9394801
     public class MvcApplication : System.Web.HttpApplication
     {
+        private static Starter<IZingHost> _starter;
+
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -22,7 +25,43 @@ namespace Zing.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            ZingStarter.CreateHostContainer(MvcSingletons);
+            _starter = new Starter<IZingHost>(HostInitialization, HostBeginRequest, HostEndRequest);
+            _starter.OnApplicationStart(this);
+
+        }
+
+        protected void Application_BeginRequest()
+        {
+            _starter.OnBeginRequest(this);
+        }
+
+        protected void Application_EndRequest()
+        {
+            _starter.OnEndRequest(this);
+        }
+
+        private static void HostBeginRequest(HttpApplication application, IZingHost host)
+        {
+            application.Context.Items["originalHttpContext"] = application.Context;
+            host.BeginRequest();
+        }
+
+        private static void HostEndRequest(HttpApplication application, IZingHost host)
+        {
+            host.EndRequest();
+        }
+
+        private static IZingHost HostInitialization(HttpApplication application)
+        {
+            var host = ZingStarter.CreateHost(MvcSingletons);
+
+            host.Initialize();
+
+            // initialize shells to speed up the first dynamic query
+            host.BeginRequest();
+            host.EndRequest();
+
+            return host;
         }
 
         static void MvcSingletons(ContainerBuilder builder)

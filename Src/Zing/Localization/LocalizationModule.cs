@@ -5,7 +5,8 @@ using Autofac;
 using Autofac.Core;
 using Module = Autofac.Module;
 
-namespace Orchard.Localization {
+namespace Zing.Localization
+{
     public class LocalizationModule : Module {
         private readonly ConcurrentDictionary<string, Localizer> _localizerCache;
 

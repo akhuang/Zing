@@ -1,7 +1,8 @@
 using System.Linq;
-using Orchard.Localization;
+using Zing.Localization;
 
-namespace Orchard.Localization {
+namespace Zing.Localization
+{
     public delegate LocalizedString Localizer(string text, params object[] args);
 }
 

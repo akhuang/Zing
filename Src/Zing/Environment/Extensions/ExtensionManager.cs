@@ -9,8 +9,8 @@ using Zing.Environment.Extensions.Loaders;
 using Zing.Utility.Extensions;
 using Zing.Utility;
 using Zing.Logging;
-using Orchard.Localization;
-using Zing.Environment.ShellBuilder;
+using Zing.Localization;
+using Zing.Environment.ShellBuilders;
 
 namespace Zing.Environment.Extensions
 {

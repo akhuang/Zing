@@ -2,7 +2,8 @@
 using Autofac;
 using Zing;
 
-namespace Orchard.Localization {
+namespace Zing.Localization
+{
     public class LocalizationUtilities {
         public static Localizer Resolve(WorkContext workContext, string scope) {
             return workContext == null ? NullLocalizer.Instance : Resolve(workContext.Resolve<ILifetimeScope>(), scope);

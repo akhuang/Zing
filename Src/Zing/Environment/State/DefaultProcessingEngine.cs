@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Environment.ShellBuilder;
+using Zing.Environment.ShellBuilders;
 using Zing.Environment.Configuration;
 using Zing.Environment.Descriptor.Models;
 using Zing.Events;

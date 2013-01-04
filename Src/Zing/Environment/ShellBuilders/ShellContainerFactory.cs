@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Autofac;
 using Zing.Environment.Configuration;
-using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.ShellBuilders.Models;
 using Autofac.Core;
 using Zing.Environment.AutofacUtil.DynamicProxy2;
 using Autofac.Features.Indexed;
@@ -16,7 +16,7 @@ using Autofac.Configuration;
 using System.IO;
 using Autofac.Builder;
 
-namespace Zing.Environment.ShellBuilder
+namespace Zing.Environment.ShellBuilders
 {
     public interface IShellContainerFactory
     {

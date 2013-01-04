@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Environment.ShellBuilder.Models;
 using Zing.Environment.Configuration;
 using Zing.Environment.Descriptor.Models;
 using Zing.Environment.Extensions;
@@ -11,8 +10,10 @@ using Zing.Environment.Extensions.Models;
 using Autofac.Core;
 using System.Web.Mvc;
 using System.Web.Http.Controllers;
+using Zing.Environment.ShellBuilders.Models;
+using Zing.Environment.ShellBuilders;
 
-namespace Zing.Environment.ShellBuilder
+namespace Zing.Environment.ShellBuilderss
 {
     /// <summary>
     /// Service at the host level to transform the cachable descriptor into the loadable blueprint.

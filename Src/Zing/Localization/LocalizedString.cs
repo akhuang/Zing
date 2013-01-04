@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Web;
 
-namespace Orchard.Localization {
+namespace Zing.Localization
+{
     public class LocalizedString : MarshalByRefObject, IHtmlString {
         private readonly string _localized;
         private readonly string _scope;

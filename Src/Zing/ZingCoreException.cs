@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Orchard.Localization;
+using Zing.Localization;
 using System.Runtime.Serialization;
 
 namespace Zing

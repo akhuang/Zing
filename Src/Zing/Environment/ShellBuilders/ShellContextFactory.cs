@@ -8,8 +8,9 @@ using Zing.Environment.Descriptor;
 using Zing.Logging;
 using Zing.Environment.AutofacUtil;
 using Autofac;
+using Zing.Environment.ShellBuilderss;
 
-namespace Zing.Environment.ShellBuilder
+namespace Zing.Environment.ShellBuilders
 {
     /// <summary>
     /// High-level coordinator that exercises other component capabilities to

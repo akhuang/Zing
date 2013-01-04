@@ -6,7 +6,7 @@ using Zing.Environment.Descriptor.Models;
 using Zing.Environment.Configuration;
 using Zing.Environment.Extensions.Models;
 
-namespace Zing.Environment.ShellBuilder.Models
+namespace Zing.Environment.ShellBuilders.Models
 {
     /// <summary>
     /// Contains the information necessary to initialize an IoC container

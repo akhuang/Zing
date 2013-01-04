@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using Zing.Environment.Configuration;
 using Zing.Environment.Descriptor.Models;
-using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.ShellBuilders.Models;
 using Autofac;
 
-namespace Zing.Environment.ShellBuilder
+namespace Zing.Environment.ShellBuilders
 {
     public class ShellContext
     {

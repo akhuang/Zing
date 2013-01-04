@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Zing.Environment.Configuration;
 using Zing.Environment.Descriptor;
-using Zing.Environment.ShellBuilder;
+using Zing.Environment.ShellBuilders;
 using Zing.Logging;
 using Zing.Caching;
 using Zing.Environment.State;

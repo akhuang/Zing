@@ -6,7 +6,8 @@ using Zing.Localization.Services;
 using Zing.Logging;
 using Zing;
 
-namespace Orchard.Localization {
+namespace Zing.Localization
+{
     public class Text : IText {
         private readonly string _scope;
         private readonly IWorkContextAccessor _workContextAccessor;
