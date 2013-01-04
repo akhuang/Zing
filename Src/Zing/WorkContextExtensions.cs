@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web;
+using System.Web.Http.Controllers;
+using Autofac;
 
 namespace Zing
 {
     public static class WorkContextExtensions
     {
-        public static WorkContext GetWorkContext(this ControllerContext controllerContext)
+        public static WorkContext GetContext(this IWorkContextAccessor workContextAccessor, ControllerContext controllerContext)
         {
-            if (controllerContext == null)
-                return null;
-
-            return GetWorkContext(controllerContext.RequestContext);
+            return workContextAccessor.GetContext(controllerContext.RequestContext.HttpContext);
         }
 
         public static WorkContext GetWorkContext(this RequestContext requestContext)
@@ -39,6 +39,28 @@ namespace Zing
             return workContextAccessor.GetContext(requestContext.HttpContext);
         }
 
+        public static WorkContext GetWorkContext(this HttpControllerContext controllerContext)
+        {
+            if (controllerContext == null)
+                return null;
+
+            var routeData = controllerContext.RouteData;
+            if (routeData == null || routeData.Values == null)
+                return null;
+
+            object workContextValue;
+            if (!routeData.Values.TryGetValue("IWorkContextAccessor", out workContextValue))
+            {
+                return null;
+            }
+
+            if (workContextValue == null || !(workContextValue is IWorkContextAccessor))
+                return null;
+
+            var workContextAccessor = (IWorkContextAccessor)workContextValue;
+            return workContextAccessor.GetContext();
+        }
+
         private static object FindWorkContextInParent(RouteData routeData)
         {
             object parentViewContextValue;
@@ -61,5 +83,22 @@ namespace Zing
             return workContextValue;
         }
 
+        public static WorkContext GetWorkContext(this ControllerContext controllerContext)
+        {
+            if (controllerContext == null)
+                return null;
+
+            return GetWorkContext(controllerContext.RequestContext);
+        }
+
+        public static IWorkContextScope CreateWorkContextScope(this ILifetimeScope lifetimeScope, HttpContextBase httpContext)
+        {
+            return lifetimeScope.Resolve<IWorkContextAccessor>().CreateWorkContextScope(httpContext);
+        }
+
+        public static IWorkContextScope CreateWorkContextScope(this ILifetimeScope lifetimeScope)
+        {
+            return lifetimeScope.Resolve<IWorkContextAccessor>().CreateWorkContextScope();
+        }
     }
 }

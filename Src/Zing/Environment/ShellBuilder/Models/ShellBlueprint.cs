@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Zing.Environment.Descriptor.Models;
 using Zing.Environment.Configuration;
+using Zing.Environment.Extensions.Models;
 
 namespace Zing.Environment.ShellBuilder.Models
 {

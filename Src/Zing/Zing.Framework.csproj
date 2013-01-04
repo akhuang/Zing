@@ -62,6 +62,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -120,6 +121,9 @@
     <Compile Include="Caching\IVolatileToken.cs" />
     <Compile Include="Caching\Signals.cs" />
     <Compile Include="Caching\Weak.cs" />
+    <Compile Include="Data\IRepository.cs" />
+    <Compile Include="Data\ITransactionManager.cs" />
+    <Compile Include="Data\Orderable.cs" />
     <Compile Include="Environment\AutofacUtil\DynamicProxy2\ConstructorFinderWrapper.cs" />
     <Compile Include="Environment\AutofacUtil\DynamicProxy2\DynamicProxyContext.cs" />
     <Compile Include="Environment\AutofacUtil\DynamicProxy2\DynamicProxyExtensions.cs" />
@@ -134,7 +138,15 @@
     <Compile Include="Environment\Descriptor\IShellDescriptorManager.cs" />
     <Compile Include="Environment\Descriptor\Models\ShellDescriptor.cs" />
     <Compile Include="Environment\Descriptor\ShellDescriptorCache.cs" />
+    <Compile Include="Environment\Extensions\ExtensionEntry.cs" />
+    <Compile Include="Environment\Extensions\ExtensionLoadingContext.cs" />
+    <Compile Include="Environment\Extensions\ExtensionManager.cs" />
+    <Compile Include="Environment\Extensions\ExtensionMonitoringCoordinator.cs" />
+    <Compile Include="Environment\Extensions\Folder\IExtensionFolders.cs" />
+    <Compile Include="Environment\Extensions\IExtensionLoaderCoordinator.cs" />
     <Compile Include="Environment\Extensions\IExtensionManager.cs" />
+    <Compile Include="Environment\Extensions\IExtensionMonitoringCoordinator.cs" />
+    <Compile Include="Environment\Extensions\Loaders\IExtensionLoader.cs" />
     <Compile Include="Environment\Extensions\Models\DefaultExtensionTypes.cs" />
     <Compile Include="Environment\Extensions\Models\ExtensionDescriptor.cs" />
     <Compile Include="Environment\Extensions\Models\Feature.cs" />
@@ -160,17 +172,36 @@
     <Compile Include="Environment\WorkContextModule.cs" />
     <Compile Include="Environment\WorkContextProperty.cs" />
     <Compile Include="Environment\ZingStarter.cs" />
+    <Compile Include="Events\IEventBus.cs" />
     <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="FileSystems\AppData\AppDataFolder.cs" />
     <Compile Include="FileSystems\AppData\IAppDataFolder.cs" />
     <Compile Include="FileSystems\AppData\IAppDataFolderRoot.cs" />
+    <Compile Include="FileSystems\Dependencies\IDependenciesFolder.cs" />
     <Compile Include="FileSystems\VirtualPath\DefaultVirtualPathMonitor.cs" />
     <Compile Include="FileSystems\VirtualPath\DefaultVirtualPathProvider.cs" />
     <Compile Include="FileSystems\VirtualPath\ICustomVirtualPathProvider.cs" />
     <Compile Include="FileSystems\VirtualPath\IVirtualPathMonitor.cs" />
     <Compile Include="FileSystems\VirtualPath\IVirtualPathProvider.cs" />
+    <Compile Include="FileSystems\WebSite\IWebSiteFolder.cs" />
+    <Compile Include="FileSystems\WebSite\WebSiteFolder.cs" />
     <Compile Include="IDependency.cs" />
     <Compile Include="IWorkContextAccessor.cs" />
+    <Compile Include="Localization\IText.cs" />
+    <Compile Include="Localization\LocalizationModule.cs" />
+    <Compile Include="Localization\LocalizationUtilities.cs" />
+    <Compile Include="Localization\LocalizedString.cs" />
+    <Compile Include="Localization\Localizer.cs" />
+    <Compile Include="Localization\NullLocalizer.cs" />
+    <Compile Include="Localization\Records\CultureRecord.cs" />
+    <Compile Include="Localization\Services\CurrentCultureWorkContext.cs" />
+    <Compile Include="Localization\Services\DefaultCultureManager.cs" />
+    <Compile Include="Localization\Services\DefaultLocalizedStringManager.cs" />
+    <Compile Include="Localization\Services\ICultureManager.cs" />
+    <Compile Include="Localization\Services\ICultureSelector.cs" />
+    <Compile Include="Localization\Services\ILocalizedStringManager.cs" />
+    <Compile Include="Localization\Services\SiteCultureSelector.cs" />
+    <Compile Include="Localization\Text.cs" />
     <Compile Include="Logging\CastleLogger.cs" />
     <Compile Include="Logging\CastleLoggerFactory.cs" />
     <Compile Include="Logging\ILogger.cs" />
@@ -182,6 +213,7 @@
     <Compile Include="Logging\OrchardFileAppender.cs" />
     <Compile Include="Logging\OrchardLog4netFactory.cs" />
     <Compile Include="Logging\OrchardLog4netLogger.cs" />
+    <Compile Include="Mvc\Filters\FilterProvider.cs" />
     <Compile Include="Mvc\IHttpContextAccessor.cs" />
     <Compile Include="Mvc\IZingViewPage.cs" />
     <Compile Include="Mvc\Spooling\HtmlStringWriter.cs" />
@@ -191,6 +223,8 @@
     <Compile Include="Services\Clock.cs" />
     <Compile Include="Services\IClock.cs" />
     <Compile Include="Services\IHtmlFilter.cs" />
+    <Compile Include="Settings\ISite.cs" />
+    <Compile Include="Settings\ResourceDebugMode.cs" />
     <Compile Include="UI\Resources\IResourceManager.cs" />
     <Compile Include="UI\Resources\IResourceManifest.cs">
       <SubType>Code</SubType>
@@ -212,9 +246,14 @@
     </Compile>
     <Compile Include="UI\Resources\ResourceRegister.cs" />
     <Compile Include="UI\Resources\ResourceRequiredContext.cs" />
+    <Compile Include="Utility\DependencyOrderingUtility.cs" />
+    <Compile Include="Utility\Extensions\ReadOnlyCollectionExtensions.cs" />
     <Compile Include="Validation\PathValidation.cs" />
     <Compile Include="WorkContext.cs" />
     <Compile Include="WorkContextExtensions.cs" />
+    <Compile Include="ZingCoreException.cs" />
+    <Compile Include="ZingException.cs" />
+    <Compile Include="ZingFatalException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

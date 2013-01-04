@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using Zing.Settings;
 
 namespace Zing
 {
@@ -49,6 +50,14 @@ namespace Zing
             set { SetState("Layout", value); }
         }
 
+        /// <summary>
+        /// Settings of the site corresponding to the work context
+        /// </summary>
+        public ISite CurrentSite
+        {
+            get { return GetState<ISite>("CurrentSite"); }
+            set { SetState("CurrentSite", value); }
+        }
 
         ///// <summary>
         ///// The user, if there is any corresponding to the work context

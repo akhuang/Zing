@@ -6,6 +6,8 @@ using Zing.Environment.Configuration;
 using Zing.Environment.Descriptor.Models;
 using Zing.Environment.Descriptor;
 using Zing.Logging;
+using Zing.Environment.AutofacUtil;
+using Autofac;
 
 namespace Zing.Environment.ShellBuilder
 {
@@ -131,7 +133,7 @@ namespace Zing.Environment.ShellBuilder
                 Descriptor = descriptor,
                 Blueprint = blueprint,
                 LifetimeScope = shellScope,
-                Shell = shellScope.Resolve<IOrchardShell>(),
+                Shell = shellScope.Resolve<IZingShell>(),
             };
         }
 

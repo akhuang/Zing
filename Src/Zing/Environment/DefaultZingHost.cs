@@ -8,6 +8,9 @@ using Zing.Environment.ShellBuilder;
 using Zing.Logging;
 using Zing.Caching;
 using Zing.Environment.State;
+using Zing.Utility.Extensions;
+using Zing.Environment.Extensions;
+using Zing.Environment.Descriptor.Models;
 
 namespace Zing.Environment
 {

@@ -5,6 +5,9 @@ using System.Text;
 using Zing.Environment.ShellBuilder;
 using Zing.Environment.Configuration;
 using Zing.Environment.Descriptor.Models;
+using Zing.Events;
+using Zing.Data;
+using Zing.Logging;
 
 namespace Zing.Environment.State
 {
@@ -13,6 +16,7 @@ namespace Zing.Environment.State
         private readonly IShellContextFactory _shellContextFactory;
         private readonly Func<IZingHost> _orchardHost;
         private readonly IList<Entry> _entries = new List<Entry>();
+
 
 
         public DefaultProcessingEngine(IShellContextFactory shellContextFactory, Func<IZingHost> orchardHost)
