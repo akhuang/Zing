@@ -27,7 +27,7 @@ namespace Zing.Environment.Extensions.Models
         public string Path { get; set; }
         public string Description { get; set; }
         public string Version { get; set; }
-        public string OrchardVersion { get; set; }
+        public string ZingVersion { get; set; }
         public string Author { get; set; }
         public string WebSite { get; set; }
         public string Tags { get; set; }

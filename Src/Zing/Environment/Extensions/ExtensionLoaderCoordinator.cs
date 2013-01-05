@@ -207,7 +207,7 @@ namespace Zing.Environment.Extensions
             if (duplicates.Any())
             {
                 var sb = new StringBuilder();
-                sb.Append(T("There are multiple extensions with the same name installed in this instance of Orchard.\r\n"));
+                sb.Append(T("There are multiple extensions with the same name installed in this instance of Zing.\r\n"));
                 foreach (var dup in duplicates)
                 {
                     sb.Append(T("Extension '{0}' has been found from the following locations: {1}.\r\n", dup.Key, string.Join(", ", dup.Select(e => e.Location + "/" + e.Id))));

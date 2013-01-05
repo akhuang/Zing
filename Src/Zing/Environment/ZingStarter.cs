@@ -117,7 +117,7 @@ namespace Zing.Environment
                 }
             }
 
-            //ControllerBuilder.Current.SetControllerFactory(new ZingControllerFactory());
+            ControllerBuilder.Current.SetControllerFactory(new ZingControllerFactory());
 
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerSelector), new DefaultZingWebApiHttpControllerSelector(GlobalConfiguration.Configuration));
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new DefaultZingWebApiHttpHttpControllerActivator(GlobalConfiguration.Configuration));

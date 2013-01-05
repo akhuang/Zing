@@ -24,6 +24,9 @@ namespace Zing.Web
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //RouteDebug(RouteTable.Routes);
+            //RouteDebug.DebugRoute dk=new RouteDebug.DebugRoute();
+            //dk.r.RewriteRoutesForTesting(RouteTable.Routes);
 
             _starter = new Starter<IZingHost>(HostInitialization, HostBeginRequest, HostEndRequest);
             _starter.OnApplicationStart(this);

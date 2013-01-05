@@ -24,7 +24,7 @@ namespace Zing.Environment.ShellBuilders
         ShellContext CreateShellContext(ShellSettings settings);
 
         /// <summary>
-        /// Builds a shell context for an uninitialized Orchard instance. Needed
+        /// Builds a shell context for an uninitialized Zing instance. Needed
         /// to display setup user interface.
         /// </summary>
         ShellContext CreateSetupContext(ShellSettings settings);
@@ -71,11 +71,11 @@ namespace Zing.Environment.ShellBuilders
             var blueprint = _compositionStrategy.Compose(settings, knownDescriptor);
             var shellScope = _shellContainerFactory.CreateContainer(settings, blueprint);
 
-            ShellDescriptor currentDescriptor;
+            ShellDescriptor currentDescriptor = null;
             using (var standaloneEnvironment = shellScope.CreateWorkContextScope())
             {
-                var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
-                currentDescriptor = shellDescriptorManager.GetShellDescriptor();
+                //var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
+                //currentDescriptor = shellDescriptorManager.GetShellDescriptor();
             }
 
             if (currentDescriptor != null && knownDescriptor.SerialNumber != currentDescriptor.SerialNumber)
@@ -104,7 +104,7 @@ namespace Zing.Environment.ShellBuilders
             {
                 SerialNumber = -1,
                 Features = new[] {
-                    new ShellFeature {Name = "Orchard.Framework"},
+                    new ShellFeature {Name = "Zing.Framework"},
                     new ShellFeature {Name = "Settings"},
                 },
                 Parameters = Enumerable.Empty<ShellParameter>(),
@@ -119,9 +119,9 @@ namespace Zing.Environment.ShellBuilders
             {
                 SerialNumber = -1,
                 Features = new[] {
-                    new ShellFeature { Name = "Orchard.Setup" },
+                    new ShellFeature { Name = "Zing.Setup" },
                     new ShellFeature { Name = "Shapes" },
-                    new ShellFeature { Name = "Orchard.jQuery" },
+                    new ShellFeature { Name = "Zing.jQuery" },
                 },
             };
 

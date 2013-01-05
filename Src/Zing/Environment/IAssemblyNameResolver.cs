@@ -31,11 +31,11 @@ namespace Zing.Environment
         }
     }
 
-    public class OrchardFrameworkAssemblyNameResolver : IAssemblyNameResolver
+    public class ZingFrameworkAssemblyNameResolver : IAssemblyNameResolver
     {
         private readonly ICacheManager _cacheManager;
 
-        public OrchardFrameworkAssemblyNameResolver(ICacheManager cacheManager)
+        public ZingFrameworkAssemblyNameResolver(ICacheManager cacheManager)
         {
             _cacheManager = cacheManager;
         }

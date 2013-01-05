@@ -1,83 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Transactions;
+using System.Web.Mvc;
 using Zing.Logging;
 using Zing.Mvc.Filters;
-using System.Web.Mvc;
 
-namespace Zing.Data
-{
-    public interface ITransactionManager : IDependency
-    {
+namespace Zing.Data {
+    public interface ITransactionManager : IDependency {
         void Demand();
         void Cancel();
     }
 
-    public class TransactionManager : ITransactionManager, IDisposable
-    {
+    public class TransactionManager : ITransactionManager, IDisposable {
         private TransactionScope _scope;
         private bool _cancelled;
 
-        public TransactionManager()
-        {
+        public TransactionManager() {
             Logger = NullLogger.Instance;
         }
 
         public ILogger Logger { get; set; }
 
-        void ITransactionManager.Demand()
-        {
-            if (_cancelled)
-            {
-                try
-                {
+        void ITransactionManager.Demand() {
+            if(_cancelled) {
+                try {
                     _scope.Dispose();
                 }
-                catch
-                {
+                catch {
                     // swallowing the exception
                 }
 
                 _scope = null;
             }
 
-            if (_scope == null)
-            {
+            if (_scope == null) {
                 Logger.Debug("Creating transaction on Demand");
                 _scope = new TransactionScope(
-                    TransactionScopeOption.Required,
-                    new TransactionOptions
-                    {
-                        IsolationLevel = IsolationLevel.ReadCommitted
+                    TransactionScopeOption.Required, 
+                    new TransactionOptions { 
+                        IsolationLevel = IsolationLevel.ReadCommitted 
                     });
             }
         }
 
-        void ITransactionManager.Cancel()
-        {
+        void ITransactionManager.Cancel() {
             Logger.Debug("Transaction cancelled flag set");
             _cancelled = true;
         }
 
-        void IDisposable.Dispose()
-        {
-            if (_scope != null)
-            {
-                if (!_cancelled)
-                {
+        void IDisposable.Dispose() {
+            if (_scope != null) {
+                if (!_cancelled) {
                     Logger.Debug("Marking transaction as complete");
                     _scope.Complete();
                 }
 
                 Logger.Debug("Final work for transaction being performed");
-                try
-                {
+                try {
                     _scope.Dispose();
                 }
-                catch
-                {
+                catch {
                     // swallowing the exception
                 }
                 Logger.Debug("Transaction disposed");
@@ -86,17 +67,14 @@ namespace Zing.Data
 
     }
 
-    public class TransactionFilter : FilterProvider, IExceptionFilter
-    {
+    public class TransactionFilter : FilterProvider, IExceptionFilter {
         private readonly ITransactionManager _transactionManager;
 
-        public TransactionFilter(ITransactionManager transactionManager)
-        {
+        public TransactionFilter(ITransactionManager transactionManager) {
             _transactionManager = transactionManager;
         }
 
-        public void OnException(ExceptionContext filterContext)
-        {
+        public void OnException(ExceptionContext filterContext) {
             _transactionManager.Cancel();
         }
     }
