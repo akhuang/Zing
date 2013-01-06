@@ -18,8 +18,8 @@ namespace Zing.Mvc.Routes
                                                      Route = new Route(
                                                          "{controller}/{action}/{id}",
                                                          new RouteValueDictionary {
-                                                                                      {"controller", "home"},
-                                                                                      {"action", "index"},
+                                                                                      {"controller", "Home"},
+                                                                                      {"action", "Index"},
                                                                                       {"id", ""},
                                                                                   },
                                                          new RouteValueDictionary {

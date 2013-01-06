@@ -8,6 +8,7 @@ using System.Web.Routing;
 using Autofac;
 using Zing.Environment;
 using Zing.WarmupStarter;
+using Zing.Web.Controllers;
 
 namespace Zing.Web
 {
@@ -72,6 +73,7 @@ namespace Zing.Web
             builder.Register(ctx => RouteTable.Routes).SingleInstance();
             builder.Register(ctx => ModelBinders.Binders).SingleInstance();
             builder.Register(ctx => ViewEngines.Engines).SingleInstance();
+
         }
     }
 }
