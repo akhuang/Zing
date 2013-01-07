@@ -28,6 +28,10 @@ using Zing.FileSystems.AppData;
 using Zing.Services;
 using Zing.Exceptions;
 using Zing.FileSystems.Dependencies;
+using Zing.Environment.Extensions.Folder;
+using Zing.Environment.Extensions.Loaders;
+using Zing.FileSystems.WebSite;
+using Zing.Environment.Extensions.Compilers;
 
 namespace Zing.Environment
 {
@@ -52,12 +56,18 @@ namespace Zing.Environment
             builder.RegisterType<DefaultBuildManager>().As<IBuildManager>().SingleInstance();
             builder.RegisterType<DefaultExceptionPolicy>().As<IExceptionPolicy>().SingleInstance();
             builder.RegisterType<ResourceManager>().As<IResourceManager>();
+            builder.RegisterType<DefaultCriticalErrorProvider>().As<ICriticalErrorProvider>().SingleInstance();
             builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
+            builder.RegisterType<DefaultProjectFileParser>().As<IProjectFileParser>().SingleInstance();
             builder.RegisterType<DefaultAssemblyLoader>().As<IAssemblyLoader>().SingleInstance();
+
+            RegisterVolatileProvider<WebSiteFolder, IWebSiteFolder>(builder);
+            RegisterVolatileProvider<AppDataFolder, IAppDataFolder>(builder);
             RegisterVolatileProvider<DefaultExtensionDependenciesManager, IExtensionDependenciesManager>(builder);
             RegisterVolatileProvider<Clock, IClock>(builder);
             RegisterVolatileProvider<DefaultDependenciesFolder, IDependenciesFolder>(builder);
             RegisterVolatileProvider<AppDataFolder, IAppDataFolder>(builder);
+            RegisterVolatileProvider<DefaultAssemblyProbingFolder, IAssemblyProbingFolder>(builder);
             RegisterVolatileProvider<DefaultVirtualPathMonitor, IVirtualPathMonitor>(builder);
             RegisterVolatileProvider<DefaultVirtualPathProvider, IVirtualPathProvider>(builder);
 
@@ -76,7 +86,19 @@ namespace Zing.Environment
                         builder.RegisterType<ExtensionMonitoringCoordinator>().As<IExtensionMonitoringCoordinator>().SingleInstance();
                         builder.RegisterType<ExtensionManager>().As<IExtensionManager>().SingleInstance();
                         {
+                            builder.RegisterType<ExtensionHarvester>().As<IExtensionHarvester>().SingleInstance();
+                            builder.RegisterType<ModuleFolders>().As<IExtensionFolders>().SingleInstance()
+                                .WithParameter(new NamedParameter("paths", new[] { "~/Modules" }));
+                            //builder.RegisterType<CoreModuleFolders>().As<IExtensionFolders>().SingleInstance()
+                            //    .WithParameter(new NamedParameter("paths", new[] { "~/Core" }));
+                            //builder.RegisterType<ThemeFolders>().As<IExtensionFolders>().SingleInstance()
+                            //    .WithParameter(new NamedParameter("paths", new[] { "~/Themes" }));
 
+                            //builder.RegisterType<CoreExtensionLoader>().As<IExtensionLoader>().SingleInstance();
+                            //builder.RegisterType<ReferencedExtensionLoader>().As<IExtensionLoader>().SingleInstance();
+                            //builder.RegisterType<PrecompiledExtensionLoader>().As<IExtensionLoader>().SingleInstance();
+                            builder.RegisterType<DynamicExtensionLoader>().As<IExtensionLoader>().SingleInstance();
+                            //builder.RegisterType<RawThemeExtensionLoader>().As<IExtensionLoader>().SingleInstance();
                         }
                     }
 

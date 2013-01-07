@@ -48,6 +48,5 @@ D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\bin\DotNetOpenAuth.OAu
 D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\bin\DotNetOpenAuth.OAuth.xml
 D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\bin\DotNetOpenAuth.OpenId.xml
 D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\bin\DotNetOpenAuth.OpenId.RelyingParty.xml
-D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\obj\Debug\Hello.csprojResolveAssemblyReference.cache
 D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\obj\Debug\Hello.dll
 D:\Programming\GitWorking\Zing\Src\Zing.Web\Modules\Hello\obj\Debug\Hello.pdb
