@@ -74,8 +74,8 @@ namespace Zing.Environment.ShellBuilders
             ShellDescriptor currentDescriptor = null;
             using (var standaloneEnvironment = shellScope.CreateWorkContextScope())
             {
-                //var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
-                //currentDescriptor = shellDescriptorManager.GetShellDescriptor();
+                var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
+                currentDescriptor = shellDescriptorManager.GetShellDescriptor();
             }
 
             if (currentDescriptor != null && knownDescriptor.SerialNumber != currentDescriptor.SerialNumber)
