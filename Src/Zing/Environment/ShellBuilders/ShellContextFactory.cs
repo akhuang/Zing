@@ -9,6 +9,7 @@ using Zing.Logging;
 using Zing.Environment.AutofacUtil;
 using Autofac;
 using Zing.Environment.ShellBuilderss;
+using Zing.Environment.Extensions.Models;
 
 namespace Zing.Environment.ShellBuilders
 {
@@ -74,8 +75,22 @@ namespace Zing.Environment.ShellBuilders
             ShellDescriptor currentDescriptor = null;
             using (var standaloneEnvironment = shellScope.CreateWorkContextScope())
             {
-                var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
-                currentDescriptor = shellDescriptorManager.GetShellDescriptor();
+                //var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
+                //currentDescriptor = shellDescriptorManager.GetShellDescriptor();
+
+                ShellDescriptor shellDescriptor = new ShellDescriptor()
+                {
+                    SerialNumber = 1
+                };
+
+                var descriptorFeatures = new List<ShellFeature>();
+                descriptorFeatures.Add(new ShellFeature() { Name = "Zing.Framework" });
+                descriptorFeatures.Add(new ShellFeature() { Name = "Setting" });
+                descriptorFeatures.Add(new ShellFeature() { Name = "Hello" });
+
+                shellDescriptor.Features = descriptorFeatures;
+
+                currentDescriptor = shellDescriptor;
             }
 
             if (currentDescriptor != null && knownDescriptor.SerialNumber != currentDescriptor.SerialNumber)
