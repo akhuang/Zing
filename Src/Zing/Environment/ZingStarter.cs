@@ -70,7 +70,7 @@ namespace Zing.Environment
             RegisterVolatileProvider<DefaultAssemblyProbingFolder, IAssemblyProbingFolder>(builder);
             RegisterVolatileProvider<DefaultVirtualPathMonitor, IVirtualPathMonitor>(builder);
             RegisterVolatileProvider<DefaultVirtualPathProvider, IVirtualPathProvider>(builder);
-
+            builder.RegisterType<DefaultExtensionCompiler>().As<IExtensionCompiler>().SingleInstance();
             builder.RegisterType<DefaultZingHost>().As<IZingHost>().As<IEventHandler>().SingleInstance();
             {
                 builder.RegisterType<ShellSettingsManager>().As<IShellSettingsManager>().SingleInstance();
