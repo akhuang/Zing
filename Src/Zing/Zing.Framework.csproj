@@ -203,6 +203,7 @@
     <Compile Include="Environment\Extensions\Loaders\DynamicExtensionLoader.cs" />
     <Compile Include="Environment\Extensions\Loaders\ExtensionLoaderBase.cs" />
     <Compile Include="Environment\Extensions\Loaders\IExtensionLoader.cs" />
+    <Compile Include="Environment\Extensions\Loaders\PrecompiledExtensionLoader.cs" />
     <Compile Include="Environment\Extensions\Models\DefaultExtensionTypes.cs" />
     <Compile Include="Environment\Extensions\Models\ExtensionDescriptor.cs" />
     <Compile Include="Environment\Extensions\Models\Feature.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="FileSystems\Dependencies\DefaultAssemblyProbingFolder.cs" />
     <Compile Include="FileSystems\Dependencies\DefaultDependenciesFolder.cs" />
     <Compile Include="FileSystems\Dependencies\DefaultExtensionDependenciesManager.cs" />
+    <Compile Include="FileSystems\Dependencies\DynamicModuleVirtualPathProvider.cs" />
     <Compile Include="FileSystems\Dependencies\IAssemblyProbingFolder.cs" />
     <Compile Include="FileSystems\Dependencies\IDependenciesFolder.cs" />
     <Compile Include="FileSystems\Dependencies\IExtensionDependenciesManager.cs" />

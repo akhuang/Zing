@@ -60,7 +60,7 @@ namespace Zing.Environment
             builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
             builder.RegisterType<DefaultProjectFileParser>().As<IProjectFileParser>().SingleInstance();
             builder.RegisterType<DefaultAssemblyLoader>().As<IAssemblyLoader>().SingleInstance();
-
+            builder.RegisterType<DynamicModuleVirtualPathProvider>().As<ICustomVirtualPathProvider>().SingleInstance();
             RegisterVolatileProvider<WebSiteFolder, IWebSiteFolder>(builder);
             RegisterVolatileProvider<AppDataFolder, IAppDataFolder>(builder);
             RegisterVolatileProvider<DefaultExtensionDependenciesManager, IExtensionDependenciesManager>(builder);
@@ -96,7 +96,7 @@ namespace Zing.Environment
 
                             //builder.RegisterType<CoreExtensionLoader>().As<IExtensionLoader>().SingleInstance();
                             //builder.RegisterType<ReferencedExtensionLoader>().As<IExtensionLoader>().SingleInstance();
-                            //builder.RegisterType<PrecompiledExtensionLoader>().As<IExtensionLoader>().SingleInstance();
+                            builder.RegisterType<PrecompiledExtensionLoader>().As<IExtensionLoader>().SingleInstance();
                             builder.RegisterType<DynamicExtensionLoader>().As<IExtensionLoader>().SingleInstance();
                             //builder.RegisterType<RawThemeExtensionLoader>().As<IExtensionLoader>().SingleInstance();
                         }
