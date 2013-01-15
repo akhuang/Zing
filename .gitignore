@@ -7,3 +7,5 @@
 /Src/Zing/Zing.Framework.csproj.user
 /Src/Zing.WarmupStarter/bin
 /Src/Zing.WarmupStarter/obj
+/Src/Zing.Web/Core/bin
+/Src/Zing.Web/Core/obj
