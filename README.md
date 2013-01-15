@@ -1,4 +1,4 @@
 Zing test
 
-# PrecompiledExtensionLoader
+PrecompiledExtensionLoader
 ====
