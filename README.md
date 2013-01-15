@@ -1,2 +1,2 @@
-Zing
+Zing test
 ====
