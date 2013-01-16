@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Dependencies>
-  <Dependency>
-    <ExtensionId>Hello</ExtensionId>
-    <LoaderName>DynamicExtensionLoader</LoaderName>
-    <VirtualPath>~/Modules/Hello/Hello.csproj</VirtualPath>
-    <Hash>d5dab5a31d6e34e0</Hash>
-  </Dependency>
-</Dependencies>

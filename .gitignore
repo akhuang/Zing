@@ -9,3 +9,5 @@
 /Src/Zing.WarmupStarter/obj
 /Src/Zing.Web/Core/bin
 /Src/Zing.Web/Core/obj
+/Src/Zing.Web/Modules/Hello/bin
+/Src/Zing.Web/Modules/Hello/obj
