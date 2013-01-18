@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Environment.Configuration;
-using Zing.Environment.ShellBuilders;
 
 namespace Zing.Environment
 {
@@ -14,11 +12,6 @@ namespace Zing.Environment
         /// </summary>
         void Initialize();
 
-        /// <summary>
-        /// Called externally when there is explicit knowledge that the list of installed
-        /// modules/extensions has changed, and they need to be reloaded.
-        /// </summary>
-        void ReloadExtensions();
 
         /// <summary>
         /// Called each time a request begins to offer a just-in-time reinitialization point
@@ -30,12 +23,12 @@ namespace Zing.Environment
         /// </summary>
         void EndRequest();
 
-        ShellContext GetShellContext(ShellSettings shellSettings);
+        //ShellContext GetShellContext(ShellSettings shellSettings);
 
         /// <summary>
         /// Can be used to build an temporary self-contained instance of a shell's configured code.
         /// Services may be resolved from within this instance to configure and initialize it's storage.
         /// </summary>
-        IWorkContextScope CreateStandaloneEnvironment(ShellSettings shellSettings);
+        //IWorkContextScope CreateStandaloneEnvironment(ShellSettings shellSettings);
     }
 }

@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Web.Hosting;
 using System.Reflection;
-namespace Zing.Environment
+
+namespace Zing.Logging
 {
     public abstract class HostEnvironment : IHostEnvironment
     {
         public bool IsFullTrust
         {
-            get
-            {
-                return AppDomain.CurrentDomain.IsHomogenous && AppDomain.CurrentDomain.IsFullyTrusted;
-            }
+            get { return AppDomain.CurrentDomain.IsHomogenous && AppDomain.CurrentDomain.IsFullyTrusted; }
         }
 
         public string MapPath(string virtualPath)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Localization;
 using System.Runtime.Serialization;
 
 namespace Zing
@@ -10,16 +9,16 @@ namespace Zing
     [Serializable]
     public class ZingCoreException : Exception
     {
-        private readonly LocalizedString _localizedMessage;
+        private readonly string _localizedMessage;
 
-        public ZingCoreException(LocalizedString message)
-            : base(message.Text)
+        public ZingCoreException(string message)
+            : base(message)
         {
             _localizedMessage = message;
         }
 
-        public ZingCoreException(LocalizedString message, Exception innerException)
-            : base(message.Text, innerException)
+        public ZingCoreException(string message, Exception innerException)
+            : base(message, innerException)
         {
             _localizedMessage = message;
         }
@@ -29,6 +28,6 @@ namespace Zing
         {
         }
 
-        public LocalizedString LocalizedMessage { get { return _localizedMessage; } }
+        public string LocalizedMessage { get { return _localizedMessage; } }
     }
 }
