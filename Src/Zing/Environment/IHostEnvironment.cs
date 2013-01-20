@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Zing.Logging
+namespace Zing.Environment
 {
     /// <summary>
     /// Abstraction of the running environment

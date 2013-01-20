@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autofac;
+using Zing.Logging;
 
 namespace Zing.Environment
 {
@@ -11,7 +12,13 @@ namespace Zing.Environment
         public static IContainer CreateHostContainer(Action<ContainerBuilder> registrations)
         {
             var builder = new ContainerBuilder();
+            builder.RegisterModule(new LoggingModule());
+            builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
+            builder.RegisterType<DefaultZingHost>().As<IZingHost>().SingleInstance();
+            {
 
+
+            }
             return builder.Build();
         }
 

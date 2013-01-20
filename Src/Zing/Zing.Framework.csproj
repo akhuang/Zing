@@ -115,6 +115,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Environment\DefaultHostEnvironment.cs" />
     <Compile Include="Environment\DefaultZingHost.cs" />
     <Compile Include="Environment\IZingHost.cs" />
     <Compile Include="Environment\ZingStarter.cs" />
@@ -124,8 +125,8 @@
     <Compile Include="IWorkContextAccessor.cs" />
     <Compile Include="Logging\CastleLogger.cs" />
     <Compile Include="Logging\CastleLoggerFactory.cs" />
-    <Compile Include="Logging\HostEnvironment.cs" />
-    <Compile Include="Logging\IHostEnvironment.cs" />
+    <Compile Include="Environment\HostEnvironment.cs" />
+    <Compile Include="Environment\IHostEnvironment.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\ILoggerFactory.cs" />
     <Compile Include="Logging\LoggingExtensions.cs" />
@@ -135,6 +136,8 @@
     <Compile Include="Logging\OrchardFileAppender.cs" />
     <Compile Include="Logging\OrchardLog4netFactory.cs" />
     <Compile Include="Logging\OrchardLog4netLogger.cs" />
+    <Compile Include="Mvc\IZingViewPage.cs" />
+    <Compile Include="Mvc\ViewEngines\Razor\WebViewPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\JetBrains.Annotations.cs" />
     <Compile Include="Validation\PathValidation.cs" />

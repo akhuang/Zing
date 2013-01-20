@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Hosting;
 using System.Reflection;
 
-namespace Zing.Logging
+namespace Zing.Environment
 {
     public abstract class HostEnvironment : IHostEnvironment
     {

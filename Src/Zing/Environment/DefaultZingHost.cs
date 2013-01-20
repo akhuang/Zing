@@ -10,19 +10,25 @@ namespace Zing.Environment
     {
         public ILogger Logger { get; set; }
 
+        public DefaultZingHost()
+        {
+            Logger = NullLogger.Instance;
+        }
         public void Initialize()
         {
-            throw new NotImplementedException();
+            Logger.Information("Initializing");
+
+            Logger.Information("Initialized");
         }
 
         public void BeginRequest()
         {
-            throw new NotImplementedException();
+            Logger.Debug("BeginRequest");
         }
 
         public void EndRequest()
         {
-            throw new NotImplementedException();
+            Logger.Debug("EndRequest");
         }
     }
 }
