@@ -118,6 +118,8 @@
     <Compile Include="Environment\DefaultHostEnvironment.cs" />
     <Compile Include="Environment\DefaultZingHost.cs" />
     <Compile Include="Environment\IZingHost.cs" />
+    <Compile Include="Environment\WorkContextAccessor.cs" />
+    <Compile Include="Environment\WorkContextProperty.cs" />
     <Compile Include="Environment\ZingStarter.cs" />
     <Compile Include="Exceptions\DefaultExceptionPolicy.cs" />
     <Compile Include="Exceptions\IExceptionPolicy.cs" />
@@ -136,7 +138,11 @@
     <Compile Include="Logging\OrchardFileAppender.cs" />
     <Compile Include="Logging\OrchardLog4netFactory.cs" />
     <Compile Include="Logging\OrchardLog4netLogger.cs" />
+    <Compile Include="Mvc\Extensions\RouteExtension.cs" />
+    <Compile Include="Mvc\HttpContextWorkContext.cs" />
+    <Compile Include="Mvc\IHttpContextAccessor.cs" />
     <Compile Include="Mvc\IZingViewPage.cs" />
+    <Compile Include="Mvc\Routes\ShellRoute.cs" />
     <Compile Include="Mvc\ViewEngines\Razor\WebViewPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\JetBrains.Annotations.cs" />

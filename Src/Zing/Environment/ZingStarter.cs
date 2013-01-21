@@ -14,10 +14,11 @@ namespace Zing.Environment
             var builder = new ContainerBuilder();
             builder.RegisterModule(new LoggingModule());
             builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
+
+            registrations(builder);
+
             builder.RegisterType<DefaultZingHost>().As<IZingHost>().SingleInstance();
             {
-
-
             }
             return builder.Build();
         }
