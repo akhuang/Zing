@@ -141,6 +141,7 @@
     <Compile Include="Environment\DefaultHostEnvironment.cs" />
     <Compile Include="Environment\DefaultZingHost.cs" />
     <Compile Include="Environment\DefaultZingShell.cs" />
+    <Compile Include="Environment\IRouteProvider.cs" />
     <Compile Include="Environment\IShellContainerRegistrations.cs" />
     <Compile Include="Environment\IZingHost.cs" />
     <Compile Include="Environment\IZingShell.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Mvc\IHttpContextAccessor.cs" />
     <Compile Include="Mvc\IZingViewPage.cs" />
     <Compile Include="Mvc\MvcModule.cs" />
+    <Compile Include="Mvc\Routes\DefaultRouteProvider.cs" />
     <Compile Include="Mvc\Routes\IRoutePublisher.cs" />
     <Compile Include="Mvc\Routes\RouteDescriptor.cs" />
     <Compile Include="Mvc\Routes\RoutePublisher.cs" />

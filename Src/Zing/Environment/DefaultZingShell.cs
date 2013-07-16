@@ -10,17 +10,17 @@ namespace Zing.Environment
     public class DefaultZingShell : IZingShell
     {
         //private readonly Func<Owned<IOrchardShellEvents>> _eventsFactory;
-        //private readonly IEnumerable<IRouteProvider> _routeProviders;
+        private readonly IEnumerable<IRouteProvider> _routeProviders;
         //private readonly IEnumerable<IHttpRouteProvider> _httpRouteProviders;
-        private readonly iroutepublisher _routepublisher;
+        private readonly IRoutePublisher _routePublisher;
         //private readonly IEnumerable<IModelBinderProvider> _modelBinderProviders;
         //private readonly IModelBinderPublisher _modelBinderPublisher;
         //private readonly ISweepGenerator _sweepGenerator;
 
-        public DefaultZingShell()
+        public DefaultZingShell(IRoutePublisher routePublisher, IEnumerable<IRouteProvider> routeProviders)
         {
             //_eventsFactory = eventsFactory;
-            //_routeProviders = routeProviders;
+            _routeProviders = routeProviders;
             //_httpRouteProviders = httpRouteProviders;
             _routePublisher = routePublisher;
             //_modelBinderProviders = modelBinderProviders;
@@ -36,7 +36,7 @@ namespace Zing.Environment
         {
             var allRoutes = new List<RouteDescriptor>();
             allRoutes.AddRange(_routeProviders.SelectMany(provider => provider.GetRoutes()));
-            allRoutes.AddRange(_httpRouteProviders.SelectMany(provider => provider.GetRoutes()));
+            //allRoutes.AddRange(_httpRouteProviders.SelectMany(provider => provider.GetRoutes()));
 
             _routePublisher.Publish(allRoutes);
             //_modelBinderPublisher.Publish(_modelBinderProviders.SelectMany(provider => provider.GetModelBinders()));
