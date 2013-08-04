@@ -17,12 +17,12 @@ namespace Zing.Environment
         //private readonly IModelBinderPublisher _modelBinderPublisher;
         //private readonly ISweepGenerator _sweepGenerator;
 
-        public DefaultZingShell(IRoutePublisher routePublisher, IEnumerable<IRouteProvider> routeProviders)
+        public DefaultZingShell()
         {
             //_eventsFactory = eventsFactory;
-            _routeProviders = routeProviders;
+            //_routeProviders = routeProviders;
             //_httpRouteProviders = httpRouteProviders;
-            _routePublisher = routePublisher;
+            //_routePublisher = routePublisher;
             //_modelBinderProviders = modelBinderProviders;
             //_modelBinderPublisher = modelBinderPublisher;
             //_sweepGenerator = sweepGenerator;
@@ -34,11 +34,11 @@ namespace Zing.Environment
 
         public void Activate()
         {
-            var allRoutes = new List<RouteDescriptor>();
-            allRoutes.AddRange(_routeProviders.SelectMany(provider => provider.GetRoutes()));
+            //var allRoutes = new List<RouteDescriptor>();
+            //allRoutes.AddRange(_routeProviders.SelectMany(provider => provider.GetRoutes()));
             //allRoutes.AddRange(_httpRouteProviders.SelectMany(provider => provider.GetRoutes()));
 
-            _routePublisher.Publish(allRoutes);
+            //_routePublisher.Publish(allRoutes);
             //_modelBinderPublisher.Publish(_modelBinderProviders.SelectMany(provider => provider.GetModelBinders()));
 
             //using (var events = _eventsFactory())
