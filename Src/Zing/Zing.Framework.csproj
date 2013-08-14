@@ -145,6 +145,7 @@
     <Compile Include="Data\ISessionLocator.cs" />
     <Compile Include="Data\Repository.cs" />
     <Compile Include="Data\SessionFactoryHolder.cs" />
+    <Compile Include="Data\SessionLocator.cs" />
     <Compile Include="Environment\Configuration\IShellSettingsManager.cs" />
     <Compile Include="Environment\Configuration\ShellSettings.cs" />
     <Compile Include="Environment\Configuration\ShellSettingsManager.cs" />

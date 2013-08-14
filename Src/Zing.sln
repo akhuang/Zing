@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.WarmupStarter", "Zing.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{298F0236-E462-4B9C-9A7C-7A85D54F5BCB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C22113AE-588E-4C49-B0F7-28BC4280CDC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Framework.Tests", "Zing.Framework.Tests\Zing.Framework.Tests.csproj", "{7829FD76-7809-4A2E-BB18-A2CEC362D56F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +31,15 @@ Global
 		{1BA83997-B709-4442-81CE-055AD26FF4A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BA83997-B709-4442-81CE-055AD26FF4A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BA83997-B709-4442-81CE-055AD26FF4A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7829FD76-7809-4A2E-BB18-A2CEC362D56F} = {C22113AE-588E-4C49-B0F7-28BC4280CDC8}
 	EndGlobalSection
 EndGlobal
