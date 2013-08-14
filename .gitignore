@@ -11,3 +11,6 @@
 /Src/Zing.Web/Core/obj
 /Src/Zing.Web/Modules/Hello/bin
 /Src/Zing.Web/Modules/Hello/obj
+/Src/Zing.Framework.Tests/bin
+/Src/Zing.Framework.Tests/obj
+/Src/Zing.Web/App_Data/Logs
