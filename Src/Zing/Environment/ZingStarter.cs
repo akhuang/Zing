@@ -8,6 +8,10 @@ using Zing.Environment.Configuration;
 using Zing.Environment.ShellBuilder;
 using Zing.FileSystems.AppData;
 using Zing.Caching;
+using MvcExtensions;
+using System.Web.Mvc;
+using Autofac.Integration.Mvc;
+
 
 namespace Zing.Environment
 {
@@ -19,6 +23,8 @@ namespace Zing.Environment
             builder.RegisterModule(new LoggingModule());
             builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
             builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
+
+            FluentMetadataConfiguration.RegisterEachConfigurationWithContainer(r => builder.RegisterType(r.MetadataConfigurationType).As(r.InterfaceType));
 
             RegisterVolatileProvider<AppDataFolder, IAppDataFolder>(builder);
 
@@ -39,8 +45,12 @@ namespace Zing.Environment
 
             registrations(builder);
 
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
-            return builder.Build();
+            
+
+            return container;
         }
 
         private static void RegisterVolatileProvider<TRegister, TService>(ContainerBuilder builder) where TService : IVolatileProvider

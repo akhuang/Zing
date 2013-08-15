@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Modules.Users.Models;
+ 
 using NHibernate;
-using Zing.Framework.Data;
+using Zing.Framework;
 using Zing.Framework.Security;
 using Zing.Data;
 using Zing.Module.Users.Models;

@@ -9,6 +9,7 @@ using Autofac;
 using Zing.Environment;
 using Zing.WarmupStarter;
 using Zing.Web.Controllers;
+using MvcExtensions;
 
 namespace Zing.Web
 {
@@ -25,7 +26,7 @@ namespace Zing.Web
             //WebApiConfig.Register(GlobalConfiguration.Configuration);
             //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-
+            FluentMetadataConfiguration.Register();
             _starter = new Starter<IZingHost>(HostInitialization, HostBeginRequest, HostEndRequest);
             _starter.OnApplicationStart(this);
 

@@ -52,6 +52,9 @@
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MvcExtensions.FluentMetadata">
+      <HintPath>..\packages\MvcExtensions.FluentMetadata.3.0.0-alpha1029\lib\net40\MvcExtensions.FluentMetadata.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -192,6 +195,10 @@
     <Content Include="Views\Default1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Zing.Module\Zing.Module.csproj">
+      <Project>{01c2efec-a52c-486f-9ae2-f1f2bf64ecc3}</Project>
+      <Name>Zing.Module</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Zing.WarmupStarter\Zing.WarmupStarter.csproj">
       <Project>{1BA83997-B709-4442-81CE-055AD26FF4A7}</Project>
       <Name>Zing.WarmupStarter</Name>

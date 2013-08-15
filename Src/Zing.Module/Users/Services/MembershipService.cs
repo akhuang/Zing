@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web.Security;
 using Zing.Framework.Security;
 using Zing.Module.Users.Models;
+using Zing.Modules.Users.Repositories;
 
 namespace Zing.Module.Users.Services
 {
