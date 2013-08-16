@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Zing.Mvc;
 
-namespace Zing.Module.Users.ViewModels
+namespace Zing.Modules.Users.ViewModels
 {
     public class UserViewModel
     {

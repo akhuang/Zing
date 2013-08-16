@@ -5,10 +5,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.Security;
 using Zing.Framework.Security;
-using Zing.Module.Users.Models;
+using Zing.Modules.Users.Models;
 using Zing.Modules.Users.Repositories;
 
-namespace Zing.Module.Users.Services
+namespace Zing.Modules.Users.Services
 {
     public class MembershipService : IMembershipService
     {

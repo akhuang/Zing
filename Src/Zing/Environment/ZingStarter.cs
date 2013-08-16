@@ -11,6 +11,7 @@ using Zing.Caching;
 using System.Web.Mvc;
 using Autofac.Integration.Mvc;
 using Zing.Mvc;
+using Zing.Data;
 
 
 namespace Zing.Environment
@@ -21,6 +22,7 @@ namespace Zing.Environment
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule(new LoggingModule());
+            builder.RegisterModule(new DataModule());
             builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
             builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
 
@@ -47,8 +49,6 @@ namespace Zing.Environment
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-
-
 
             return container;
         }

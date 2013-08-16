@@ -6,7 +6,7 @@ using System.Text;
 using System.Web.Security;
 using Zing.Framework.Security;
 
-namespace Zing.Module.Users.Models
+namespace Zing.Modules.Users.Models
 {
     public class UserEntity : IUser
     {

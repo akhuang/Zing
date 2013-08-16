@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Web", "Zing.Web\Zing.Web.csproj", "{8C5FA83F-059F-4BD7-A813-46FF93A04C23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Framework", "Zing\Zing.Framework.csproj", "{9B0546FF-2871-4E97-8448-BB3AD038F0FA}"
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C22113AE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Framework.Tests", "Zing.Framework.Tests\Zing.Framework.Tests.csproj", "{7829FD76-7809-4A2E-BB18-A2CEC362D56F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Module", "Zing.Module\Zing.Module.csproj", "{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Modules", "Zing.Module\Zing.Modules.csproj", "{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

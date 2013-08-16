@@ -10,6 +10,8 @@ using Zing.Environment;
 using Zing.WarmupStarter;
 using Zing.Web.Controllers;
 using Zing.Mvc;
+using Zing.Modules.Users.ViewModels;
+using System.Web.Optimization;
 
 namespace Zing.Web
 {
@@ -26,6 +28,7 @@ namespace Zing.Web
             //WebApiConfig.Register(GlobalConfiguration.Configuration);
             //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
             FluentMetadataConfiguration.Register();
             _starter = new Starter<IZingHost>(HostInitialization, HostBeginRequest, HostEndRequest);
             _starter.OnApplicationStart(this);
@@ -68,6 +71,8 @@ namespace Zing.Web
 
         static void MvcSingletons(ContainerBuilder builder)
         {
+            var assembly = typeof(UserViewModel).Assembly;
+            builder.RegisterAssemblyModules(assembly);
             builder.Register(ctx => RouteTable.Routes).SingleInstance();
             builder.Register(ctx => ModelBinders.Binders).SingleInstance();
             builder.Register(ctx => ViewEngines.Engines).SingleInstance();

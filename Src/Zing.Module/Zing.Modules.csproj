@@ -7,8 +7,8 @@
     <ProjectGuid>{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Zing.Module</RootNamespace>
-    <AssemblyName>Zing.Module</AssemblyName>
+    <RootNamespace>Zing.Modules</RootNamespace>
+    <AssemblyName>Zing.Modules</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -84,13 +84,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\Models\UserEntity.cs" />
     <Compile Include="Users\Models\UserStatus.cs" />
     <Compile Include="Users\Repositories\IMembershipRepository.cs" />
     <Compile Include="Users\Repositories\MembershipRepository.cs" />
     <Compile Include="Users\Services\MembershipService.cs" />
+    <Compile Include="Users\UsersModule.cs" />
     <Compile Include="Users\ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

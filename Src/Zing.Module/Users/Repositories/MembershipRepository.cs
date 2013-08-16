@@ -7,7 +7,7 @@ using NHibernate;
 using Zing.Framework;
 using Zing.Framework.Security;
 using Zing.Data;
-using Zing.Module.Users.Models;
+using Zing.Modules.Users.Models;
 
 namespace Zing.Modules.Users.Repositories
 {
