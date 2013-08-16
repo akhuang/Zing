@@ -8,9 +8,9 @@ using Zing.Environment.Configuration;
 using Zing.Environment.ShellBuilder;
 using Zing.FileSystems.AppData;
 using Zing.Caching;
-using MvcExtensions;
 using System.Web.Mvc;
 using Autofac.Integration.Mvc;
+using Zing.Mvc;
 
 
 namespace Zing.Environment
@@ -48,7 +48,7 @@ namespace Zing.Environment
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
-            
+
 
             return container;
         }

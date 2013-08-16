@@ -1,8 +1,8 @@
-﻿using MvcExtensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Zing.Mvc;
 
 namespace Zing.Module.Users.ViewModels
 {

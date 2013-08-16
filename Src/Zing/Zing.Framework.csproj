@@ -52,15 +52,15 @@
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\packages\JetBrains.Annotations.7.0\lib\net40\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="MvcExtensions.FluentMetadata">
-      <HintPath>..\packages\MvcExtensions.FluentMetadata.3.0.0-alpha1029\lib\net40\MvcExtensions.FluentMetadata.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -175,6 +175,11 @@
     <Compile Include="Environment\WorkContextModule.cs" />
     <Compile Include="Environment\WorkContextProperty.cs" />
     <Compile Include="Environment\ZingStarter.cs" />
+    <Compile Include="ExceptionMessages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
     <Compile Include="Exceptions\DefaultExceptionPolicy.cs" />
     <Compile Include="Exceptions\IExceptionPolicy.cs" />
     <Compile Include="FileSystems\AppData\AppDataFolder.cs" />
@@ -196,9 +201,73 @@
     <Compile Include="Logging\OrchardLog4netFactory.cs" />
     <Compile Include="Logging\OrchardLog4netLogger.cs" />
     <Compile Include="Mvc\Extensions\RouteExtension.cs" />
+    <Compile Include="Mvc\FluentMetadata\ActionFilter\SelectListActionAttribute.cs" />
+    <Compile Include="Mvc\FluentMetadata\Conventions\DefaultPropertyMetadataConvention.cs" />
+    <Compile Include="Mvc\FluentMetadata\Conventions\IPropertyMetadataConvention.cs" />
+    <Compile Include="Mvc\FluentMetadata\Conventions\MetadataMergeExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\Conventions\ModelConvensions\AcceptorContext.cs" />
+    <Compile Include="Mvc\FluentMetadata\Conventions\ModelConvensions\DefaultModelConventionAcceptor.cs" />
+    <Compile Include="Mvc\FluentMetadata\Conventions\ModelConvensions\IModelConventionAcceptor.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\AssemblyExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\DisplayAttributeExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\ExpressionVisitorHelper.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\Invariant.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\Maybe.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\StringUtils.cs" />
+    <Compile Include="Mvc\FluentMetadata\Helper\TypeExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\DisplayAttributeTransformer.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\DisplayNameTransformer.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\FluentModelMetadataTransformer.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\LocalizationConventions.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\MetadataConventionsAttribute.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\TransformerCore.cs" />
+    <Compile Include="Mvc\FluentMetadata\Localization\ValidationAttributeTransformer.cs" />
+    <Compile Include="Mvc\FluentMetadata\Providers\CompositeModelValidatorProvider.cs" />
+    <Compile Include="Mvc\FluentMetadata\Providers\ConventionalDataAnnotationsModelMetadataProvider.cs" />
+    <Compile Include="Mvc\FluentMetadata\Providers\ExtendedModelMetadataProvider.cs" />
+    <Compile Include="Mvc\FluentMetadata\Providers\ExtendedModelValidatorProvider.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\ConfigurationsScanner.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\ConfigurationsScanResult.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\FluentMetadataConfiguration.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\From.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\IMetadataConstruction.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\IModelMetadataRegistry.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\IRegistrar.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\ModelMetadataRegistrar.cs" />
+    <Compile Include="Mvc\FluentMetadata\Registration\ModelMetadataRegistry.cs" />
     <Compile Include="Mvc\HttpContextWorkContext.cs" />
     <Compile Include="Mvc\IHttpContextAccessor.cs" />
     <Compile Include="Mvc\IZingViewPage.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\CompareValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\CustomValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\DelegateBasedValidator.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ExtendedModelMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\HtmlSelectModelMetadataItemBuilderExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\IModelMetadataAdditionalSetting.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\IModelMetadataConfiguration.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\IModelMetadataItemBuilder.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\IModelValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelMetadataConfiguration.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelMetadataItem.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelMetadataItemBuilder.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelMetadataItemBuilderRenderActionExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelMetadataItemExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelMetadataItemSelectableElementSetting.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ModelValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RangeMetadataItemBuilderExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RangeValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RegularExpressionValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RemoteValidation\AbstractRemoteValidationConfigurator.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RemoteValidation\IRemoteValidationConfigurator.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RemoteValidation\RemoteValidationConfigurator.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RemoteValidation\RemoteValidationExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RemoteValidation\RemoteValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RenderActionSetting.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RenderActionSettingExtensions.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\RequiredValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\StringLengthValidationMetadata.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\StringMetadataItemBuilder.cs" />
+    <Compile Include="Mvc\FluentMetadata\ModelMetadata\ValueTypeMetadataItemBuilderExtensions.cs" />
     <Compile Include="Mvc\MvcModule.cs" />
     <Compile Include="Mvc\Routes\DefaultRouteProvider.cs" />
     <Compile Include="Mvc\Routes\IRoutePublisher.cs" />
@@ -226,7 +295,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -9,7 +9,7 @@ using Autofac;
 using Zing.Environment;
 using Zing.WarmupStarter;
 using Zing.Web.Controllers;
-using MvcExtensions;
+using Zing.Mvc;
 
 namespace Zing.Web
 {
