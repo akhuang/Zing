@@ -20,7 +20,7 @@ namespace Zing.Modules.Users.ViewModels
         public UserViewModelMetadata()
         {
             Configure(x => x.UserName)
-                .DisplayName("用户姓名")
+                .DisplayName("用户姓名").AsDropDownList
                 .Required();
 
             Configure(x => x.Email)
