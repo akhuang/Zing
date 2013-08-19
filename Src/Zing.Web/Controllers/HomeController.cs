@@ -15,6 +15,11 @@ namespace Zing.Web.Controllers
 
         public ActionResult Index()
         {
+            ViewData["aaaa"] = new List<SelectListItem>()
+            {
+                new SelectListItem(){ Text="ddd",Value="2" },
+                new SelectListItem(){ Text="cc",Value="1" }
+            };
             return View();
         }
 

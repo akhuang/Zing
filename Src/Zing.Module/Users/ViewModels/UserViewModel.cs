@@ -13,6 +13,7 @@ namespace Zing.Modules.Users.ViewModels
         public string NormalizedUserName { get; set; }
         public string UserPassword { get; set; }
         public string ConfirmPassword { get; set; }
+        public int Category { get; set; }
     }
 
     public class UserViewModelMetadata : ModelMetadataConfiguration<UserViewModel>
@@ -20,7 +21,7 @@ namespace Zing.Modules.Users.ViewModels
         public UserViewModelMetadata()
         {
             Configure(x => x.UserName)
-                .DisplayName("用户姓名").AsDropDownList
+                .DisplayName("用户姓名") 
                 .Required();
 
             Configure(x => x.Email)
@@ -43,6 +44,8 @@ namespace Zing.Modules.Users.ViewModels
                 .DisplayName("确认密码")
                 .AsPassword()
                 .Compare("UserPassword");
+
+            Configure(x => x.Category).AsDropDownList("aaaa").Required();
         }
     }
 }

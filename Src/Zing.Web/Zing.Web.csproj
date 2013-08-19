@@ -237,6 +237,7 @@
     <Content Include="Views\Shared\EditorTemplates\_Layout.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Shared\EditorTemplates\DropDownList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

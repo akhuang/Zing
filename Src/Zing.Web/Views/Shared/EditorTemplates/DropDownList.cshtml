@@ -1,0 +1,25 @@
+﻿@using Zing.Mvc
+@{ Layout = "~/Views/Shared/EditorTemplates/_Layout.cshtml"; }
+@functions{ 
+    ModelMetadataItemSelectableElementSetting GetSelectableElementSetting()
+    {
+        ExtendedModelMetadata metadata = ViewData.ModelMetadata as ExtendedModelMetadata;
+        return (metadata != null) ? metadata.Metadata.AdditionalSettings.OfType<ModelMetadataItemSelectableElementSetting>()
+                                                     .SingleOrDefault() : null;
+    }
+}
+
+@{
+    
+    ModelMetadataItemSelectableElementSetting setting = GetSelectableElementSetting();
+
+    if (setting != null)
+    { 
+    @Html.DropDownList(string.Empty, ViewData.Eval(setting.ViewDataKey)
+as IEnumerable<SelectListItem>, (setting.OptionLabel != null) ? setting.OptionLabel()
+: null) 
+    }
+    else
+    {   @Html.DisplayForModel()  }
+
+}
