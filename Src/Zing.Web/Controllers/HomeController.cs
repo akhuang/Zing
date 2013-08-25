@@ -29,6 +29,12 @@ namespace Zing.Web.Controllers
             IMembershipService membershipService = DependencyResolver.Current.GetService<IMembershipService>();
             CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.UserPassword, userInfo.Email);
             membershipService.CreateUser(userParas);
+
+            ViewData["aaaa"] = new List<SelectListItem>()
+            {
+                new SelectListItem(){ Text="ddd",Value="2" },
+                new SelectListItem(){ Text="cc",Value="1" }
+            };
             return View(userInfo);
         }
 

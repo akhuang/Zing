@@ -36,6 +36,6 @@ namespace Zing.Modules.Users.Repositories
 
             return model;
         }
-
+ 
     }
 }
