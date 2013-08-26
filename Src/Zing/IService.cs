@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Zing.Data;
 
-namespace Zing.Data
+namespace Zing
 {
-    public interface IRepository<T>
+    public interface IService<T>
     {
         void Create(T entity);
         void Update(T entity);

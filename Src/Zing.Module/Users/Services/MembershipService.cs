@@ -10,10 +10,11 @@ using Zing.Modules.Users.Repositories;
 
 namespace Zing.Modules.Users.Services
 {
-    public class MembershipService : IMembershipService
+    public class MembershipService : ServiceBase<UserEntity>, IMembershipService
     {
         private IMembershipRepository _userRep;
         public MembershipService(IMembershipRepository userRep)
+            : base(userRep)
         {
             _userRep = userRep;
         }
@@ -33,6 +34,12 @@ namespace Zing.Modules.Users.Services
             model.HashAlgorithm = "SHA1";
             SetPassword(model, createUserParams.Password);
             return _userRep.Add(model);
+        }
+
+        public IEnumerable<UserEntity> Get()
+        {
+            var userList = base.Fetch(x => x.Email == "hf.com");
+            return userList;
         }
 
         private void SetPassword(UserEntity model, string password)

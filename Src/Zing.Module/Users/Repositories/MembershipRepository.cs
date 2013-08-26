@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
- 
+
 using NHibernate;
 using Zing.Framework;
 using Zing.Framework.Security;
@@ -11,10 +11,11 @@ using Zing.Modules.Users.Models;
 
 namespace Zing.Modules.Users.Repositories
 {
-    public class MembershipRepository : IMembershipRepository
+    public class MembershipRepository : RepositoryBase<UserEntity>, IMembershipRepository
     {
         private readonly IRepository<UserEntity> _rep;
         public MembershipRepository(IRepository<UserEntity> rep)
+            : base(rep)
         {
             _rep = rep;
         }
@@ -36,6 +37,6 @@ namespace Zing.Modules.Users.Repositories
 
             return model;
         }
- 
+
     }
 }

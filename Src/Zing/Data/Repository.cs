@@ -89,16 +89,16 @@ namespace Zing.Data
             return Fetch(predicate).ToReadOnlyCollection();
         }
 
-        //IEnumerable<T> IRepository<T>.Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order)
-        //{
-        //    return Fetch(predicate, order).ToReadOnlyCollection();
-        //}
+        IEnumerable<T> IRepository<T>.Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order)
+        {
+            return Fetch(predicate, order).ToReadOnlyCollection();
+        }
 
-        //IEnumerable<T> IRepository<T>.Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip,
-        //                                    int count)
-        //{
-        //    return Fetch(predicate, order, skip, count).ToReadOnlyCollection();
-        //}
+        IEnumerable<T> IRepository<T>.Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip,
+                                            int count)
+        {
+            return Fetch(predicate, order, skip, count).ToReadOnlyCollection();
+        }
 
         #endregion
 
@@ -166,5 +166,8 @@ namespace Zing.Data
         {
             return Fetch(predicate, order).Skip(skip).Take(count);
         }
+
+
+
     }
 }

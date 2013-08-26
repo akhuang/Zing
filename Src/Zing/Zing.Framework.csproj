@@ -153,6 +153,8 @@
     <Compile Include="Data\ISessionLocator.cs" />
     <Compile Include="Data\Orderable.cs" />
     <Compile Include="Data\Repository.cs" />
+    <Compile Include="Data\RepositoryBase.cs" />
+    <Compile Include="ServiceBase.cs" />
     <Compile Include="Data\SessionFactoryHolder.cs" />
     <Compile Include="Data\SessionLocator.cs" />
     <Compile Include="Environment\Configuration\IShellSettingsManager.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="FileSystems\AppData\IAppDataFolder.cs" />
     <Compile Include="FileSystems\AppData\IAppDataFolderRoot.cs" />
     <Compile Include="IDependency.cs" />
+    <Compile Include="IService.cs" />
     <Compile Include="IWorkContextAccessor.cs" />
     <Compile Include="Logging\CastleLogger.cs" />
     <Compile Include="Logging\CastleLoggerFactory.cs" />

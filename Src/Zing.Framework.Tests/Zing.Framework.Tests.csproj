@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.1.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -56,11 +59,23 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ContainerTestBase.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zing.Module\Zing.Modules.csproj">
+      <Project>{01c2efec-a52c-486f-9ae2-f1f2bf64ecc3}</Project>
+      <Name>Zing.Modules</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Zing\Zing.Framework.csproj">
+      <Project>{9b0546ff-2871-4e97-8448-bb3ad038f0fa}</Project>
+      <Name>Zing.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
