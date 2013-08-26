@@ -151,6 +151,7 @@
     <Compile Include="Data\DataModule.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\ISessionLocator.cs" />
+    <Compile Include="Data\Orderable.cs" />
     <Compile Include="Data\Repository.cs" />
     <Compile Include="Data\SessionFactoryHolder.cs" />
     <Compile Include="Data\SessionLocator.cs" />

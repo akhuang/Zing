@@ -154,17 +154,17 @@ namespace Zing.Data
             return Table.Where(predicate);
         }
 
-        //public virtual IQueryable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order)
-        //{
-        //    var orderable = new Orderable<T>(Fetch(predicate));
-        //    order(orderable);
-        //    return orderable.Queryable;
-        //}
+        public virtual IQueryable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order)
+        {
+            var orderable = new Orderable<T>(Fetch(predicate));
+            order(orderable);
+            return orderable.Queryable;
+        }
 
-        //public virtual IQueryable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip,
-        //                                   int count)
-        //{
-        //    return Fetch(predicate, order).Skip(skip).Take(count);
-        //}
+        public virtual IQueryable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip,
+                                           int count)
+        {
+            return Fetch(predicate, order).Skip(skip).Take(count);
+        }
     }
 }
