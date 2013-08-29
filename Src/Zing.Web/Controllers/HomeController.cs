@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Zing.Modules.Users.ViewModels;
 using Zing.Framework.Security;
+using Zing.Logging;
 
 namespace Zing.Web.Controllers
 {
@@ -13,8 +14,16 @@ namespace Zing.Web.Controllers
         //
         // GET: /Home/
 
+        public ILogger Logger { get; set; }
+
+        public HomeController()
+        {
+            Logger = NullLogger.Instance;
+        }
+
         public ActionResult Index()
         {
+            Logger.Debug("Index");
             ViewData["aaaa"] = new List<SelectListItem>()
             {
                 new SelectListItem(){ Text="ddd",Value="2" },

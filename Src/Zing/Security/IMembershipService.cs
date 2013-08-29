@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Zing.Framework.Security
 {
-    public interface IMembershipService
+    public interface IMembershipService  
     {
         MembershipSettings GetSettings();
 

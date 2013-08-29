@@ -7,7 +7,7 @@ using Zing.Data;
 
 namespace Zing
 {
-    public interface IService<T>
+    public interface IService<T> where T : class
     {
         void Create(T entity);
         void Update(T entity);

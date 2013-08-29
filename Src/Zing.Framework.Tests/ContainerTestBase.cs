@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using Zing.Logging;
+using Zing.Data;
+using Zing.Environment;
 
 namespace Zing.Framework.Tests
 {
@@ -21,7 +24,13 @@ namespace Zing.Framework.Tests
             Resolve(_container);
         }
 
-        protected virtual void Register(ContainerBuilder builder) { }
+        protected virtual void Register(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new LoggingModule());
+            //builder.RegisterModule(new LoggingModule());
+            builder.RegisterModule(new DataModule());
+            builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
+        }
         protected virtual void Resolve(ILifetimeScope container) { }
     }
 }

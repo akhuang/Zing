@@ -89,6 +89,7 @@
     <Compile Include="Users\Models\UserStatus.cs" />
     <Compile Include="Users\Repositories\IMembershipRepository.cs" />
     <Compile Include="Users\Repositories\MembershipRepository.cs" />
+    <Compile Include="Users\Services\IMembershipServiceInModule.cs" />
     <Compile Include="Users\Services\MembershipService.cs" />
     <Compile Include="Users\UsersModule.cs" />
     <Compile Include="Users\ViewModels\UserViewModel.cs" />

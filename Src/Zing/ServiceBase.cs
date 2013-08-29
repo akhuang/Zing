@@ -9,7 +9,7 @@ using Zing.Utility.Extensions;
 
 namespace Zing
 {
-    public class ServiceBase<T> : IService<T>
+    public class ServiceBase<T> : IService<T> where T : class
     {
         private readonly IRepository<T> _rep;
 

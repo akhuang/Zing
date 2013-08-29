@@ -5,18 +5,22 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.Security;
 using Zing.Framework.Security;
+using Zing.Logging;
 using Zing.Modules.Users.Models;
 using Zing.Modules.Users.Repositories;
 
 namespace Zing.Modules.Users.Services
 {
-    public class MembershipService : ServiceBase<UserEntity>, IMembershipService
+    public class MembershipService : ServiceBase<UserEntity>, IMembershipServiceInModule
     {
         private IMembershipRepository _userRep;
+        public new ILogger Logger { get; set; }
+
         public MembershipService(IMembershipRepository userRep)
             : base(userRep)
         {
             _userRep = userRep;
+            Logger = NullLogger.Instance;
         }
 
         public MembershipSettings GetSettings()
@@ -72,6 +76,7 @@ namespace Zing.Modules.Users.Services
 
         public IUser GetUser(string userName)
         {
+            Logger.Debug("get user");
             throw new NotImplementedException();
         }
 

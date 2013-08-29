@@ -14,6 +14,7 @@ namespace Zing.Modules.Users
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<MembershipService>().As<IMembershipServiceInModule>();
             builder.RegisterType<MembershipService>().As<IMembershipService>();
             builder.RegisterType<MembershipRepository>().As<IMembershipRepository>();
         }
