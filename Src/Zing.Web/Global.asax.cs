@@ -12,6 +12,7 @@ using Zing.Web.Controllers;
 using Zing.Mvc;
 using Zing.Modules.Users.ViewModels;
 using System.Web.Optimization;
+using Autofac.Integration.Mvc;
 
 namespace Zing.Web
 {
@@ -76,6 +77,8 @@ namespace Zing.Web
             builder.Register(ctx => RouteTable.Routes).SingleInstance();
             builder.Register(ctx => ModelBinders.Binders).SingleInstance();
             builder.Register(ctx => ViewEngines.Engines).SingleInstance();
+
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
         }
     }
