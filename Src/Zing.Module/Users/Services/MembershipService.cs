@@ -77,7 +77,9 @@ namespace Zing.Modules.Users.Services
         public IUser GetUser(string userName)
         {
             Logger.Debug("get user");
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            return base.Get(x => x.UserName == userName);
         }
 
         public IUser ValidateUser(string userNameOrEmail, string password)

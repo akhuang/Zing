@@ -53,8 +53,10 @@ namespace Zing.Framework.Tests
         [Test]
         public void TestGetUserInfoByUserName()
         {
+            //ILogger Logger = _container.Resolve<ILogger>();
+            //Logger.Debug("TestGetUserInfoByUserName");
             var membershipService = _container.Resolve<IMembershipService>();
-            var model = membershipService.GetUser("ddd");
+            var model = membershipService.GetUser("ddd2");
 
             Assert.IsNotNull(model);
         }

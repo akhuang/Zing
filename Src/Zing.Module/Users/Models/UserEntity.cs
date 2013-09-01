@@ -44,7 +44,9 @@ namespace Zing.Modules.Users.Models
             Map(x => x.PasswordSalt);
             Map(x => x.RegistrationStatus);
             Map(x => x.EmailStatus);
-            Map(x => x.Email);
+
+            Map(x => x.Email).Update();
+
 
             Table("Users");
         }
