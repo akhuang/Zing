@@ -1,13 +1,19 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Zing.Modules.Users.Models;
 using Zing.Mvc;
 
 namespace Zing.Modules.Users.ViewModels
 {
     public class UserViewModel
     {
+        static UserViewModel()
+        {
+            Mapper.CreateMap<UserViewModel, UserEntity>();
+        }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string NormalizedUserName { get; set; }
@@ -21,7 +27,7 @@ namespace Zing.Modules.Users.ViewModels
         public UserViewModelMetadata()
         {
             Configure(x => x.UserName)
-                .DisplayName("用户姓名") 
+                .DisplayName("用户姓名")
                 .Required();
 
             Configure(x => x.Email)

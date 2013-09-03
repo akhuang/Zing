@@ -59,6 +59,12 @@ namespace Zing.Web.Controllers
         [AutoMap(typeof(UserEntity), typeof(UserViewModel))]
         public ActionResult Edit(int id)
         {
+            ViewData["aaaa"] = new List<SelectListItem>()
+            {
+                new SelectListItem(){ Text="ddd",Value="2" },
+                new SelectListItem(){ Text="cc",Value="1" }
+            };
+
             UserEntity model = _membershipServiceInModule.Get(id);
             return View(model);
         }

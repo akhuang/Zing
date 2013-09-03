@@ -1,15 +1,21 @@
-﻿using FluentNHibernate.Mapping;
+﻿using AutoMapper;
+using FluentNHibernate.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Security;
 using Zing.Framework.Security;
+using Zing.Modules.Users.ViewModels;
 
 namespace Zing.Modules.Users.Models
 {
     public class UserEntity : IUser
     {
+        static UserEntity()
+        {
+            Mapper.CreateMap<UserEntity, UserViewModel>();
+        }
         public virtual string UserName { get; set; }
         public virtual string Email { get; set; }
         public virtual string NormalizedUserName { get; set; }
