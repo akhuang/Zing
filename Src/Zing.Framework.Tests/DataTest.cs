@@ -76,12 +76,16 @@ namespace Zing.Framework.Tests
         public void TestFetchAll()
         {
             var membershipService = _container.Resolve<IMembershipServiceInModule>();
-            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "dds");
 
             var count = membershipService.Count(x => x.NormalizedUserName == "dds");
 
+            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "dds", x => x.Asc(d => d.NormalizedUserName), 0, 10);
+
+
+
             Assert.IsNotNull(list);
-            Assert.AreEqual(count, list.Count());
+            Assert.AreNotEqual(count, list.Count());
+            Assert.AreNotEqual(list.Count(), 10);
 
         }
     }
