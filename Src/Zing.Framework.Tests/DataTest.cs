@@ -11,7 +11,7 @@ using Zing.Modules.Users.Services;
 namespace Zing.Framework.Tests
 {
     [TestFixture]
-    public class UnitTest1 : ContainerTestBase
+    public class DataTest : ContainerTestBase
     {
         protected override void Register(ContainerBuilder builder)
         {
@@ -57,6 +57,15 @@ namespace Zing.Framework.Tests
             //Logger.Debug("TestGetUserInfoByUserName");
             var membershipService = _container.Resolve<IMembershipService>();
             var model = membershipService.GetUser("ddd2");
+
+            Assert.IsNotNull(model);
+        }
+
+        [Test]
+        public void TestFetchByName()
+        {
+            var membershipService = _container.Resolve<IMembershipServiceInModule>();
+            var model = membershipService.Fetch(x => x.NormalizedUserName == "dds");
 
             Assert.IsNotNull(model);
         }
