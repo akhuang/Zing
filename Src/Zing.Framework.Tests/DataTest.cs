@@ -7,6 +7,8 @@ using Zing.Logging;
 using Zing.Modules.Users;
 using Zing.Modules.Users.Models;
 using Zing.Modules.Users.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Zing.Framework.Tests
 {
@@ -68,6 +70,19 @@ namespace Zing.Framework.Tests
             var model = membershipService.Fetch(x => x.NormalizedUserName == "dds");
 
             Assert.IsNotNull(model);
+        }
+
+        [Test]
+        public void TestFetchAll()
+        {
+            var membershipService = _container.Resolve<IMembershipServiceInModule>();
+            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "dds");
+
+            var count = membershipService.Count(x => x.NormalizedUserName == "dds");
+
+            Assert.IsNotNull(list);
+            Assert.AreEqual(count, list.Count());
+
         }
     }
 }
