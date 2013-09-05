@@ -78,7 +78,7 @@ namespace Zing
 
         public IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip, int count)
         {
-            return Fetch(predicate, order, skip, count).ToReadOnlyCollection();
+            return _rep.Fetch(predicate, order, skip, count).ToReadOnlyCollection();
         }
     }
 }

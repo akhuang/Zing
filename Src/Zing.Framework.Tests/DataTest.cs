@@ -77,15 +77,13 @@ namespace Zing.Framework.Tests
         {
             var membershipService = _container.Resolve<IMembershipServiceInModule>();
 
-            var count = membershipService.Count(x => x.NormalizedUserName == "dds");
+            var count = membershipService.Count(x => x.NormalizedUserName == "322324232");
 
-            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "dds", x => x.Asc(d => d.NormalizedUserName), 0, 10);
-
-
+            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "322324232", x => x.Asc(d => d.NormalizedUserName), 0, 5);
 
             Assert.IsNotNull(list);
             Assert.AreNotEqual(count, list.Count());
-            Assert.AreNotEqual(list.Count(), 10);
+            Assert.AreEqual(list.Count(), 5);
 
         }
     }
