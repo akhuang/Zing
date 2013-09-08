@@ -17,7 +17,7 @@ namespace Zing.Modules.Users.ViewModels
         public string UserName { get; set; }
         public string Email { get; set; }
         public string NormalizedUserName { get; set; }
-        public string UserPassword { get; set; }
+        public string Password { get; set; }
         public string ConfirmPassword { get; set; }
         public int Category { get; set; }
     }
@@ -40,7 +40,7 @@ namespace Zing.Modules.Users.ViewModels
                 .MaximumLength(50)
                 .MinimumLength(7);
 
-            Configure(x => x.UserPassword)
+            Configure(x => x.Password)
                 .DisplayName("密码")
                 .AsPassword()
                 .MaximumLength(50)
@@ -49,7 +49,7 @@ namespace Zing.Modules.Users.ViewModels
             Configure(x => x.ConfirmPassword)
                 .DisplayName("确认密码")
                 .AsPassword()
-                .Compare("UserPassword");
+                .Compare("Password");
 
             Configure(x => x.Category).AsDropDownList("aaaa").Required();
         }

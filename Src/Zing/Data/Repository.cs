@@ -123,6 +123,8 @@ namespace Zing.Data
             Logger.Debug("Update {0}", entity);
             Session.Evict(entity);
             Session.Merge(entity);
+            Session.Flush();
+            //Session.Update(entity);
         }
 
         public virtual void Delete(T entity)

@@ -45,7 +45,7 @@ namespace Zing.Web.Controllers
         public ActionResult Index(UserViewModel userInfo)
         {
             IMembershipService membershipService = DependencyResolver.Current.GetService<IMembershipService>();
-            CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.UserPassword, userInfo.Email);
+            CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.Password, userInfo.Email);
             membershipService.CreateUser(userParas);
 
             ViewData["aaaa"] = new List<SelectListItem>()
@@ -72,8 +72,16 @@ namespace Zing.Web.Controllers
         [HttpPost]
         public ActionResult Edit(UserViewModel userInfo)
         {
-            //_membershipServiceInModule.Update(userInfo);
-            return View();
+            UserEntity model = new UserEntity();
+            UpdateModel(model);
+            _membershipServiceInModule.Update(model);
+            ViewData["aaaa"] = new List<SelectListItem>()
+            {
+                new SelectListItem(){ Text="ddd",Value="2" },
+                new SelectListItem(){ Text="cc",Value="1" }
+            };
+
+            return View(userInfo);
         }
     }
 }
