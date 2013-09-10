@@ -9,6 +9,7 @@ using Zing.Logging;
 using Zing.Modules.Users.Services;
 using Zing.Modules.Users.Models;
 using Zing.Mvc;
+using Zing.UI.Navigation;
 
 namespace Zing.Web.Controllers
 {
@@ -38,21 +39,28 @@ namespace Zing.Web.Controllers
                 new SelectListItem(){ Text="cc",Value="1" }
             };
 
+            IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
+            Pager pager = new Pager(1, 10);
+            membershipService.Fetch(null, null, pager.GetStartIndex(), 10);
+
             return View();
         }
 
         [HttpPost]
         public ActionResult Index(UserViewModel userInfo)
         {
-            IMembershipService membershipService = DependencyResolver.Current.GetService<IMembershipService>();
-            CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.Password, userInfo.Email);
-            membershipService.CreateUser(userParas);
+            IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
+            //CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.Password, userInfo.Email);
+            //membershipService.CreateUser(userParas);
 
-            ViewData["aaaa"] = new List<SelectListItem>()
-            {
-                new SelectListItem(){ Text="ddd",Value="2" },
-                new SelectListItem(){ Text="cc",Value="1" }
-            };
+            //ViewData["aaaa"] = new List<SelectListItem>()
+            //{
+            //    new SelectListItem(){ Text="ddd",Value="2" },
+            //    new SelectListItem(){ Text="cc",Value="1" }
+            //};
+
+          
+
             return View(userInfo);
         }
 

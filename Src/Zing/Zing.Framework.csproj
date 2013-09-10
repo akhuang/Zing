@@ -295,6 +295,8 @@
     <Compile Include="Security\IUser.cs" />
     <Compile Include="Security\IUserService.cs" />
     <Compile Include="Security\MembershipSettings.cs" />
+    <Compile Include="UI\Navigation\Pager.cs" />
+    <Compile Include="UI\Navigation\PagerParameters.cs" />
     <Compile Include="Utility\Extensions\ReadOnlyCollectionExtensions.cs" />
     <Compile Include="Validation\JetBrains.Annotations.cs" />
     <Compile Include="Validation\PathValidation.cs" />
