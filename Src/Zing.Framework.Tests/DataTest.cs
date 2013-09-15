@@ -79,7 +79,7 @@ namespace Zing.Framework.Tests
 
             var count = membershipService.Count(x => x.NormalizedUserName == "322324232");
 
-            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "322324232", x => x.Asc(d => d.NormalizedUserName), 0, 5);
+            IEnumerable<UserEntity> list = membershipService.Fetch(x => x.NormalizedUserName == "322324232", x => x.Asc(d => d.NormalizedUserName, d => d.Email), 0, 5);
 
             Assert.IsNotNull(list);
             Assert.AreNotEqual(count, list.Count());

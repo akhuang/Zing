@@ -153,13 +153,20 @@ namespace Zing.Data
 
         public virtual IQueryable<T> Fetch(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null)
+            {
+                return Table;
+            }
             return Table.Where(predicate);
         }
 
         public virtual IQueryable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order)
         {
             var orderable = new Orderable<T>(Fetch(predicate));
-            order(orderable);
+            if (order != null)
+            {
+                order(orderable);
+            }
             return orderable.Queryable;
         }
 

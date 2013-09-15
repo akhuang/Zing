@@ -59,7 +59,7 @@ namespace Zing.Web.Controllers
             //    new SelectListItem(){ Text="cc",Value="1" }
             //};
 
-          
+
 
             return View(userInfo);
         }
