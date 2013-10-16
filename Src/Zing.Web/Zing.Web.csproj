@@ -157,6 +157,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="Controllers\Default1Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PagerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -246,6 +247,7 @@
     <Content Include="Views\Shared\EditorTemplates\DropDownList.cshtml" />
     <Content Include="Views\Home\Edit.cshtml" />
     <Content Include="Views\Home\Pager.cshtml" />
+    <Content Include="Views\Pager\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

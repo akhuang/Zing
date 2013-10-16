@@ -297,6 +297,14 @@
     <Compile Include="Security\MembershipSettings.cs" />
     <Compile Include="UI\Navigation\Pager.cs" />
     <Compile Include="UI\Navigation\PagerParameters.cs" />
+    <Compile Include="UI\Pager\IPagedList.cs" />
+    <Compile Include="UI\Pager\PagedList.cs" />
+    <Compile Include="UI\Pager\Pager.cs" />
+    <Compile Include="UI\Pager\PagerOptions.cs" />
+    <Compile Include="UI\Pager\PagerOptionsBuilder.cs" />
+    <Compile Include="UI\Pager\PaginationModel.cs" />
+    <Compile Include="UI\Pager\PagingExtensions.cs" />
+    <Compile Include="UI\Pager\RouteValueDictionaryExtensions.cs" />
     <Compile Include="Utility\Extensions\ReadOnlyCollectionExtensions.cs" />
     <Compile Include="Validation\JetBrains.Annotations.cs" />
     <Compile Include="Validation\PathValidation.cs" />
