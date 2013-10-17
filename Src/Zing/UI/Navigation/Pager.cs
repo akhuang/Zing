@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Zing.UI.Navigation
 {
-    public class Pager
+    public class Pagination
     {
         /// <summary>
         /// the default page number.
@@ -17,13 +17,13 @@ namespace Zing.UI.Navigation
         /// </summary>
         public const int PageSizeDefault = 10;
 
-        public Pager(PagerParameters parameters)
+        public Pagination(PagerParameters parameters)
             : this(parameters.Page, parameters.PageSize)
         {
 
         }
 
-        public Pager(int? page, int? pageSize)
+        public Pagination(int? page, int? pageSize = null)
         {
             Page = (int)(page != null ? (page > 0 ? page : PageDefault) : PageDefault);
             PageSize = pageSize ?? PageSizeDefault;

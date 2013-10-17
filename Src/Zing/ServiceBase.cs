@@ -6,6 +6,7 @@ using System.Text;
 using Zing.Data;
 using Zing.Logging;
 using Zing.Utility.Extensions;
+using Zing.UI.Navigation;
 
 namespace Zing
 {
@@ -80,5 +81,15 @@ namespace Zing
         {
             return _rep.Fetch(predicate, order, skip, count).ToReadOnlyCollection();
         }
+
+        #region IService<T> Members
+
+
+        public IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, Pagination pagination)
+        {
+            return _rep.Fetch(predicate, order, pagination.GetStartIndex(), pagination.PageSize).ToReadOnlyCollection();
+        }
+
+        #endregion
     }
 }

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Zing.Modules.Users.Models;
 using Zing.UI;
 using Zing.Modules.Users.Services;
+using Zing.UI.Navigation;
 
 namespace Zing.Web.Controllers
 {
@@ -25,8 +26,8 @@ namespace Zing.Web.Controllers
             int currentPageIndex = page.HasValue ? page.Value - 1 : 0;
 
             IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
-            //Pager pager = new Pager(1, 10);
-            var allUsers = membershipService.Fetch(null, null, currentPageIndex, 5);
+            Pagination pagination = new Pagination(currentPageIndex);
+            var allUsers = membershipService.Fetch(null, null, pagination);
 
             return View(allUsers.ToPagedList(currentPageIndex, 5, 10));
         }

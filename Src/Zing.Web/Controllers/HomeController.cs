@@ -40,8 +40,8 @@ namespace Zing.Web.Controllers
             };
 
             IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
-            Pager pager = new Pager(1, 10);
-            membershipService.Fetch(null, null, pager.GetStartIndex(), 10);
+            ////Pager pager = new Pager(1, 10);
+            //membershipService.Fetch(null, null, pager.GetStartIndex(), 10);
 
             return View();
         }

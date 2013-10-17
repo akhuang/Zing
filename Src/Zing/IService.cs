@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Zing.Data;
+using Zing.UI.Navigation;
 
 namespace Zing
 {
@@ -24,5 +25,6 @@ namespace Zing
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip, int count);
+        IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, Pagination pagination);
     }
 }
