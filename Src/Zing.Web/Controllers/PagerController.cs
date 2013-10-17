@@ -7,6 +7,8 @@ using Zing.Modules.Users.Models;
 using Zing.UI;
 using Zing.Modules.Users.Services;
 using Zing.UI.Navigation;
+using System.Linq.Expressions;
+using Zing.Data;
 
 namespace Zing.Web.Controllers
 {
@@ -27,7 +29,11 @@ namespace Zing.Web.Controllers
 
             IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
             Pagination pagination = new Pagination(currentPageIndex);
-            var allUsers = membershipService.Fetch(null, null, pagination);
+
+            Expression<Func<UserEntity, bool>> pre = PredicateExtensions.True<UserEntity>();
+
+
+            var allUsers = membershipService.Fetch((x => ((x.NormalizedUserName == "" && x.Id == 1) || x.Password == "")), (x => x.Asc(d => d.Password, d => d.Password)), pagination);
 
             return View(allUsers.ToPagedList(currentPageIndex, 5, 10));
         }

@@ -158,6 +158,7 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\ISessionLocator.cs" />
     <Compile Include="Data\Orderable.cs" />
+    <Compile Include="Data\PredicateExtensions.cs" />
     <Compile Include="Data\Repository.cs" />
     <Compile Include="Data\RepositoryBase.cs" />
     <Compile Include="Mvc\ActionFilter\AutoMapAttribute.cs" />
