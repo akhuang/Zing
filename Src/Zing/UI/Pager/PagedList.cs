@@ -40,6 +40,11 @@ namespace Zing.UI
             if (TotalItemCount <= 0)
                 return;
 
+            //if (totalCount.HasValue)
+            //{
+            //    AddRange(source.Take(pageSize);
+            //}
+
             var realTotalPages = (int)Math.Ceiling(realTotalCount / (double)PageSize);
 
             if (realTotalCount < TotalItemCount && realTotalPages <= PageIndex)
