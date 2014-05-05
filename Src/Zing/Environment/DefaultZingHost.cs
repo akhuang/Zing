@@ -77,7 +77,6 @@ namespace Zing.Environment
                     }
                     catch (Exception)
                     {
-
                         throw;
                     }
                 }

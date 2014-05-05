@@ -10,3 +10,6 @@ obj
  
 /Src/Zing.Web/App_Data/Logs
  
+# NuGet Packages Directory
+packages
+
