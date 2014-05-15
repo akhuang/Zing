@@ -31,8 +31,8 @@ namespace Zing.Web
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                "~/Content/bootstrap/bootstrap.css",
-                "~/Content/bootstrap/bootstrap-responsive.css",
+                "~/Content/bootstrap.css",
+                "~/Content/bootstrap-theme.css",
                 "~/Content/glyphicons.css",
                 "~/Content/site.css"
                 ));
