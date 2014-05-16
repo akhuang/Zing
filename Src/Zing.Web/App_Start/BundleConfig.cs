@@ -34,7 +34,12 @@ namespace Zing.Web
                 "~/Content/bootstrap.css",
                 "~/Content/bootstrap-theme.css",
                 "~/Content/glyphicons.css",
+                "~/Content/css/font-awesome.css",
                 "~/Content/site.css"
+                ));
+
+            bundles.Add(new StyleBundle("~/Content/fontawesome").Include(
+                "~/Content/fontawesome/font-awesome.css"
                 ));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
