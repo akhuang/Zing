@@ -308,6 +308,14 @@ ul.sidebar-menu li a .chevron-icon-sidebar
 	-moz-transition: All 0.3s ease;
 	-o-transition: All 0.3s ease;
 }
+ul.sidebar-menu li.active a .chevron-icon-sidebar
+{
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	transform: rotate(90deg);
+}
 ul.sidebar-menu li ul.submenu
 {
 	background: #2C3439;
