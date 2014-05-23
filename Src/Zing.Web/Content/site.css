@@ -447,6 +447,10 @@ ul.sidebar-menu {
     -o-transition: All 0.3s ease;
 }
 
+    .page-content.toggle {
+        margin-left: 0px;
+    }
+
 input.input-validation-error {
     border: 1px solid #f00;
 }
