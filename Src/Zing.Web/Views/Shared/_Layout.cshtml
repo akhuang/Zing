@@ -387,7 +387,7 @@
         <!-- END TOP NAV -->
         <div class="sidebar-left sidebar-nicescroller" tabindex="5000" style="overflow: hidden; outline: none;">
             <ul class="sidebar-menu">
-                <li><a href="index.html"><i class="fa fa-dashboard icon-sidebar"></i>Dashboard</a></li>
+                <li><a href="/home/index"><i class="fa fa-dashboard icon-sidebar"></i>Dashboard</a></li>
                 <li><a href="#fakelink"><i class="fa fa-desktop icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>Layout template <span class="badge badge-warning span-sidebar">3</span> </a>
                     <ul class="submenu">
                         <li><a href="#fakelink">Default layout<span class="label label-success span-sidebar">CURRENT</span></a></li>
@@ -448,11 +448,11 @@
 
         <div class="page-content">
             <div class="container-fluid">
-                <h1 class="page-heading">DASHBOARD <small>Sub heading here</small></h1>
+                @RenderBody()
             </div>
         </div>
     </div>
-    @RenderBody()
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryval")
