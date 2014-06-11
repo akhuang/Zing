@@ -185,7 +185,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PagerController.cs" />
     <Compile Include="App_Start\GlimpseSecurityPolicy.cs" />
-    <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -286,6 +285,7 @@
     <Content Include="Views\Home\Edit.cshtml" />
     <Content Include="Views\Home\Pager.cshtml" />
     <Content Include="Views\Pager\Index.cshtml" />
+    <Content Include="Views\Home\Grid.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -303,6 +303,10 @@
     <ProjectReference Include="..\Zing.Module\Zing.Modules.csproj">
       <Project>{01c2efec-a52c-486f-9ae2-f1f2bf64ecc3}</Project>
       <Name>Zing.Modules</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Zing.Mvc\Zing.Mvc.csproj">
+      <Project>{a54062c0-0d41-4357-81b5-e972d6e4f029}</Project>
+      <Name>Zing.Mvc</Name>
     </ProjectReference>
     <ProjectReference Include="..\Zing.WarmupStarter\Zing.WarmupStarter.csproj">
       <Project>{1BA83997-B709-4442-81CE-055AD26FF4A7}</Project>
