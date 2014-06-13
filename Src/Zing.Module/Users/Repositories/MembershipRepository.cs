@@ -21,18 +21,7 @@ namespace Zing.Modules.Users.Repositories
         }
 
         public IUser Add(IUser model)
-        {
-            //ISessionFactory factory = SessionFactoryHolder.CreateSessionFactory();
-            //using (ISession session = factory.OpenSession())
-            //{
-            //    using (var transaction = session.BeginTransaction())
-            //    {
-            //        session.SaveOrUpdate(model);
-
-            //        transaction.Commit();
-            //    }
-            //}
-
+        { 
             _rep.Create(model as UserEntity);
 
             return model;
