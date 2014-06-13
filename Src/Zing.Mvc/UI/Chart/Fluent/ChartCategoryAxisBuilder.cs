@@ -52,23 +52,20 @@ namespace Kendo.Mvc.UI.Fluent
                 throw new InvalidOperationException(Exceptions.MemberExpressionRequired);
             }
 
-            var value = expression.Compile();
+            Axis.Member = expression.MemberWithoutInstance();
 
-            if (Container.Data != null)
-            {
-                var dataList = new ArrayList();
+            return this;
+        }
 
-                foreach (var dataPoint in Container.Data)
-                {
-                    dataList.Add(dataPoint != null ? value(dataPoint).ToString() : string.Empty);
-                }
-
-                Axis.Categories = dataList;
-            }
-            else
-            {
-                Axis.Member = expression.MemberWithoutInstance();
-            }
+        /// <summary>
+        /// Overrides the category axis type.
+        /// </summary>
+        /// <param name="type">
+        /// The axis type. The default is determined by the category items type.
+        /// </param>
+        public ChartCategoryAxisBuilder<TModel> Type(ChartCategoryAxisType type)
+        {
+            Axis.Type = type;
 
             return this;
         }
@@ -230,6 +227,38 @@ namespace Kendo.Mvc.UI.Fluent
         public ChartCategoryAxisBuilder<TModel> Select(Action<ChartAxisSelectionBuilder> configurator)
         {
             configurator(new ChartAxisSelectionBuilder(Axis.Select));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Defines the items.
+        /// </summary>
+        /// <param name="Items">The items of the notes.</param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///           .Name("Chart")
+        ///           .ValueAxis(a => a.Numeric()
+        ///               .Note(note => note
+        ///                    .Data(data =>
+        ///                    {
+        ///                        data.Add().Value(1);
+        ///                        data.Add().Value(2);
+        ///                    })
+        ///               )
+        ///            )
+        ///           .Render();
+        /// %&gt;
+        /// </code>
+        /// </example> 
+        /// </code>
+        /// </example>
+        public ChartCategoryAxisBuilder<TModel> Notes(Action<ChartAxisNotesBuilder> configurator)
+        {
+            var factory = new ChartAxisNotesBuilder(Axis.Notes);
+
+            configurator(factory);
 
             return this;
         }

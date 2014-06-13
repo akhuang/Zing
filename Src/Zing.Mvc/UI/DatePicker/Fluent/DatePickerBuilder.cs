@@ -19,13 +19,32 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Specifies a template used to populate aria-label attribute.
+        /// </summary>
+        /// <param name="template">The string template.</param>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().DatePicker()
+        ///             .Name("DatePicker")
+        ///             .ARIATemplate("Date: #=kendo.toString(data.current, 'd')#")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public DatePickerBuilder ARIATemplate(string template)
+        {
+            Component.ARIATemplate = template;
+
+            return this;
+        }
+
+        /// <summary>
         /// Specifies a list of dates, which will be passed to the month template.
         /// </summary>
         /// <param name="dates">The dates.</param>
         /// <example>
         /// <code lang="CS">
-        ///  &lt;%= Html.Kendo().TimePicker()
-        ///             .Name("TimePicker")
+        ///  &lt;%= Html.Kendo().DatePicker()
+        ///             .Name("DatePicker")
         ///             .BindTo(new List<DateTime>
         ///             {
         ///                 DateTime.Now
@@ -35,7 +54,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public DatePickerBuilder BindTo(List<DateTime> dates)
         {
-
             Component.Dates = dates;
 
             return this;
@@ -73,6 +91,24 @@ namespace Kendo.Mvc.UI.Fluent
         public DatePickerBuilder Footer(string footer)
         {
             Component.Footer = footer;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Enables/disables footer of the calendar popup.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().DatePicker()
+        ///             .Name("DatePicker")
+        ///             .Footer(false)
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public DatePickerBuilder Footer(bool footer)
+        {
+            Component.EnableFooter = footer;
 
             return this;
         }

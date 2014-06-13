@@ -10,6 +10,10 @@ namespace Kendo.Mvc.UI
     using Kendo.Mvc.Extensions;
     using Kendo.Mvc.Infrastructure;
     using Kendo.Mvc.Resources;
+    using System.Web.Util;
+    using System.Web;
+    using System.Text.RegularExpressions;
+    using System.Collections.Specialized;
 
     public abstract class WidgetBase : IWidget, IScriptableComponent
     {
@@ -217,18 +221,41 @@ namespace Kendo.Mvc.UI
         private void AppendScriptToContext(string script)
         {
             var items = ViewContext.HttpContext.Items;
-            var current = "";
+
+            var scripts = new OrderedDictionary();
+
             if (items.Contains(DeferredScriptsKey))
             {
-                current = (string)items[DeferredScriptsKey];
+                scripts = (OrderedDictionary)items[DeferredScriptsKey];
             }
-            items[DeferredScriptsKey] = current + script;
+            else
+            {
+                items[DeferredScriptsKey] = scripts;
+            }
+
+            scripts[Name] = script;
         }
 
         public MvcHtmlString ToClientTemplate()
         {
             IsInClientTemplate = true;
-            return MvcHtmlString.Create(ToHtmlString().Replace("</script>", "<\\/script>"));
+
+            var html = ToHtmlString().Replace("</script>", "<\\/script>");
+
+            if (HttpEncoder.Current != null && HttpEncoder.Current.GetType().ToString().Contains("AntiXssEncoder"))
+            {
+                html = Regex.Replace(html, "\\u0026", "&", RegexOptions.IgnoreCase);
+                html = Regex.Replace(html, "%23", "#", RegexOptions.IgnoreCase);
+                html = Regex.Replace(html, "%3D", "=", RegexOptions.IgnoreCase);
+                html = Regex.Replace(html, "&#32;", " ", RegexOptions.IgnoreCase);               
+                html = Regex.Replace(html, @"\\u0026#32;", " ", RegexOptions.IgnoreCase);   
+            }
+
+            //must decode unicode symbols otherwise they will be rendered as HTML entities
+            //which will break the client template
+            html = HttpUtility.HtmlDecode(html);
+
+            return MvcHtmlString.Create(html);
         }
     }
 }

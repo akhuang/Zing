@@ -158,11 +158,28 @@ namespace Kendo.Mvc.UI.Fluent
             return ComboBox("fontSize", items);
         }
 
+        public EditorToolFactory Formatting()
+        {
+            return SelectBox("formatting", null);
+        }
+
+        public EditorToolFactory Formatting(Action<EditorDropDownItemBuilder> configurator)
+        {
+            var items = new List<DropDownListItem>();
+            var builder = new EditorDropDownItemBuilder(items);
+
+            configurator(builder);
+
+            return SelectBox("formatting", items);
+        }
+
+        [Obsolete("The FormatBlock tool is deprecated, please use the Formatting tool instead. For more information, visit http://docs.kendoui.com/getting-started/changes-and-backward-compatibility")]
         public EditorToolFactory FormatBlock()
         {
             return SelectBox("formatBlock", null);
         }
 
+        [Obsolete("The FormatBlock tool is deprecated, please use the Formatting tool instead. For more information, visit http://docs.kendoui.com/getting-started/changes-and-backward-compatibility")]
         public EditorToolFactory FormatBlock(Action<EditorDropDownItemBuilder> configurator)
         {
             var items = new List<DropDownListItem>();
@@ -183,7 +200,8 @@ namespace Kendo.Mvc.UI.Fluent
 
             return SelectBox("insertHtml", items);
         }
-       
+
+        [Obsolete("The Styles tool is deprecated, please use the Formatting tool instead. For more information, visit http://docs.kendoui.com/getting-started/changes-and-backward-compatibility")]
         public EditorToolFactory Styles(Action<EditorDropDownItemBuilder> configurator)
         {
             var items = new List<DropDownListItem>();
@@ -200,9 +218,32 @@ namespace Kendo.Mvc.UI.Fluent
             return ColorPicker("foreColor");
         }
 
+        public EditorToolFactory FontColor(Action<EditorColorPickerToolBuilder> configurator)
+        {
+            return ColorPicker("foreColor", configurator);
+        }
+
         public EditorToolFactory BackColor()
         {
             return ColorPicker("backColor");
+        }
+
+        public EditorToolFactory BackColor(Action<EditorColorPickerToolBuilder> configurator)
+        {
+            return ColorPicker("backColor", configurator);
+        }
+
+        public EditorToolFactory TableEditing()
+        {
+            Button("createTable");
+            Button("addColumnLeft");
+            Button("addColumnRight");
+            Button("addRowAbove");
+            Button("addRowBelow");
+            Button("deleteRow");
+            Button("deleteColumn");
+
+            return this;
         }
 
         public EditorToolFactory Separator()
@@ -236,6 +277,17 @@ namespace Kendo.Mvc.UI.Fluent
         private EditorToolFactory ColorPicker(string identifier)
         {
             group.Tools.Add(new EditorTool(identifier));
+
+            return this;
+        }
+
+        private EditorToolFactory ColorPicker(string identifier, Action<EditorColorPickerToolBuilder> configurator)
+        {
+            var tool = new EditorColorPickerTool(identifier);
+
+            configurator(new EditorColorPickerToolBuilder(tool));
+
+            group.Tools.Add(tool);
 
             return this;
         }

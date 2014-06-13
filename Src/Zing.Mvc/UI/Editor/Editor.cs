@@ -24,16 +24,16 @@ namespace Kendo.Mvc.UI
             StyleSheets = new List<string>();
 
             new EditorToolFactory(DefaultToolGroup)
-                .Bold().Italic().Underline().Strikethrough()
-                .FontName()
-                .FontSize()
-                .FontColor().BackColor()
-                .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                .Formatting()
+                .Bold().Italic().Underline()
+                .JustifyLeft().JustifyCenter().JustifyRight()
                 .InsertUnorderedList().InsertOrderedList()
                 .Outdent().Indent()
-                .FormatBlock()
                 .CreateLink().Unlink()
-                .InsertImage();
+                .InsertImage()
+                .TableEditing();
+
+            TagName = "textarea";
 
             ImageBrowserSettings = new EditorImageBrowserSettings(Messages.ImageBrowserMessages);
         }
@@ -72,6 +72,12 @@ namespace Kendo.Mvc.UI
         {
             get;
             private set;
+        }
+
+        public string TagName
+        {
+            get;
+            set;
         }
 
         public string Value
@@ -114,6 +120,7 @@ namespace Kendo.Mvc.UI
                 var customButtonTool = tool as EditorCustomButtonTool;
                 var customTemplateTool = tool as EditorCustomTemplateTool;
                 var listTool = tool as EditorListTool;
+                var colorPickerTool = tool as EditorColorPickerTool;
 
                 if (customButtonTool != null)
                 {
@@ -129,13 +136,31 @@ namespace Kendo.Mvc.UI
                         { "template", customTemplateTool.Template }
                     };
                 }
-                else if (tool.Name != "insertHtml" && tool.Name != "style" && listTool != null && listTool.Items != null && listTool.Items.Count > 0)
+                else if (listTool != null && listTool.Items != null && listTool.Items.Count > 0)
                 {
                     var listToolItems = listTool.Items.Select(item => new { text = item.Text, value = item.Value });
 
                     return new Dictionary<string, object>() {
                         { "name", listTool.Name},
                         { "items", listToolItems }
+                    };
+                }
+                else if (colorPickerTool != null)
+                {
+                    object palette = "websafe";
+
+                    if (colorPickerTool.Palette == ColorPickerPalette.Basic)
+                    {
+                        palette = "basic";
+                    }
+                    else if (colorPickerTool.PaletteColors != null && colorPickerTool.PaletteColors.Any())
+                    {
+                        palette = colorPickerTool.PaletteColors;
+                    }
+
+                    return new Dictionary<string, object>() {
+                        { "name", colorPickerTool.Name},
+                        { "palette", palette }
                     };
                 }
                 else

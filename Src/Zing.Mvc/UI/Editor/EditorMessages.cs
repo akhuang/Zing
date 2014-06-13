@@ -32,6 +32,7 @@ namespace Kendo.Mvc.UI
             FontSize = Messages.Editor_FontSize;
             FontSizeInherit = Messages.Editor_FontSizeInherit;
             FormatBlock = Messages.Editor_FormatBlock;
+            Formatting = Messages.Editor_Formatting;
             Styles = Messages.Editor_Styles;
             ForeColor = Messages.Editor_ForeColor;
             BackColor = Messages.Editor_BackColor;
@@ -44,6 +45,13 @@ namespace Kendo.Mvc.UI
             DialogInsert = Messages.Editor_DialogInsert;
             DialogButtonSeparator = Messages.Editor_DialogButtonSeparator;
             DialogCancel = Messages.Editor_DialogCancel;
+            CreateTable = Messages.Editor_CreateTable;
+            AddColumnLeft = Messages.Editor_AddColumnLeft;
+            AddColumnRight = Messages.Editor_AddColumnRight;
+            AddRowAbove = Messages.Editor_AddRowAbove;
+            AddRowBelow = Messages.Editor_AddRowBelow;
+            DeleteRow = Messages.Editor_DeleteRow;
+            DeleteColumn = Messages.Editor_DeleteColumn;
 
             ImageBrowserMessages = new EditorImageBrowserMessages();
         }
@@ -71,6 +79,7 @@ namespace Kendo.Mvc.UI
         public string FontSize { get; set; }
         public string FontSizeInherit { get; set; }
         public string FormatBlock { get; set; }
+        public string Formatting { get; set; }
         public string Styles { get; set; }
         public string ForeColor { get; set; }
         public string BackColor { get; set; }
@@ -83,6 +92,13 @@ namespace Kendo.Mvc.UI
         public string DialogInsert { get; set; }
         public string DialogButtonSeparator { get; set; }
         public string DialogCancel { get; set; }
+        public string CreateTable { get; set; }
+        public string AddColumnLeft { get; set; }
+        public string AddColumnRight { get; set; }
+        public string AddRowAbove { get; set; }
+        public string AddRowBelow { get; set; }
+        public string DeleteRow { get; set; }
+        public string DeleteColumn { get; set; }
 
         public EditorImageBrowserMessages ImageBrowserMessages { get; set; }
 
@@ -109,11 +125,12 @@ namespace Kendo.Mvc.UI
         private const string DefaultFontSize = "Select font size";
         private const string DefaultFontSizeInherit = "(inherited size)";
         private const string DefaultFormatBlock = "Format";
+        private const string DefaultFormatting = "Format";
         private const string DefaultStyles = "Styles";
         private const string DefaultBackColor = "Background color";
         private const string DefaultForeColor = "Color";
         private const string DefaultImageWebAddress = "Web address";
-        private const string DefaultImageAltText = "Web address";
+        private const string DefaultImageAltText = "Alternate text";
         private const string DefaultLinkWebAddress = "Web address";
         private const string DefaultLinkText = "Text";
         private const string DefaultLinkToolTip = "ToolTip";
@@ -121,6 +138,13 @@ namespace Kendo.Mvc.UI
         private const string DefaultDialogInsert = "Insert";
         private const string DefaultDialogButtonSeparator = "or";
         private const string DefaultDialogCancel = "Cancel";
+        private const string DefaultCreateTable = "Create table";
+        private const string DefaultAddColumnLeft = "Add column on the left";
+        private const string DefaultAddColumnRight = "Add column on the right";
+        private const string DefaultAddRowAbove = "Add row above";
+        private const string DefaultAddRowBelow = "Add row below";
+        private const string DefaultDeleteRow = "Delete row";
+        private const string DefaultDeleteColumn = "Delete column";
 
         protected override void Serialize(IDictionary<string, object> json)
         {
@@ -244,6 +268,11 @@ namespace Kendo.Mvc.UI
                 json["formatBlock"] = FormatBlock;
             }
 
+            if (Formatting != DefaultFormatting)
+            {
+                json["formatting"] = Formatting;
+            }
+
             if (Styles != DefaultStyles)
             {
                 json["styles"] = Styles;
@@ -303,6 +332,41 @@ namespace Kendo.Mvc.UI
             {
                 json["dialogCancel"] = DialogCancel;
             }
+
+            if (CreateTable != DefaultCreateTable)
+            {
+                json["createTable"] = CreateTable;
+            }
+
+            if (AddColumnLeft != DefaultAddColumnLeft)
+            {
+                json["addColumnLeft"] = AddColumnLeft;
+            }
+
+            if (AddColumnRight != DefaultAddColumnRight)
+            {
+                json["addColumnRight"] = AddColumnRight;
+            }
+
+            if (AddRowAbove != DefaultAddRowAbove)
+            {
+                json["addRowAbove"] = AddRowAbove;
+            }
+
+            if (AddRowBelow != DefaultAddRowBelow)
+            {
+                json["addRowBelow"] = AddRowBelow;
+            }
+
+            if (DeleteColumn != DefaultDeleteColumn)
+            {
+                json["deleteColumn"] = DeleteColumn;
+            }
+            if (DeleteRow != DefaultDeleteRow)
+            {
+                json["deleteRow"] = DeleteRow;
+            }
+        
         }
     }
 }

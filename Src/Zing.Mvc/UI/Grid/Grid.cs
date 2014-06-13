@@ -31,6 +31,9 @@ namespace Kendo.Mvc.UI
         private IGridDataKeyStore dataKeyStore;
 
         private string clientRowTemplate;
+        private string clientAltRowTemplate;
+
+        private int defaultColumnResizeHandleWidth = 3;
 
         public Grid(ViewContext viewContext,
                     IJavaScriptInitializer initializer,
@@ -80,6 +83,8 @@ namespace Kendo.Mvc.UI
 
             AutoGenerateColumns = true;
 
+            ColumnResizeHandleWidth = defaultColumnResizeHandleWidth;
+
             DataSource = new DataSource()
             {
                 Type = DataSourceType.Server,
@@ -115,6 +120,12 @@ namespace Kendo.Mvc.UI
         {
             get;
             private set;
+        }
+
+        public int ColumnResizeHandleWidth
+        {
+            get;
+            set;
         }
 
         public GridReorderableSettings Reorderable
@@ -154,6 +165,12 @@ namespace Kendo.Mvc.UI
         {
             get;
             private set;
+        }
+
+        public MobileMode Mobile
+        {
+            get;
+            set;
         }
 
         //TODO: Implement command button types
@@ -484,6 +501,18 @@ namespace Kendo.Mvc.UI
             }
         }
 
+        public string ClientAltRowTemplate
+        {
+            get
+            {
+                return clientAltRowTemplate;
+            }
+            set
+            {
+                clientAltRowTemplate = HttpUtility.HtmlDecode(value);
+            }
+        }
+
         IEnumerable<IDataKey> IGrid.DataKeys
         {
             get
@@ -729,6 +758,11 @@ namespace Kendo.Mvc.UI
                 options["resizable"] = true;
             }
 
+            if (ColumnResizeHandleWidth != defaultColumnResizeHandleWidth)
+            {
+                options["columnResizeHandleWidth"] = ColumnResizeHandleWidth;
+            }
+
             if (Reorderable.Enabled)
             {
                 options["reorderable"] = true;
@@ -774,9 +808,26 @@ namespace Kendo.Mvc.UI
                 options["rowTemplate"] = ClientRowTemplate;
             }
 
+            if (!String.IsNullOrEmpty(ClientAltRowTemplate))
+            {
+                options["altRowTemplate"] = ClientAltRowTemplate;
+            }
+
             if (Navigatable.Enabled)
             {
                 options["navigatable"] = true;
+            }
+
+            if (Mobile != MobileMode.Disabled)
+            {
+                if (Mobile == MobileMode.Auto)
+                {
+                    options["mobile"] = true;
+                }
+                else
+                {
+                    options["mobile"] = Mobile.ToString().ToLowerInvariant();
+                }
             }
 
             writer.Write(Initializer.Initialize(Selector, "Grid", options));
@@ -945,6 +996,7 @@ namespace Kendo.Mvc.UI
                 .Content(renderingData.PopUpContainer.InnerHtml)                
                 //TODO: Add positioning of the window
                 //.HtmlAttributes(new { style = "top:10%;left:50%;margin-left: -" + (popup.Width == 0 ? 360 : popup.Width) / 4 + "px" })                
+                .HtmlAttributes(new { @class = UIPrimitives.Grid.PopupEditForm })
                 .Actions(buttons => buttons
                     .Close()
                 );
@@ -1282,7 +1334,7 @@ namespace Kendo.Mvc.UI
                         throw new NotSupportedException(Exceptions.InCellModeNotSupportedInServerBinding);
                     }
 
-                    if (ClientRowTemplate.HasValue() || RowTemplate.HasValue())
+                    if (ClientRowTemplate.HasValue() || ClientAltRowTemplate.HasValue() || RowTemplate.HasValue())
                     {
                         throw new NotSupportedException(Exceptions.InCellModeNotSupportedWithRowTemplate);
                     }
@@ -1338,10 +1390,16 @@ namespace Kendo.Mvc.UI
                 VisibleColumns.Each(column =>
                 {
                     var cellBuilder = cellBuilderFactory.CreateEditCellBuilder(column, htmlHelper);
-                    
                     var editor = cellBuilder.CreateCell(dataItem);
-
-                    column.EditorHtml = editor.InnerHtml;
+                    var editorHtml = editor.InnerHtml;
+                    if (IsInClientTemplate)
+                    {
+                        editorHtml = popupSlashes.Replace(editorHtml, match =>
+                        {
+                            return match.Groups[0].Value.Replace("\\", "\\\\");
+                        });
+                    }
+                    column.EditorHtml = editorHtml;
                 });
             }
 

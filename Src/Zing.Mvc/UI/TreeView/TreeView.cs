@@ -7,7 +7,6 @@ namespace Kendo.Mvc.UI
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.UI;
-    using Fluent;
     using Extensions;
     using Infrastructure;
     using Kendo.Mvc.Resources;
@@ -35,7 +34,9 @@ namespace Kendo.Mvc.UI
 
             Checkboxes = new TreeViewCheckboxesSettings();
 
-            DataSource = new DataSource();
+            DataSource = new HierarchicalDataSource();
+
+            AutoBind = true;
         }
 
         public string DataTextField
@@ -62,7 +63,7 @@ namespace Kendo.Mvc.UI
             set;
         }
 
-        public DataSource DataSource
+        public HierarchicalDataSource DataSource
         {
             get;
             private set;
@@ -207,9 +208,9 @@ namespace Kendo.Mvc.UI
                 options["dragAndDrop"] = true;
             }
 
-            if (AutoBind)
+            if (!AutoBind)
             {
-                options["autoBind"] = true;
+                options["autoBind"] = false;
             }
 
             if (!LoadOnDemand)
@@ -273,7 +274,8 @@ namespace Kendo.Mvc.UI
   
         private IEnumerable SerializeItems(IList<TreeViewItem> items)
         {
-            return from item in items select item.Serialize();
+            var urlHelper = new UrlHelper(this.ViewContext.RequestContext);
+            return from item in items select item.Serialize(urlHelper);
         }
 
         protected override void WriteHtml(HtmlTextWriter writer)

@@ -73,6 +73,7 @@ namespace Kendo.Mvc.UI.Fluent
         /// %&gt;
         /// </code>
         /// </example>
+        [Obsolete("GroupNameTemplate is obsolete. Please specify the template as Name.")]
         public TSeriesBuilder GroupNameTemplate(string groupNameTemplate)
         {
             Series.GroupNameTemplate = groupNameTemplate;
@@ -118,6 +119,38 @@ namespace Kendo.Mvc.UI.Fluent
         public TSeriesBuilder Color(string color)
         {
             Series.Color = color;
+
+            return this as TSeriesBuilder;
+        }
+
+        /// <summary>
+        /// Sets the function used to retrieve point color.
+        /// </summary>
+        /// <param name="colorFunction">
+        ///     The JavaScript function that will be executed
+        ///     to retrieve the color of each point.
+        /// </param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///            .Name("Chart")
+        ///            .Series(series => series
+        ///                .Bar(s => s.Sales)
+        ///                .Color(
+        ///                    @&lt;text&gt;
+        ///                    function(point) {
+        ///                        return point.value > 5 ? "red" : "green";
+        ///                    }
+        ///                    &lt;/text&gt;
+        ///                )
+        ///             )
+        ///            .Render();
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public TSeriesBuilder Color(Func<object, object> colorFunction)
+        {
+            Series.ColorHandler = new ClientHandlerDescriptor { TemplateDelegate = colorFunction };
 
             return this as TSeriesBuilder;
         }
@@ -227,6 +260,16 @@ namespace Kendo.Mvc.UI.Fluent
         public TSeriesBuilder Visible(bool visible)
         {
             Series.Visible = visible;
+            return this as TSeriesBuilder;
+        }
+
+        /// <summary>
+        /// Configures the series notes
+        /// </summary>
+        /// <param name="configurator">The configuration action.</param>
+        public TSeriesBuilder Notes(Action<ChartNoteBuilder> configurator)
+        {
+            configurator(new ChartNoteBuilder(Series.Notes));
             return this as TSeriesBuilder;
         }
     }

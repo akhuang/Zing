@@ -42,6 +42,8 @@ namespace Kendo.Mvc.UI
 
             DefaultDataItem = CreateDefaultItem;
             Confirmation = Messages.Grid_Confirmation;
+            ConfirmDelete = Messages.Grid_ConfirmDelete;
+            CancelDelete = Messages.Grid_CancelDelete;
             CreateAt = GridInsertRowPosition.Top;
         }
 
@@ -59,6 +61,18 @@ namespace Kendo.Mvc.UI
         }
 
         public string Confirmation
+        {
+            get;
+            set;
+        }
+
+        public string ConfirmDelete
+        {
+            get;
+            set;
+        }
+
+        public string CancelDelete
         {
             get;
             set;
@@ -172,6 +186,23 @@ namespace Kendo.Mvc.UI
                 .Add("width", PopUp.Width, 0)
                 .Add("height", PopUp.Height, 0);
 
+            if (PopUp.PositionSettings.Left != int.MinValue || PopUp.PositionSettings.Top != int.MinValue)
+            {
+                var topLeft = new Dictionary<string, int>();
+
+                if (PopUp.PositionSettings.Top != int.MinValue)
+                {
+                    topLeft.Add("top", PopUp.PositionSettings.Top);
+                }
+
+                if (PopUp.PositionSettings.Left != int.MinValue)
+                {
+                    topLeft.Add("left", PopUp.PositionSettings.Left);
+                }
+
+                result.Add("position", topLeft);
+            }
+
             return result;
         }
 
@@ -195,6 +226,8 @@ namespace Kendo.Mvc.UI
 
             FluentDictionary.For(json)
                 .Add("confirmation", Confirmation, () => DisplayDeleteConfirmation)
+                .Add("confirmDelete", ConfirmDelete)
+                .Add("cancelDelete", CancelDelete)
                 .Add("mode", Mode.ToString().ToLowerInvariant())
                 .Add("template", editorHtml, () => Mode != GridEditMode.InLine)
                 //TODO: Implement GridBeginEditEvent option                

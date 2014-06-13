@@ -183,6 +183,11 @@ namespace Kendo.Mvc.UI
             public const string Minimize = "k-i-minimize";
 
             /// <summary>
+            /// "Pin" icon
+            /// </summary>
+            public const string Pin = "k-i-pin";
+
+            /// <summary>
             /// "Close" icon
             /// </summary>
             public const string Close = "k-i-close";
@@ -248,6 +253,10 @@ namespace Kendo.Mvc.UI
 
             public const string InFormContainer = "k-edit-form-container";
 
+            public const string EditButtonsContainer = "k-edit-buttons";
+
+            public const string PopupEditForm = "k-popup-edit-form";
+
             /// <summary>
             /// Container element for editing / inserting form
             /// </summary>
@@ -257,6 +266,11 @@ namespace Kendo.Mvc.UI
             /// Toolbar which contains different commands
             /// </summary>
             public const string ToolBar = "k-grid-toolbar";
+
+            /// <summary>
+            /// Pager navigation icon
+            /// </summary>
+            public const string PagerNavigation = "k-pager-nav";
         }
 
         /// <summary>

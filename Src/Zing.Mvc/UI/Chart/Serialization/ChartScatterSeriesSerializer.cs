@@ -2,8 +2,9 @@ namespace Kendo.Mvc.UI
 {
     using System.Collections.Generic;
     using Kendo.Mvc.Infrastructure;
+    using Kendo.Mvc.Extensions;
 
-    internal class ChartScatterSeriesSerializer : ChartSeriesSerializerBase
+    internal class ChartScatterSeriesSerializer : ChartScatterSeriesSerializerBase
     {
         private readonly IChartScatterSeries series;
 
@@ -17,25 +18,22 @@ namespace Kendo.Mvc.UI
         {
             var result = base.Serialize();
 
-            FluentDictionary.For(result)
-                .Add("type", "scatter")
-                .Add("xField", series.XMember, () => { return series.Data == null && series.XMember != null; })
-                .Add("yField", series.YMember, () => { return series.Data == null && series.YMember != null; })
-                .Add("data", series.Data, () => { return series.Data != null; })
-                .Add("xAxis", series.XAxis, () => !string.IsNullOrEmpty(series.XAxis))
-                .Add("yAxis", series.YAxis, () => !string.IsNullOrEmpty(series.YAxis))
-                .Add("color", series.Color, string.Empty);
-
-            var labelsData = series.Labels.CreateSerializer().Serialize();
-            if (labelsData.Count > 0)
+            var errorBars = series.ErrorBars.CreateSerializer().Serialize();
+            if (errorBars.Count > 0)
             {
-                result.Add("labels", labelsData);
+                result.Add("errorBars", errorBars);
             }
 
-            var markers = series.Markers.CreateSerializer().Serialize();
-            if (markers.Count > 0)
+            if (series.ErrorBars.XLowMember.HasValue() && series.ErrorBars.XHighMember.HasValue())
             {
-                result.Add("markers", markers);
+                result["xErrorLowField"] = series.ErrorBars.XLowMember;
+                result["xErrorHighField"] = series.ErrorBars.XHighMember;
+            }
+
+            if (series.ErrorBars.YLowMember.HasValue() && series.ErrorBars.YHighMember.HasValue())
+            {
+                result["yErrorLowField"] = series.ErrorBars.YLowMember;
+                result["yErrorHighField"] = series.ErrorBars.YHighMember;
             }
 
             return result;

@@ -58,6 +58,18 @@ namespace Kendo.Mvc.UI
                 result.Add("dataSource", dataSource.ToJson());
             }
 
+            var categoryAxis = navigator.CategoryAxis;
+            if (categoryAxis != null)
+            {
+                result.Add("categoryAxis", categoryAxis.CreateSerializer().Serialize());
+            }
+
+            var pane = navigator.Pane;
+            if (pane != null)
+            {
+                result.Add("pane", pane.CreateSerializer().Serialize());
+            }
+
             return result;
         }
     }

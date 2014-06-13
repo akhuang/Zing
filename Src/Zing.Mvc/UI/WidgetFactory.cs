@@ -12,6 +12,8 @@ namespace Kendo.Mvc.UI.Fluent
     using Kendo.Mvc.Infrastructure;
     using Kendo.Mvc.UI.Html;
     using System.Collections;
+    using System.Text;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Creates the fluent API builders of the Kendo UI widgets
@@ -185,7 +187,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Creates a new <see cref="UI.ListView{T}"/> bound to the specified data item type.
+        /// Creates a new <see cref="Kendo.Mvc.UI.ListView{T}"/> bound to the specified data item type.
         /// </summary>
         /// <example>
         /// <typeparam name="T">The type of the data item</typeparam>
@@ -202,7 +204,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Creates a new <see cref="ListView{T}"/> bound to the specified data source.
+        /// Creates a new <see cref="Kendo.Mvc.UI.ListView{T}"/> bound to the specified data source.
         /// </summary>
         /// <typeparam name="T">The type of the data item</typeparam>
         /// <param name="dataSource">The data source.</param>
@@ -223,7 +225,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Creates a new <see cref="ListView{T}"/> bound an item in ViewData.
+        /// Creates a new <see cref="Kendo.Mvc.UI.ListView{T}"/> bound an item in ViewData.
         /// </summary>
         /// <typeparam name="T">Type of the data item</typeparam>
         /// <param name="dataSourceViewDataKey">The data source view data key.</param>
@@ -237,6 +239,85 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual ListViewBuilder<T> ListView<T>(string dataSourceViewDataKey) where T : class
         {
             ListViewBuilder<T> builder = ListView<T>();
+
+            builder.Component.DataSource.Data = ViewContext.ViewData.Eval(dataSourceViewDataKey) as IEnumerable<T>;
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Kendo.Mvc.UI.MobileListView{T}"/> bound to the specified data item type.
+        /// </summary>
+        /// <example>
+        /// <typeparam name="T">The type of the data item</typeparam>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileListView&lt;Order&gt;()
+        ///             .Name("MobileListView")
+        ///             .BindTo(Model)
+        /// %&gt;
+        /// </code>
+        /// </example>        
+        public virtual MobileListViewBuilder<T> MobileListView<T>() where T : class
+        {
+            return new MobileListViewBuilder<T>(new MobileListView<T>(ViewContext, Initializer, UrlGenerator));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="MobileListView"/>.
+        /// </summary>
+        /// <example>        
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileListView()
+        ///             .Name("MobileListView")
+        ///             .Items(items => 
+        ///             {
+        ///                 items.Add().Text("Item");
+        ///                 items.AddLink().Text("Link Item");
+        ///             })
+        /// %&gt;
+        /// </code>
+        /// </example> 
+        public virtual MobileListViewBuilder<object> MobileListView()
+        {
+            return new MobileListViewBuilder<object>(new MobileListView<object>(ViewContext, Initializer, UrlGenerator));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Kendo.Mvc.UI.MobileListView{T}"/> bound to the specified data source.
+        /// </summary>
+        /// <typeparam name="T">The type of the data item</typeparam>
+        /// <param name="dataSource">The data source.</param>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileListView(Model)
+        ///             .Name("MobileListView")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileListViewBuilder<T> MobileListView<T>(IEnumerable<T> dataSource) where T : class
+        {
+            MobileListViewBuilder<T> builder = MobileListView<T>();
+
+            builder.Component.DataSource.Data = dataSource;
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Kendo.Mvc.UI.MobileListView{T}"/> bound an item in ViewData.
+        /// </summary>
+        /// <typeparam name="T">Type of the data item</typeparam>
+        /// <param name="dataSourceViewDataKey">The data source view data key.</param>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileListView&lt;Order&gt;("orders")
+        ///             .Name("MobileListView")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileListViewBuilder<T> MobileListView<T>(string dataSourceViewDataKey) where T : class
+        {
+            MobileListViewBuilder<T> builder = MobileListView<T>();
 
             builder.Component.DataSource.Data = ViewContext.ViewData.Eval(dataSourceViewDataKey) as IEnumerable<T>;
 
@@ -322,6 +403,21 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual TimePickerBuilder TimePicker()
         {
             return new TimePickerBuilder(new TimePicker(ViewContext, Initializer, ViewData));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Barcode"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Barcode()
+        ///             .For("Container")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual BarcodeBuilder Barcode()
+        {
+            return new BarcodeBuilder(new Barcode(ViewContext, Initializer));
         }
 
         /// <summary>
@@ -417,6 +513,54 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual PanelBarBuilder PanelBar()
         {
             return new PanelBarBuilder(new PanelBar(ViewContext, Initializer, UrlGenerator, DI.Current.Resolve<INavigationItemAuthorization>()));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RecurrenceEditor"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().RecurrenceEditor()
+        ///             .Name("recurrenceEditor")
+        ///             .FirstWeekDay(0)
+        ///             .Timezone("Etc/UTC")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual RecurrenceEditorBuilder RecurrenceEditor()
+        {
+            return new RecurrenceEditorBuilder(new RecurrenceEditor(ViewContext, Initializer, ViewData));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="TimezoneEditor"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().TimezoneEditor()
+        ///             .Name(&quot;timezoneEditor&quot;)
+        ///             .Value("Etc/UTC")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual TimezoneEditorBuilder TimezoneEditor()
+        {
+            return new TimezoneEditorBuilder(new TimezoneEditor(ViewContext, Initializer, ViewData));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Scheduler{T}"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Scheduler()
+        ///             .Name("Scheduler")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual SchedulerBuilder<T> Scheduler<T>() where T : class, ISchedulerEvent
+        {
+            return new SchedulerBuilder<T>(new Scheduler<T>(ViewContext, Initializer, UrlGenerator));
         }
 
         /// <summary>
@@ -696,6 +840,21 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Creates a new <see cref="ProgressBar"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().ProgressBar()
+        ///       .Name("progressBar")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual ProgressBarBuilder ProgressBar()
+        {
+            return new ProgressBarBuilder(new ProgressBar(ViewContext, Initializer));
+        }
+
+        /// <summary>
         /// Creates a <see cref="Upload"/>
         /// </summary>
         /// <example>
@@ -713,6 +872,21 @@ namespace Kendo.Mvc.UI.Fluent
         {
             return new UploadBuilder(
                 new Upload(ViewContext, Initializer, UrlGenerator));
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Button"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Button()
+        ///             .Name("Button1");
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual ButtonBuilder Button()
+        {
+            return new ButtonBuilder(new Button(ViewContext, Initializer));
         }
 
         /// <summary>
@@ -947,6 +1121,22 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Creates a <see cref="QRCode"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().QRCode()
+        ///             .Name("qrCode")
+        ///             .Value("Hello World")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual QRCodeBuilder QRCode()
+        {
+            return new QRCodeBuilder(new QRCode(ViewContext, Initializer));
+        }
+
+        /// <summary>
         /// Returns the initialization scripts for widgets set as deferred
         /// </summary>
         /// <param name="renderScriptTags">Determines if the script should be rendered within a script tag</param>
@@ -954,13 +1144,321 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual MvcHtmlString DeferredScripts(bool renderScriptTags = true)
         {
             var items = ViewContext.HttpContext.Items;
+
             if (items.Contains(WidgetBase.DeferredScriptsKey))
             {
-                var format = renderScriptTags ? "<script>{0}</script>" : "{0}";
-                return new MvcHtmlString(string.Format(format, items[WidgetBase.DeferredScriptsKey]));
+                var scripts = (OrderedDictionary)items[WidgetBase.DeferredScriptsKey];
+
+                return DeferredScripts(scripts.Values.Cast<string>(), renderScriptTags);
             }
+
             return MvcHtmlString.Empty;
         }
+
+        private MvcHtmlString DeferredScripts(IEnumerable<string> scripts, bool renderScriptTags)
+        {
+            var result = new StringBuilder();
+
+            if (renderScriptTags)
+            {
+                result.Append("<script>");
+            }
+
+            foreach (var script in scripts)
+            {
+                result.Append(script);
+            }
+
+            if (renderScriptTags)
+            {
+                result.Append("</script>");
+            }
+
+            return new MvcHtmlString(result.ToString());
+        }
+
+        /// <summary>
+        /// Returns the initialization scripts for the specified widget.
+        /// </summary>
+        /// <param name="name">The name of the widget.</param>
+        /// <param name="renderScriptTags">Determines if the script should be rendered within a script tag</param>
+        /// <returns></returns>
+        public virtual MvcHtmlString DeferredScriptsFor(string name, bool renderScriptTags = true)
+        {
+            var items = ViewContext.HttpContext.Items;
+
+            if (items.Contains(WidgetBase.DeferredScriptsKey))
+            {
+                var scripts = (OrderedDictionary)items[WidgetBase.DeferredScriptsKey];
+
+                if (scripts.Contains(name))
+                {
+                    return DeferredScripts(new [] { (string)scripts[name] }, renderScriptTags);
+                }
+            }
+
+            return MvcHtmlString.Empty;
+        }
+
+        //>> DataVizComponents 
+        /// <summary>
+        /// Creates a <see cref="Map"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Map()
+        ///             .Name("Map")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MapBuilder Map()
+        {
+            return new MapBuilder(new Map(ViewContext, Initializer, UrlGenerator));
+        }
+        //<< DataVizComponents
+
+        //>> MobileComponents 
+        /// <summary>
+        /// Creates a <see cref="MobileActionSheet"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileActionSheet()
+        ///             .Name("MobileActionSheet")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileActionSheetBuilder MobileActionSheet()
+        {
+            return new MobileActionSheetBuilder(new MobileActionSheet(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileApplication"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileApplication()
+        ///             .Name("MobileApplication")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileApplicationBuilder MobileApplication()
+        {
+            return new MobileApplicationBuilder(new MobileApplication(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileBackButton"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileBackButton()
+        ///             .Name("MobileBackButton")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileBackButtonBuilder MobileBackButton()
+        {
+            return new MobileBackButtonBuilder(new MobileBackButton(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileButton"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileButton()
+        ///             .Name("MobileButton")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileButtonBuilder MobileButton()
+        {
+            return new MobileButtonBuilder(new MobileButton(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileButtonGroup"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileButtonGroup()
+        ///             .Name("MobileButtonGroup")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileButtonGroupBuilder MobileButtonGroup()
+        {
+            return new MobileButtonGroupBuilder(new MobileButtonGroup(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileDetailButton"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileDetailButton()
+        ///             .Name("MobileDetailButton")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileDetailButtonBuilder MobileDetailButton()
+        {
+            return new MobileDetailButtonBuilder(new MobileDetailButton(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileDrawer"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileDrawer()
+        ///             .Name("MobileDrawer")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileDrawerBuilder MobileDrawer()
+        {
+            return new MobileDrawerBuilder(new MobileDrawer(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileLayout"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileLayout()
+        ///             .Name("MobileLayout")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileLayoutBuilder MobileLayout()
+        {
+            return new MobileLayoutBuilder(new MobileLayout(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileModalView"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileModalView()
+        ///             .Name("MobileModalView")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileModalViewBuilder MobileModalView()
+        {
+            return new MobileModalViewBuilder(new MobileModalView(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileNavBar"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileNavBar()
+        ///             .Name("MobileNavBar")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileNavBarBuilder MobileNavBar()
+        {
+            return new MobileNavBarBuilder(new MobileNavBar(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobilePopOver"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobilePopOver()
+        ///             .Name("MobilePopOver")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobilePopOverBuilder MobilePopOver()
+        {
+            return new MobilePopOverBuilder(new MobilePopOver(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileScrollView"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileScrollView()
+        ///             .Name("MobileScrollView")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileScrollViewBuilder MobileScrollView()
+        {
+            return new MobileScrollViewBuilder(new MobileScrollView(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileSplitView"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileSplitView()
+        ///             .Name("MobileSplitView")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileSplitViewBuilder MobileSplitView()
+        {
+            return new MobileSplitViewBuilder(new MobileSplitView(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileSwitch"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileSwitch()
+        ///             .Name("MobileSwitch")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileSwitchBuilder MobileSwitch()
+        {
+            return new MobileSwitchBuilder(new MobileSwitch(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileTabStrip"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileTabStrip()
+        ///             .Name("MobileTabStrip")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileTabStripBuilder MobileTabStrip()
+        {
+            return new MobileTabStripBuilder(new MobileTabStrip(ViewContext, Initializer, UrlGenerator));
+        }
+        
+        /// <summary>
+        /// Creates a <see cref="MobileView"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MobileView()
+        ///             .Name("MobileView")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MobileViewBuilder MobileView()
+        {
+            return new MobileViewBuilder(new MobileView(ViewContext, Initializer, UrlGenerator));
+        }
+        //<< MobileComponents
+
     }
 
     public class WidgetFactory<TModel> : WidgetFactory
@@ -1597,6 +2095,38 @@ namespace Kendo.Mvc.UI.Fluent
                     ));
         }
 
+        /// <summary>
+        /// Creates a new <see cref="RecurrenceEditor"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().RecurrenceEditorFor(m=>m.Property) %&gt;
+        /// </code>
+        /// </example>
+        public virtual RecurrenceEditorBuilder RecurrenceEditorFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            return RecurrenceEditor()
+                    .Name(GetName(expression))
+                    .ModelMetadata(ModelMetadata.FromLambdaExpression(expression, HtmlHelper.ViewData))
+                    .Value(GetValue(expression));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="TimezoneEditor"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().TimezoneEditorFor(m=>m.Property) %&gt;
+        /// </code>
+        /// </example>
+        public virtual TimezoneEditorBuilder TimezoneEditorFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
+        {
+            return TimezoneEditor()
+                    .Name(GetName(expression))
+                    .ModelMetadata(ModelMetadata.FromLambdaExpression(expression, HtmlHelper.ViewData))
+                    .Value(GetValue(expression));
+        }
+
         private string GetName(LambdaExpression expression)
         {
             return HtmlHelper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
@@ -1605,7 +2135,7 @@ namespace Kendo.Mvc.UI.Fluent
         private string GetValue<TValue>(Expression<Func<TModel, TValue>> expression) 
         {
             object model = ModelMetadata.FromLambdaExpression(expression, HtmlHelper.ViewData).Model;
-            return model != null && model.GetType().IsPredefinedType() ? Convert.ToString(model) : string.Empty;
+            return model != null && model.GetType().IsPredefinedType() ? Convert.ToString(model) : null;
         }
 
         private IEnumerable GetIEnumerableValues<TValue>(Expression<Func<TModel, TValue>> expression)
@@ -1632,6 +2162,6 @@ namespace Kendo.Mvc.UI.Fluent
                 }
             }
             return null;
-        }
+        }                
     }
 }

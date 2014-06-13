@@ -19,15 +19,28 @@ namespace Kendo.Mvc.UI
         public DatePicker(ViewContext viewContext, IJavaScriptInitializer initializer, ViewDataDictionary viewData)
             : base(viewContext, initializer, viewData)
         {
+            EnableFooter = true;
             Min = defaultMinDate;
             Max = defaultMaxDate;
             MonthTemplate = new MonthTemplate();
+        }
+
+        public string ARIATemplate
+        {
+            get;
+            set;
         }
 
         public MonthTemplate MonthTemplate
         {
             get;
             private set;
+        }
+
+        public bool EnableFooter
+        {
+            get;
+            set;
         }
 
         public string Footer
@@ -71,6 +84,11 @@ namespace Kendo.Mvc.UI
                 options["animation"] = animation["animation"];
             }
 
+            if (ARIATemplate.HasValue())
+            {
+                options["ARIATemplate"] = ARIATemplate;
+            }
+
             if (Culture.HasValue())
             {
                 options["culture"] = Culture;
@@ -86,13 +104,20 @@ namespace Kendo.Mvc.UI
             options["min"] = Min;
             options["max"] = Max;
 
-            if (FooterId.HasValue())
+            if (EnableFooter)
             {
-                options["footer"] = new ClientHandlerDescriptor { HandlerName = string.Format("$('{0}{1}').html()", idPrefix, FooterId) };
+                if (FooterId.HasValue())
+                {
+                    options["footer"] = new ClientHandlerDescriptor { HandlerName = string.Format("$('{0}{1}').html()", idPrefix, FooterId) };
+                }
+                else if (Footer.HasValue())
+                {
+                    options["footer"] = Footer;
+                }
             }
-            else if (Footer.HasValue())
+            else
             {
-                options["footer"] = Footer;
+                options["footer"] = EnableFooter;
             }
 
             if (Depth.HasValue())

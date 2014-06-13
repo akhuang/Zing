@@ -17,11 +17,12 @@ namespace Kendo.Mvc.UI
             MinorGridLines = new ChartLine();
             Line = new ChartLine();
             Labels = new ChartAxisLabels();
-            PlotBands = new List<ChartPlotBand<TValue>>();
             Title = new ChartAxisTitle();
             MajorTicks = new ChartAxisTicks();
             MinorTicks = new ChartAxisTicks();
             Crosshair = new ChartAxisCrosshair();
+            Notes = new ChartAxisNotes();
+            PlotBands = new List<ChartPlotBand>();
         }
 
         /// <summary>
@@ -100,7 +101,7 @@ namespace Kendo.Mvc.UI
         /// <summary>
         /// The axis plot bands.
         /// </summary>
-        public IList<ChartPlotBand<TValue>> PlotBands
+        public IList<ChartPlotBand> PlotBands
         {
             get;
             set;
@@ -143,6 +144,15 @@ namespace Kendo.Mvc.UI
         }
 
         /// <summary>
+        /// The axis background color
+        /// </summary>
+        public string Background
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// A value indicating if the axis labels should be rendered in reverse.
         /// </summary>
         public bool? Reverse
@@ -164,6 +174,25 @@ namespace Kendo.Mvc.UI
         /// Gets or sets the axis visibility.
         /// </summary>
         public bool? Visible
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The angle (degrees) where the 0 value is placed. It defaults to 0.
+        /// Angles increase counterclockwise and zero is to the right. Negative values are acceptable.
+        /// </summary>
+        public double? StartAngle
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The axis notes.
+        /// </summary>
+        public ChartAxisNotes Notes
         {
             get;
             set;

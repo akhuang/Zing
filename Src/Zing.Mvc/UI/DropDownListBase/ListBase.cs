@@ -58,6 +58,24 @@
             get;
             set;
         }
+
+        public string HeaderTemplate
+        {
+            get;
+            set;
+        }
+
+        public string HeaderTemplateId
+        {
+            get;
+            set;
+        }
+
+        public bool? ValuePrimitive
+        {
+            get;
+            set;
+        }
        
         public IUrlGenerator UrlGenerator
         {
@@ -103,6 +121,26 @@
             if (Height != null)
             {
                 options["height"] = Height;
+            }
+
+            var idPrefix = "#";
+            if (IsInClientTemplate)
+            {
+                idPrefix = "\\" + idPrefix;
+            }
+
+            if (!string.IsNullOrEmpty(HeaderTemplateId))
+            {
+                options["headerTemplate"] = new ClientHandlerDescriptor { HandlerName = string.Format("$('{0}{1}').html()", idPrefix, HeaderTemplateId) };
+            }
+            else if (!string.IsNullOrEmpty(HeaderTemplate))
+            {
+                options["headerTemplate"] = HeaderTemplate;
+            }
+
+            if (ValuePrimitive != null)
+            {
+                options["valuePrimitive"] = ValuePrimitive;
             }
 
             return options;

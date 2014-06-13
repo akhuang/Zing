@@ -15,7 +15,7 @@ namespace Kendo.Mvc.UI
 
     public class Window : WidgetBase, IContentContainer, IAsyncContentContainer
     {
-        private readonly IList<IWindowButton> defaultButtons = new List<IWindowButton> { new HeaderButton { Name = "Close", CssClass = "k-i-close" } };
+        private readonly IList<IWindowButton> defaultButtons = new List<IWindowButton> { new HeaderButton { Name = "Close", CssClass = UIPrimitives.Icons.Close } };
 
         private string loadContentFromUrl;
 
@@ -25,6 +25,7 @@ namespace Kendo.Mvc.UI
             Template = new HtmlTemplate();
 
             ResizingSettings = new WindowResizingSettings();
+            PositionSettings = new WindowPositionSettings();
 
             Actions = new WindowButtons();
             defaultButtons.Each(button => Actions.Container.Add(button));
@@ -36,6 +37,8 @@ namespace Kendo.Mvc.UI
             Scrollable = true;
 
             Visible = true;
+
+            AutoFocus = true;
         }
 
         public HtmlTemplate Template
@@ -80,6 +83,12 @@ namespace Kendo.Mvc.UI
             set;
         }
 
+        public WindowPositionSettings PositionSettings
+        {
+            get;
+            private set;
+        }
+
         public bool Visible
         {
             get;
@@ -105,6 +114,18 @@ namespace Kendo.Mvc.UI
         }
 
         public bool Draggable
+        {
+            get;
+            set;
+        }
+
+        public bool Pinned
+        {
+            get;
+            set;
+        }
+
+        public bool AutoFocus
         {
             get;
             set;
@@ -196,6 +217,11 @@ namespace Kendo.Mvc.UI
             options.Add("modal", Modal);
             options.Add("iframe", Iframe);
             options.Add("draggable", Draggable);
+            options.Add("pinned", Pinned);
+            if (AutoFocus == false)
+            {
+                options.Add("autoFocus", AutoFocus);
+            }
             options.Add("title", Title);
             if (!string.IsNullOrEmpty(AppendTo))
             {
@@ -212,7 +238,6 @@ namespace Kendo.Mvc.UI
                 options.Add("height", Height);
             }
             options.Add("actions", Actions.Container.Select(item => item.Name));
-
 
             if (ResizingSettings.Enabled)
             {
@@ -235,6 +260,23 @@ namespace Kendo.Mvc.UI
                 {
                     options.Add("maxWidth", ResizingSettings.MaxWidth);
                 }
+            }
+
+            if (PositionSettings.Left != int.MinValue || PositionSettings.Top != int.MinValue)
+            {
+                var topLeft = new Dictionary<string, int>();
+
+                if (PositionSettings.Top != int.MinValue)
+                {
+                    topLeft.Add("top", PositionSettings.Top);
+                }
+
+                if (PositionSettings.Left != int.MinValue)
+                {
+                    topLeft.Add("left", PositionSettings.Left);
+                }
+
+                options.Add("position", topLeft);
             }
 
             writer.Write(Initializer.Initialize(Selector, "Window", options));

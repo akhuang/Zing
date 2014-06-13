@@ -4,7 +4,7 @@ namespace Kendo.Mvc.UI
     using Kendo.Mvc.Infrastructure;
     using Kendo.Mvc.Extensions;
 
-    internal class ChartBarSeriesSerializer : ChartSeriesSerializerBase
+    internal class ChartBarSeriesSerializer : ChartBarSeriesSerializerBase
     {
         private readonly IChartBarSeries series;
 
@@ -18,39 +18,19 @@ namespace Kendo.Mvc.UI
         {
             var result = base.Serialize();
 
-            FluentDictionary.For(result)
-                .Add("type", series.Orientation == ChartSeriesOrientation.Horizontal ? "bar" : "column")
-                .Add("stack", series.Stacked, () => series.Stacked == true && !series.StackName.HasValue())
-                .Add("stack", series.StackName, () => series.StackName.HasValue())
-                .Add("aggregate", series.Aggregate.ToString().ToLowerInvariant(), () => series.Aggregate != null)
-                .Add("gap", series.Gap, () => series.Gap.HasValue)
-                .Add("spacing", series.Spacing, () => series.Spacing.HasValue)
-                .Add("field", series.Member, () => { return series.Data == null && series.Member != null; })
-                .Add("data", series.Data, () => { return series.Data != null; })
-                .Add("border", series.Border.CreateSerializer().Serialize(), ShouldSerializeBorder)
-                .Add("color", series.Color, () => series.Color.HasValue())
-                .Add("colorField", series.ColorMember, () => series.ColorMember.HasValue())
-                .Add("negativeColor", series.NegativeColor, () => series.NegativeColor.HasValue());
-
-            if (series.Overlay != null)
+            var errorBars = series.ErrorBars.CreateSerializer().Serialize();
+            if (errorBars.Count > 0)
             {
-                result.Add("overlay", series.Overlay.CreateSerializer().Serialize());
+                result.Add("errorBars", errorBars);
             }
 
-            var labelsData = series.Labels.CreateSerializer().Serialize();
-            if (labelsData.Count > 0)
+            if (series.ErrorBars.LowMember.HasValue() && series.ErrorBars.HighMember.HasValue())
             {
-                result.Add("labels", labelsData);
+                result["errorLowField"] = series.ErrorBars.LowMember;
+                result["errorHighField"] = series.ErrorBars.HighMember;
             }
 
             return result;
-        }
-
-        private bool ShouldSerializeBorder()
-        {
-            return series.Border.Color.HasValue() ||
-                   series.Border.Width.HasValue ||
-                   series.Border.DashType.HasValue;
         }
     }
 }

@@ -30,6 +30,12 @@ namespace Kendo.Mvc.UI
             set;
         }
 
+        public string CascadeFromField
+        {
+            get;
+            set;
+        }
+
         public string DataValueField 
         { 
             get; 
@@ -135,6 +141,11 @@ namespace Kendo.Mvc.UI
                 options["cascadeFrom"] = CascadeFrom;
             }
 
+            if (!string.IsNullOrEmpty(CascadeFromField))
+            {
+                options["cascadeFromField"] = CascadeFromField;
+            }
+
             var text = this.GetInputValue();
             if (!string.IsNullOrEmpty(text))
             {
@@ -159,15 +170,21 @@ namespace Kendo.Mvc.UI
             var text = this.GetValue<string>(inputName, null);
 
             if (string.IsNullOrEmpty(text)) {
-                var result = this.ViewContext.Controller.ValueProvider.GetValue(inputName);
 
-                var found = result != null;
-                if (found)
+                if (Text != null)
                 {
-                    return (string)result.ConvertTo(typeof(string), CultureInfo.CurrentCulture);
+                    text = Text;
                 }
+                else
+                {
+                    var value = this.GetValue(Value);
+                    var result = this.ViewContext.Controller.ValueProvider.GetValue(inputName);
 
-                text = Text;
+                    if (result != null && !string.IsNullOrEmpty(value))
+                    {
+                        text = (string)result.ConvertTo(typeof(string), CultureInfo.CurrentCulture);
+                    }
+                }
             }
 
             return text;

@@ -3,9 +3,10 @@ namespace Kendo.Mvc.UI
     using System;
     using System.Linq.Expressions;
     using System.Collections;
+    using Kendo.Mvc.Extensions;
 
     public class ChartScatterLineSeries<TModel, TXValue, TYValue>
-        : ChartScatterSeries<TModel, TXValue, TYValue>, IChartScatterLineSeries
+        : ChartScatterLineSeriesBase<TModel, TXValue, TYValue>, IChartScatterLineSeries
         where TModel : class
     {
         /// <summary>
@@ -13,9 +14,13 @@ namespace Kendo.Mvc.UI
         /// </summary>
         /// <param name="xValueExpression">The X expression.</param>
         /// <param name="yValueExpression">The Y expression.</param>
-        public ChartScatterLineSeries(Expression<Func<TModel, TXValue>> xValueExpression, Expression<Func<TModel, TYValue>> yValueExpression)
-            : base(xValueExpression, yValueExpression)
-        {
+        /// <param name="noteTextExpression">The note text expression.</param>
+        public ChartScatterLineSeries(
+            Expression<Func<TModel, TXValue>> xValueExpression,
+            Expression<Func<TModel, TYValue>> yValueExpression,
+            Expression<Func<TModel, string>> noteTextExpression)
+            : base(xValueExpression, yValueExpression, noteTextExpression)
+        {            
         }
 
         /// <summary>
@@ -24,7 +29,7 @@ namespace Kendo.Mvc.UI
         /// <param name="data">The data.</param>
         public ChartScatterLineSeries(IEnumerable data)
             : base(data)
-        {
+        {            
         }
 
         /// <summary>
@@ -32,34 +37,32 @@ namespace Kendo.Mvc.UI
         /// </summary>
         public ChartScatterLineSeries()
             : base()
-        {
+        {            
         }
 
         /// <summary>
-        /// The chart line width.
+        /// The style of the series.
         /// </summary>
-        public double? Width
+        public ChartScatterLineStyle Style
         {
             get;
             set;
         }
 
         /// <summary>
-        /// The chart line dashType.
+        /// The error bars of the series.
         /// </summary>
-        public ChartDashType? DashType
+        public ScatterErrorBars ErrorBars
         {
             get;
             set;
         }
 
-        /// <summary>
-        /// The behavior for handling missing values in scatter line series.
-        /// </summary>
-        public ChartScatterLineMissingValues? MissingValues
+        protected override void Initialize()
         {
-            get;
-            set;
+            base.Initialize();
+            ErrorBars = new ScatterErrorBars();
+            Style = ChartScatterLineStyle.Normal;
         }
 
         public override IChartSerializer CreateSerializer()

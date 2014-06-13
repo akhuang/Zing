@@ -150,6 +150,12 @@ namespace Kendo.Mvc.UI.Fluent
             return this;
         }
 
+        public EditorMessagesBuilder Formatting(string message)
+        {
+            messages.Formatting = message;
+            return this;
+        }
+
         public EditorMessagesBuilder BackColor(string message)
         {
             messages.BackColor = message;
@@ -234,6 +240,55 @@ namespace Kendo.Mvc.UI.Fluent
         public EditorMessagesBuilder DialogCancel(string message)
         {
             messages.DialogCancel = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder CreateTable(string message)
+        {
+            messages.CreateTable = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder AddColumnLeft(string message)
+        {
+            messages.AddColumnLeft = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder AddColumnRight(string message)
+        {
+            messages.AddColumnRight = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder AddRowAbove(string message)
+        {
+            messages.AddRowAbove = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder AddRowBelow(string message)
+        {
+            messages.AddRowBelow = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder DeleteColumn(string message)
+        {
+            messages.DeleteColumn = message;
+
+            return this;
+        }
+
+        public EditorMessagesBuilder DeleteRow(string message)
+        {
+            messages.DeleteRow = message;
 
             return this;
         } 

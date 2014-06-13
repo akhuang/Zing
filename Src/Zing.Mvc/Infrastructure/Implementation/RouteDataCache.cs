@@ -40,11 +40,27 @@
                 return mockHttpRequestBase;
             }
         }
+
+        public override System.Collections.IDictionary Items
+        {
+            get
+            {
+                return HttpContext.Current.Items;
+            }
+        }
     }
 
     internal class InternalHttpRequestBase : HttpRequestBase
     {
         private readonly string appCurrentUrl;
+
+        public override string HttpMethod
+        {
+            get
+            {
+                return "GET";
+            }
+        }
 
         public InternalHttpRequestBase(string appCurrentUrl)
         {

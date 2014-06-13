@@ -1,5 +1,7 @@
 namespace Kendo.Mvc.UI
 {
+    using System;
+
     public abstract class ChartSeriesBase<T> : IChartSeries where T : class
     {
         /// <summary>
@@ -9,6 +11,7 @@ namespace Kendo.Mvc.UI
         {
             Tooltip = new ChartTooltip();
             Highlight = new ChartSeriesHighlight();
+            Notes = new ChartNote();
         }
 
         /// <summary>
@@ -35,6 +38,15 @@ namespace Kendo.Mvc.UI
         /// Gets or sets the series base color
         /// </summary>
         public string Color
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the series color function
+        /// </summary>
+        public ClientHandlerDescriptor ColorHandler
         {
             get;
             set;
@@ -81,6 +93,15 @@ namespace Kendo.Mvc.UI
         /// Gets or sets a value indicating if the series is visible
         /// </summary>
         public bool? Visible
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the series notes options
+        /// </summary>
+        public ChartNote Notes
         {
             get;
             set;

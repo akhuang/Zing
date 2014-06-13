@@ -9,13 +9,13 @@ namespace Kendo.Mvc.UI.Fluent
     using Kendo.Mvc.UI;
 
     /// <summary>
-    /// Defines the fluent interface for configuring the <see cref="Grid{T}"/> component.
+    /// The fluent API for configuring Kendo UI Grid for ASP.NET MVC.
     /// </summary>
     public class GridBuilder<T> : WidgetBuilderBase<Grid<T>, GridBuilder<T>> where T : class
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GridBuilder{T}"/> class.
-        /// </summary> 
+        /// </summary>
         /// <param name="component">The component.</param>
         public GridBuilder(Grid<T> component)
             : base(component)
@@ -65,7 +65,7 @@ namespace Kendo.Mvc.UI.Fluent
         /// </code>
         /// </example>
         public GridBuilder<T> DataSource(Action<DataSourceBuilder<T>> configurator)
-        {            
+        {
             configurator(new DataSourceBuilder<T>(Component.DataSource, this.Component.ViewContext, this.Component.UrlGenerator));
 
             return this;
@@ -187,15 +187,15 @@ namespace Kendo.Mvc.UI.Fluent
         ///         &lt;%
         ///     })
         ///  %&gt;
-        /// </code> 
+        /// </code>
         /// </example>
         public GridBuilder<T> RowTemplate(Action<T, Grid<T>> codeBlockTemplate)
         {
             Component.RowTemplate.CodeBlockTemplate = (dataItem) => codeBlockTemplate(dataItem, Component);
-            
+
             return this;
         }
-       
+
         /// <summary>
         /// Sets the server-side row template of the grid in ASPX views.
         /// </summary>
@@ -213,7 +213,7 @@ namespace Kendo.Mvc.UI.Fluent
         ///         &lt;%
         ///     })
         ///  %&gt;
-        /// </code> 
+        /// </code>
         /// </example>
         public GridBuilder<T> RowTemplate(Action<T> codeBlockTemplate)
         {
@@ -311,6 +311,52 @@ namespace Kendo.Mvc.UI.Fluent
         public GridBuilder<T> ClientRowTemplate(string template)
         {
             Component.ClientRowTemplate = template;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the client-side alt row template of the grid. The client-side alt row template must contain a table row element (tr).
+        /// </summary>
+        /// <param name="template">The template</param>
+        /// <example>
+        /// <code lang="Razor">
+        /// @(Html.Kendo().Grid&lt;Product&gt;()
+        ///     .Name(&quot;grid&quot;)
+        ///     .DataSource(dataSource =&gt;
+        ///         // configure the data source
+        ///         dataSource
+        ///             .Ajax()
+        ///             .Read(read =&gt; read.Action(&quot;Products_Read&quot;, &quot;Home&quot;))
+        ///     )
+        ///     .ClientAltRowTemplate(
+        ///     &quot;&lt;tr class='k-alt'&gt;&quot; +
+        ///         &quot;&lt;td&gt;#: ProductName #&lt;/td&gt;&quot; +
+        ///         &quot;&lt;td&gt;#: UnitsInStock #&lt;/td&gt;&quot; +
+        ///     &quot;&lt;/tr&gt;&quot;
+        ///     )
+        /// )
+        /// </code>
+        /// <code lang="ASPX">
+        /// &lt;%:Html.Kendo().Grid&lt;Product&gt;()
+        ///     .Name(&quot;grid&quot;)
+        ///     .DataSource(dataSource =&gt;
+        ///         // configure the data source
+        ///         dataSource
+        ///             .Ajax()
+        ///             .Read(read =&gt; read.Action(&quot;Products_Read&quot;, &quot;Home&quot;))
+        ///     )
+        ///     .ClientAltRowTemplate(
+        ///     &quot;&lt;tr class='k-alt'&gt;&quot; +
+        ///         &quot;&lt;td&gt;#: ProductName #&lt;/td&gt;&quot; +
+        ///         &quot;&lt;td&gt;#: UnitsInStock #&lt;/td&gt;&quot; +
+        ///     &quot;&lt;/tr&gt;&quot;
+        ///     )
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public GridBuilder<T> ClientAltRowTemplate(string template)
+        {
+            Component.ClientAltRowTemplate = template;
             return this;
         }
 
@@ -437,6 +483,43 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Sets the width of the column resize handle. Apply a larger value for easier grasping.
+        /// </summary>
+        /// <param name="width">width in pixels</param>
+        /// <example>
+        /// <code lang="Razor">
+        ///  @(Html.Kendo().Grid&lt;Product&gt;()
+        ///     .Name("Grid")
+        ///     .DataSource(dataSource =&gt;
+        ///         // configure the data source
+        ///         dataSource
+        ///          .Ajax()
+        ///          .Read(read =&gt; read.Action(&quot;Products_Read&quot;, &quot;Home&quot;))
+        ///     )
+        ///    .ColumnResizeHandleWidth(8)
+        /// )
+        /// </code>
+        /// <code lang="ASPX">
+        ///  &lt;%= Html.Kendo().Grid&lt;Product&gt;()
+        ///     .Name("Grid")
+        ///     .DataSource(dataSource =&gt;
+        ///         // configure the data source
+        ///         dataSource
+        ///          .Ajax()
+        ///          .Read(read =&gt; read.Action(&quot;Products_Read&quot;, &quot;Home&quot;))
+        ///     )
+        ///    .ColumnResizeHandleWidth(8)
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public GridBuilder<T> ColumnResizeHandleWidth(int width)
+        {
+            Component.ColumnResizeHandleWidth = width;
+
+            return this;
+        }
+
+        /// <summary>
         /// Sets the reordering configuration of the grid.
         /// </summary>
         /// <param name="configurator">The lambda which configures the reordering</param>
@@ -542,7 +625,7 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public GridBuilder<T> Editable()
         {
-            Component.Editable.Enabled = true;            
+            Component.Editable.Enabled = true;
             return this;
         }
 
@@ -585,7 +668,7 @@ namespace Kendo.Mvc.UI.Fluent
 
         /// <summary>
         /// Binds the grid to a list of objects
-        /// </summary>        
+        /// </summary>
         /// <param name="dataSource">The data source.</param>
         /// <example>
         /// <code lang="ASPX">
@@ -631,10 +714,10 @@ namespace Kendo.Mvc.UI.Fluent
         /// </code>
         /// </example>
         public GridBuilder<T> BindTo(IEnumerable dataSource)
-        {           
+        {
             Component.DataSource.Data = new CustomGroupingWrapper<T>(dataSource);
             return this;
-        }        
+        }
 
         /// <summary>
         /// Sets a lambda which is executed for every table row rendered server-side by the grid.
@@ -812,7 +895,7 @@ namespace Kendo.Mvc.UI.Fluent
 
             return this;
         }
-        
+
         /// <summary>
         /// Enables grid column sorting.
         /// </summary>
@@ -1060,12 +1143,12 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public GridBuilder<T> Pageable(Action<PageableBuilder> configurator)
         {
-            Component.Pageable.Enabled = true;            
+            Component.Pageable.Enabled = true;
 
             configurator(new PageableBuilder(Component.Pageable));
 
             return this;
-        }        
+        }
 
         /// <summary>
         /// Enables grid filtering.
@@ -1364,7 +1447,7 @@ namespace Kendo.Mvc.UI.Fluent
 
             return this;
         }
-      
+
         /// <summary>
         /// Sets the event configuration of the grid.
         /// </summary>
@@ -1484,6 +1567,30 @@ namespace Kendo.Mvc.UI.Fluent
         public GridBuilder<T> Groupable()
         {
             return Groupable(delegate { });
+        }
+
+        /// <summary>
+        /// Enables the adaptive rendering when viewed on mobile browser
+        /// </summary>
+        public GridBuilder<T> Mobile()
+        {
+            Component.Mobile = MobileMode.Auto;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Used to determine if adaptive rendering should be used when viewed on mobile browser
+        /// </summary>
+        /// <remarks>
+        /// Currently the Grid widget doesn't distinguish between phone and tablet option.
+        /// </remarks>
+        /// <param name="type"></param>
+        public GridBuilder<T> Mobile(MobileMode type)
+        {
+            Component.Mobile = type;
+
+            return this;
         }
     }
 }

@@ -78,6 +78,14 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Defines the default settings for funnel series.
+        /// </summary>
+        public virtual ChartFunnelSeriesBuilder<TModel> Funnel()
+        {
+            return new ChartFunnelSeriesBuilder<TModel>(chart.SeriesDefaults.Funnel);
+        }
+
+        /// <summary>
         /// Defines the default settings for scatter series.
         /// </summary>
         public virtual ChartScatterSeriesBuilder<TModel> Scatter()
@@ -99,6 +107,70 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual ChartOHLCSeriesBuilder<TModel> OHLC()
         {
             return new ChartOHLCSeriesBuilder<TModel>(chart.SeriesDefaults.OHLC);
+        }
+
+        /// <summary>
+        /// Defines the default settings for bullet series.
+        /// </summary>
+        public virtual ChartBulletSeriesBuilder<TModel> Bullet()
+        {
+            return new ChartBulletSeriesBuilder<TModel>(chart.SeriesDefaults.Bullet);
+        }
+
+        /// <summary>
+        /// Defines the default settings for vertical bullet series.
+        /// </summary>
+        public virtual ChartBulletSeriesBuilder<TModel> VerticalBullet()
+        {
+            return new ChartBulletSeriesBuilder<TModel>(chart.SeriesDefaults.VerticalBullet);
+        }
+
+        /// <summary>
+        /// Defines the default settings for radar area series.
+        /// </summary>
+        public virtual ChartRadarAreaSeriesBuilder<TModel> RadarArea()
+        {
+            return new ChartRadarAreaSeriesBuilder<TModel>(chart.SeriesDefaults.RadarArea);
+        }
+
+        /// <summary>
+        /// Defines the default settings for radar column series.
+        /// </summary>
+        public virtual ChartRadarColumnSeriesBuilder<TModel> RadarColumn()
+        {
+            return new ChartRadarColumnSeriesBuilder<TModel>(chart.SeriesDefaults.RadarColumn);
+        }
+
+        /// <summary>
+        /// Defines the default settings for radar line series.
+        /// </summary>
+        public virtual ChartRadarLineSeriesBuilder<TModel> RadarLine()
+        {
+            return new ChartRadarLineSeriesBuilder<TModel>(chart.SeriesDefaults.RadarLine);
+        }
+
+        /// <summary>
+        /// Defines the default settings for polar line series.
+        /// </summary>
+        public virtual ChartPolarLineSeriesBuilder<TModel> PolarLine()
+        {
+            return new ChartPolarLineSeriesBuilder<TModel>(chart.SeriesDefaults.PolarLine);
+        }
+
+        /// <summary>
+        /// Defines the default settings for polar area series.
+        /// </summary>
+        public virtual ChartPolarAreaSeriesBuilder<TModel> PolarArea()
+        {
+            return new ChartPolarAreaSeriesBuilder<TModel>(chart.SeriesDefaults.PolarArea);
+        }
+
+        /// <summary>
+        /// Defines the default settings for polar scatter series.
+        /// </summary>
+        public virtual ChartPolarScatterSeriesBuilder<TModel> PolarScatter()
+        {
+            return new ChartPolarScatterSeriesBuilder<TModel>(chart.SeriesDefaults.PolarScatter);
         }
     }
 }

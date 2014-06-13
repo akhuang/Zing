@@ -67,6 +67,14 @@ namespace Kendo.Mvc.UI
         }
 
         /// <summary>
+        /// The default settings for all funnel series
+        /// </summary>
+        IChartFunnelSeries Funnel
+        {
+            get;
+        }
+
+        /// <summary>
         /// The default settings for all scatter series
         /// </summary>
         IChartScatterSeries Scatter
@@ -86,6 +94,70 @@ namespace Kendo.Mvc.UI
         /// The default settings for all ohlc series
         /// </summary>
         IChartOHLCSeries OHLC
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all bullet series.
+        /// </summary>
+        IChartBulletSeries Bullet
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all vertical bullet series.
+        /// </summary>
+        IChartBulletSeries VerticalBullet
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all radar area series.
+        /// </summary>
+        IChartRadarAreaSeries RadarArea
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all radar column series.
+        /// </summary>
+        IBarSeries RadarColumn
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all radar line series.
+        /// </summary>
+        IChartRadarLineSeries RadarLine
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all polar area series.
+        /// </summary>
+        IChartPolarAreaSeries PolarArea
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all polar line series.
+        /// </summary>
+        IChartPolarLineSeries PolarLine
+        {
+            get;
+        }
+
+        /// <summary>
+        /// The default settings for all polar scatter series.
+        /// </summary>
+        IChartPolarScatterSeries PolarScatter
         {
             get;
         }

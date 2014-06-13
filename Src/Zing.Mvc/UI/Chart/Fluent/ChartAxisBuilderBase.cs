@@ -137,10 +137,9 @@ namespace Kendo.Mvc.UI.Fluent
         /// %&gt;
         /// </code>
         /// </example>
-        public TAxisBuilder MajorGridLines(Action<ChartLineBuilder> configurator)
+        public TAxisBuilder MajorGridLines(Action<ChartMajorGridLinesBuilder> configurator)
         {
-
-            configurator(new ChartLineBuilder(Axis.MajorGridLines));
+            configurator(new ChartMajorGridLinesBuilder(Axis.MajorGridLines));
 
             return this as TAxisBuilder;
         }
@@ -187,9 +186,9 @@ namespace Kendo.Mvc.UI.Fluent
         /// %&gt;
         /// </code>
         /// </example>
-        public TAxisBuilder MinorGridLines(Action<ChartLineBuilder> configurator)
+        public TAxisBuilder MinorGridLines(Action<ChartMinorGridLinesBuilder> configurator)
         {
-            configurator(new ChartLineBuilder(Axis.MinorGridLines));
+            configurator(new ChartMinorGridLinesBuilder(Axis.MinorGridLines));
 
             return this as TAxisBuilder;
         }
@@ -484,12 +483,34 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// The angle (degrees) where the 0 value is placed.
+        /// It defaults to 0.
+        /// </summary>
+        /// <param name="startAngle">Angles increase counterclockwise and 0 is to the right. Negative values are acceptable.</param>
+        public TAxisBuilder StartAngle(double startAngle)
+        {
+            Axis.StartAngle = startAngle;
+
+            return this as TAxisBuilder;
+        }
+
+        /// <summary>
         /// A value indicating if the automatic axis range should snap to 0.
         /// </summary>
         /// <param name="narrowRange">The narrowRange value.</param>
         public TAxisBuilder NarrowRange(bool narrowRange)
         {
             Axis.NarrowRange = narrowRange;
+            return this as TAxisBuilder;
+        }
+
+        /// <summary>
+        /// Sets the axis background color
+        /// </summary>
+        /// <param name="visible">The axis visibility.</param>
+        public TAxisBuilder Background(string background)
+        {
+            Axis.Background = background;
             return this as TAxisBuilder;
         }
     }

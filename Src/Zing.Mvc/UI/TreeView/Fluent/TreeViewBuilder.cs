@@ -262,6 +262,7 @@ namespace Kendo.Mvc.UI.Fluent
                         item.Encoded = node.Encoded;
                         item.Id = node.Id;
                         item.Checked = node.Checked;
+                        item.Selected = node.Selected;
 
                         item.Url = node.Url;
                         item.ImageUrl = node.ImageUrl;
@@ -603,9 +604,9 @@ namespace Kendo.Mvc.UI.Fluent
         ///  %&gt;
         /// </code>
         /// </example>
-        public TreeViewBuilder DataSource(Action<ReadOnlyDataSourceBuilder> configurator)
+        public TreeViewBuilder DataSource(Action<HierarchicalDataSourceBuilder> configurator)
         {
-            configurator(new ReadOnlyDataSourceBuilder(Component.DataSource, this.Component.ViewContext, this.Component.UrlGenerator));
+            configurator(new HierarchicalDataSourceBuilder(Component.DataSource, this.Component.ViewContext, this.Component.UrlGenerator));
 
             return this;
         }

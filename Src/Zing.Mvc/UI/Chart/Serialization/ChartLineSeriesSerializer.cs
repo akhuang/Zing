@@ -4,7 +4,7 @@ namespace Kendo.Mvc.UI
     using Kendo.Mvc.Infrastructure;
     using Kendo.Mvc.Extensions;
 
-    internal class ChartLineSeriesSerializer : ChartSeriesSerializerBase
+    internal class ChartLineSeriesSerializer : ChartLineSeriesSerializerBase
     {
         private readonly IChartLineSeries series;
 
@@ -18,28 +18,21 @@ namespace Kendo.Mvc.UI
         {
             var result = base.Serialize();
 
-            FluentDictionary.For(result)
-                .Add("type", series.Orientation == ChartSeriesOrientation.Horizontal ? "line" : "verticalLine")
-                .Add("stack", series.Stacked, false)
-                .Add("aggregate", series.Aggregate.ToString().ToLowerInvariant(), () => series.Aggregate != null)
-                .Add("field", series.Member, () => { return series.Data == null && series.Member.HasValue(); })
-                .Add("data", series.Data, () => { return series.Data != null; })
-                .Add("width", series.Width, () => series.Width.HasValue)
-                .Add("color", series.Color, () => series.Color.HasValue())
-                .Add("dashType", series.DashType.ToString().ToLowerInvariant(), () => series.DashType.HasValue)
-                .Add("missingValues", series.MissingValues.ToString().ToLowerInvariant(),
-                                      () => series.MissingValues.HasValue);
-
-            var labelsData = series.Labels.CreateSerializer().Serialize();
-            if (labelsData.Count > 0)
+            if (series.Style != ChartLineStyle.Normal)
             {
-                result.Add("labels", labelsData);
+                result["style"] = series.Style.ToString().ToLowerInvariant();
+            }               
+
+            var errorBars = series.ErrorBars.CreateSerializer().Serialize();
+            if (errorBars.Count > 0)
+            {
+                result.Add("errorBars", errorBars);
             }
 
-            var markers = series.Markers.CreateSerializer().Serialize();
-            if (markers.Count > 0)
+            if (series.ErrorBars.LowMember.HasValue() && series.ErrorBars.HighMember.HasValue())
             {
-                result.Add("markers", markers);
+                result["errorLowField"] = series.ErrorBars.LowMember;
+                result["errorHighField"] = series.ErrorBars.HighMember;
             }
 
             return result;

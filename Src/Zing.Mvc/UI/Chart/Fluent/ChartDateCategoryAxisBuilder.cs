@@ -161,6 +161,19 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Sets the week start day.
+        /// </summary>
+        /// <param name="weekStartDay">
+        /// The week start day when the base unit is Weeks. The default is Sunday.
+        /// </param>
+        public ChartDateCategoryAxisBuilder<TModel> WeekStartDay(DayOfWeek weekStartDay)
+        {
+            Axis.WeekStartDay = weekStartDay;
+
+            return this;
+        }
+
+        /// <summary>
         /// Positions categories and series points on major ticks. This removes the empty space before and after the series.
         /// This option will be ignored if either Bar, Column, OHLC or Candlestick series are plotted on the axis.
         /// </summary>
@@ -362,6 +375,38 @@ namespace Kendo.Mvc.UI.Fluent
         public ChartDateCategoryAxisBuilder<TModel> Select(Action<ChartAxisSelectionBuilder> configurator)
         {
             configurator(new ChartAxisSelectionBuilder(Axis.Select));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Defines the items.
+        /// </summary>
+        /// <param name="Items">The items of the notes.</param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///           .Name("Chart")
+        ///           .ValueAxis(a => a.Numeric()
+        ///               .Note(note => note
+        ///                    .Data(data =>
+        ///                    {
+        ///                        data.Add().Value(1);
+        ///                        data.Add().Value(2);
+        ///                    })
+        ///               )
+        ///            )
+        ///           .Render();
+        /// %&gt;
+        /// </code>
+        /// </example> 
+        /// </code>
+        /// </example>
+        public ChartDateCategoryAxisBuilder<TModel> Notes(Action<ChartAxisNotesBuilder> configurator)
+        {
+            var factory = new ChartAxisNotesBuilder(Axis.Notes);
+
+            configurator(factory);
 
             return this;
         }

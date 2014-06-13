@@ -23,6 +23,12 @@
             set;
         }
 
+        public bool? AutoClose
+        {
+            get;
+            set;
+        }
+
         public string DataValueField
         {
             get;
@@ -36,6 +42,12 @@
         }
 
         public bool? HighlightFirst
+        {
+            get;
+            set;
+        }
+
+        public int? MaxSelectedItems
         {
             get;
             set;
@@ -118,9 +130,15 @@
             {
                 options["tagTemplate"] = TagTemplate;
             }
+
             if (AutoBind != null)
             {
                 options["autoBind"] = AutoBind;
+            }
+
+            if (AutoClose != null)
+            {
+                options["autoClose"] = AutoClose;
             }
 
             if (!string.IsNullOrEmpty(DataValueField))
@@ -136,6 +154,11 @@
             if (HighlightFirst != null)
             {
                 options["highlightFirst"] = HighlightFirst;
+            }
+
+            if (MaxSelectedItems != null)
+            {
+                options["maxSelectedItems"] = MaxSelectedItems;
             }
 
             if (MinLength != null)

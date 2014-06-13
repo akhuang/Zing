@@ -27,23 +27,22 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Sets title, which appears in the header of the window.
+        /// </summary>
+        public WindowBuilder Title(string title)
+        {
+            Component.Title = title;
+
+            return this;
+        }
+
+        /// <summary>
         /// Defines a selector for the element to which the Window will be appended. By default this is the page body.
         /// </summary>
         /// <param name="selector">A selector of the Window container</param>
         public WindowBuilder AppendTo(string selector)
         {
             Component.AppendTo = selector;
-
-            return this;
-        }
-
-        /// <summary>
-        /// Sets title, which appears in the header of the window.
-        /// </summary>
-        public WindowBuilder Title(string title)
-        {
-
-            Component.Title = title;
 
             return this;
         }
@@ -67,7 +66,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public WindowBuilder Content(Action value)
         {
-
             Component.Template.Content = value;
 
             return this;
@@ -87,7 +85,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// <returns></returns>
         public WindowBuilder Content(Func<object, object> value)
         {
-
             Component.Template.InlineTemplate = value;
 
             return this;
@@ -105,7 +102,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </code>        
         public WindowBuilder Content(string value)
         {
-
             Component.Template.Html = value;
 
             return this;
@@ -207,7 +203,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public WindowBuilder Events(Action<WindowEventBuilder> clientEventsAction)
         {
-
             clientEventsAction(new WindowEventBuilder(Component.Events));
 
             return this;
@@ -247,7 +242,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public WindowBuilder Resizable(Action<WindowResizingSettingsBuilder> resizingSettingsAction)
         {
-
             Component.ResizingSettings.Enabled = true;
 
             resizingSettingsAction(new WindowResizingSettingsBuilder(Component.ResizingSettings));
@@ -258,20 +252,19 @@ namespace Kendo.Mvc.UI.Fluent
         /// <summary>
         /// Configures the window buttons.
         /// </summary>
-        /// <param name="clientEventsAction">The buttons configuration action.</param>
+        /// <param name="actionsBuilderAction">The buttons configuration action.</param>
         /// <example>
         /// <code lang="CS">
         ///  &lt;%= Html.Kendo().Window()
         ///             .Name("Window")
         ///             .Actions(actions =>
-        ///                 actions.
+        ///                 actions.Close()
         ///             )
         /// %&gt;
         /// </code>
         /// </example>
         public WindowBuilder Actions(Action<WindowActionsBuilder> actionsBuilderAction)
         {
-
             Component.Actions.Container.Clear();
 
             actionsBuilderAction(new WindowActionsBuilder(Component.Actions));
@@ -284,7 +277,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </summary>
         public WindowBuilder Width(int width)
         {
-
             Component.Width = width;
 
             return this;
@@ -296,8 +288,28 @@ namespace Kendo.Mvc.UI.Fluent
         /// </summary>
         public WindowBuilder Height(int height)
         {
-
             Component.Height = height;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the position of the window.
+        /// </summary>
+        /// <param name="positionSettingsAction">Position settings action.</param>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Window()
+        ///             .Name("Window")
+        ///             .Position(settings =>
+        ///                 settings.Top(100).Left(100)
+        ///             )
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public WindowBuilder Position(Action<WindowPositionSettingsBuilder> positionSettingsAction)
+        {
+            positionSettingsAction(new WindowPositionSettingsBuilder(Component.PositionSettings));
 
             return this;
         }
@@ -313,14 +325,11 @@ namespace Kendo.Mvc.UI.Fluent
             return this;
         }
 
-
-
         /// <summary>
         /// Sets whether the window should have scrollbars.
         /// </summary>
         public WindowBuilder Scrollable(bool scrollable)
         {
-
             Component.Scrollable = scrollable;
 
             return this;
@@ -357,7 +366,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </example>
         public WindowBuilder Animation(Action<PopupAnimationBuilder> animationAction)
         {
-
             animationAction(new PopupAnimationBuilder(Component.Animation));
 
             return this;
@@ -368,7 +376,6 @@ namespace Kendo.Mvc.UI.Fluent
         /// </summary>
         public WindowBuilder Modal(bool modal)
         {
-
             Component.Modal = modal;
 
             return this;
@@ -387,8 +394,35 @@ namespace Kendo.Mvc.UI.Fluent
         /// </summary>
         public WindowBuilder Draggable(bool value)
         {
-
             Component.Draggable = value;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets whether the window is pinned.
+        /// </summary>
+        public WindowBuilder Pinned()
+        {
+            return Pinned(true);
+        }
+
+        /// <summary>
+        /// Sets whether the window automatically gains focus when opened.
+        /// </summary>
+        public WindowBuilder AutoFocus(bool value)
+        {
+            Component.AutoFocus = value;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets whether the window is pinned.
+        /// </summary>
+        public WindowBuilder Pinned(bool value)
+        {
+            Component.Pinned = value;
 
             return this;
         }

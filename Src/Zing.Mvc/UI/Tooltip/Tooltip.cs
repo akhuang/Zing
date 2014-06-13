@@ -9,7 +9,8 @@ namespace Kendo.Mvc.UI
     using Kendo.Mvc.Extensions;
     using Kendo.Mvc.Infrastructure;
     using Kendo.Mvc.Resources;
-    using System.Web; 
+    using System.Web;
+    using System.Text.RegularExpressions; 
 
     public class Tooltip : WidgetBase
     {
@@ -37,7 +38,25 @@ namespace Kendo.Mvc.UI
         public int Width { get; set; }
         public int Height { get; set; }
 
+        private string Encode(string value)
+        {
+            value = Regex.Replace(value, "(%20)*%23%3D(%20)*", "#=", RegexOptions.IgnoreCase);
+            value = Regex.Replace(value, "(%20)*%23(%20)*", "#", RegexOptions.IgnoreCase);
+            value = Regex.Replace(value, "(%20)*%24%7B(%20)*", "${", RegexOptions.IgnoreCase);
+            value = Regex.Replace(value, "(%20)*%7D(%20)*", "}", RegexOptions.IgnoreCase);
+
+            return value;
+        }
+
         public override void WriteInitializationScript(TextWriter writer)
+        {
+            var options = ToJson();
+            writer.Write(Initializer.InitializeFor(SanitizeSelector(Container), "Tooltip", options));
+
+            base.WriteInitializationScript(writer);
+        }
+
+        public IDictionary<string, object> ToJson()
         {
             var options = new Dictionary<string, object>(Events);
 
@@ -48,7 +67,7 @@ namespace Kendo.Mvc.UI
 
             if (Position != TooltipPosition.Bottom)
             {
-                options["position"] = Enum.GetName(typeof(TooltipPosition), Position).ToLowerInvariant(); 
+                options["position"] = Enum.GetName(typeof(TooltipPosition), Position).ToLowerInvariant();
             }
 
             if (ShowAfter.HasValue)
@@ -96,9 +115,7 @@ namespace Kendo.Mvc.UI
 
             SerializeContent(options);
 
-            writer.Write(Initializer.InitializeFor(SanitizeSelector(Container), "Tooltip", options));
-
-            base.WriteInitializationScript(writer);
+            return options;
         }
 
         private void SerializeContent(Dictionary<string, object> options)
@@ -106,7 +123,7 @@ namespace Kendo.Mvc.UI
             if (ContentUrl.HasValue())
             {
                 options["content"] = new Dictionary<string, object>() {
-                    { "url", ContentUrl }
+                    { "url", Encode(ContentUrl) }
                 };
             }
             else if (ContentHandler.HasValue())
