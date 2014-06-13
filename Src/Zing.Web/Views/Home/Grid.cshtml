@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Grid";
+}
+
+<h2>Grid</h2>
+
+@(Html.Kendo().Grid<Zing.Modules.Users.ViewModels.UserViewModel>()
+        .Name("grid")
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.UserName).Width(140);
+            columns.Bound(c => c.NormalizedUserName).Width(190);
+            columns.Bound(c => c.Email);
+        })
+        .HtmlAttributes(new { style = "height: 380px;" })
+        .Scrollable()
+        .Groupable()
+        .Sortable()
+        .Pageable(pageable => pageable
+            .Refresh(true)
+            .PageSizes(true)
+            .ButtonCount(5))
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(read => read.Action("Customers_Read", "Grid"))
+        )
+)

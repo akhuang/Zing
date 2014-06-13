@@ -10,6 +10,8 @@ using Zing.Modules.Users.Services;
 using Zing.Modules.Users.Models;
 using Zing.Mvc;
 using Zing.UI.Navigation;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
 
 namespace Zing.Web.Controllers
 {
@@ -90,6 +92,28 @@ namespace Zing.Web.Controllers
             };
 
             return View(userInfo);
+        }
+
+        public ActionResult Grid()
+        {
+            return View();
+        }
+
+        public ActionResult Customers_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            return Json(GetCustomers().ToDataSourceResult(request));
+        }
+        private static IEnumerable<UserViewModel> GetCustomers()
+        {
+            IEnumerable<UserViewModel> list = new List<UserViewModel>() { 
+                new UserViewModel()
+                {
+                    UserName="p",Email="p@p.com",NormalizedUserName="phoenix"
+                },
+                new UserViewModel(){UserName="p1",Email="p1@p.com",NormalizedUserName="phoenix1" }
+                };
+
+            return list;
         }
     }
 }
