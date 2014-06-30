@@ -27,13 +27,14 @@ namespace Zing
                 return null;
 
             object workContextValue;
-            if (!routeData.DataTokens.TryGetValue("IWorkContextAccessor", out workContextValue))
-            {
-                workContextValue = FindWorkContextInParent(routeData);
-            }
+            //if (!routeData.DataTokens.TryGetValue("IWorkContextAccessor", out workContextValue))
+            //{
+            //    workContextValue = FindWorkContextInParent(routeData);
+            //}
 
-            if (!(workContextValue is IWorkContextAccessor))
-                return null;
+            //if (!(workContextValue is IWorkContextAccessor))
+            //    return null;
+            workContextValue = DependencyResolver.Current.GetService<IWorkContextAccessor>();
 
             var workContextAccessor = (IWorkContextAccessor)workContextValue;
             return workContextAccessor.GetContext(requestContext.HttpContext);

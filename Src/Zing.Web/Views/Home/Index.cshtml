@@ -1,9 +1,9 @@
 ﻿@model Zing.Modules.Users.ViewModels.UserViewModel
 @{
     ViewBag.Title = "Index";
-
+    Layout = null;
     var workContext = WorkContext;
-    
+
 }
 <h2>Index</h2>
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))
@@ -14,15 +14,15 @@
         </div>
     </div>
 
- @Html.EditorForModel()
+    @Html.EditorForModel()
 
-    
-@* <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary">
-                提交</button>
-        </div>
-    </div>*@
-     
+
+    @* <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <button type="submit" class="btn btn-primary">
+                    提交</button>
+            </div>
+        </div>*@
+
 }
 @Html.Partial("Pager")

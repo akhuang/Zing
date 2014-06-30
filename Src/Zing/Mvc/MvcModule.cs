@@ -16,7 +16,6 @@ namespace Zing.Mvc
 
         protected override void Load(ContainerBuilder moduleBuilder)
         {
-            //moduleBuilder.RegisterType<FilterResolvingActionInvoker>().As<IActionInvoker>().InstancePerDependency();
             moduleBuilder.RegisterType<ShellRoute>().InstancePerDependency();
 
             moduleBuilder.Register(ctx => HttpContextBaseFactory(ctx)).As<HttpContextBase>().InstancePerDependency();
@@ -48,8 +47,9 @@ namespace Zing.Mvc
             {
                 return new HttpContextWrapper(HttpContext.Current);
             }
-
-            return new HttpContextPlaceholder();
+            var httpContextBase = new HttpContextPlaceholder();
+            context.Resolve<IWorkContextAccessor>().CreateWorkContextScope(httpContextBase);
+            return httpContextBase;
         }
 
         static RequestContext RequestContextFactory(IComponentContext context)

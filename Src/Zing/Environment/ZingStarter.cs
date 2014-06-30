@@ -23,8 +23,11 @@ namespace Zing.Environment
             var builder = new ContainerBuilder();
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new DataModule());
+            builder.RegisterModule(new WorkContextModule());
+            builder.RegisterModule(new MvcModule());
             builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
             builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
+            builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
 
             FluentMetadataConfiguration.RegisterEachConfigurationWithContainer(r => builder.RegisterType(r.MetadataConfigurationType).As(r.InterfaceType));
 
