@@ -50,8 +50,6 @@ namespace Zing.Environment.ShellBuilder
                     //var registration = builder.RegisterModule(new MvcModule());
                     //.WithProperty("Feature", item.Feature)
                     //.WithMetadata("Feature", item.Feature);
-
-
                 });
 
             return intermediateScope.BeginLifetimeScope(

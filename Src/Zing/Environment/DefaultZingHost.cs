@@ -10,7 +10,6 @@ namespace Zing.Environment
 {
     public class DefaultZingHost : IZingHost
     {
-
         private readonly IShellSettingsManager _shellSettingsManager;
         private readonly IShellContextFactory _shellContextFactory;
         private readonly IRunningShellTable _runningShellTable;

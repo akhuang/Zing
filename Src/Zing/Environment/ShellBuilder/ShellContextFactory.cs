@@ -48,7 +48,15 @@ namespace Zing.Environment.ShellBuilder
         {
             Logger.Debug("Creating shell context for tenant {0}", settings.Name);
 
+            //返回一个shell的生命周期
             var shellScope = _shellContainerFactory.CreateContainer(settings);
+            //ShellDescriptor currentDescriptor;
+            using (var standaloneEnvironment = shellScope.CreateWorkContextScope())
+            {
+                //var shellDescriptorManager = standaloneEnvironment.Resolve<IShellDescriptorManager>();
+                //currentDescriptor = shellDescriptorManager.GetShellDescriptor();
+            }
+
             return new ShellContext
             {
                 Settings = settings,
