@@ -7,6 +7,7 @@ using System.Web.Routing;
 using System.Web;
 using System.Web.Http.Controllers;
 using Autofac;
+using Zing.Environment;
 
 namespace Zing
 {
@@ -34,6 +35,15 @@ namespace Zing
 
             //if (!(workContextValue is IWorkContextAccessor))
             //    return null;
+
+            IRunningShellTable runningShellTable = HostContainer.Resolve<IRunningShellTable>();
+            ShellSettings shellSettings = runningShellTable.Match(baseAddresses.First().Host, baseAddresses.First().LocalPath);
+
+            IOrchardHost orchardHost = HostContainer.Resolve<IOrchardHost>();
+            ShellContext shellContext = orchardHost.GetShellContext(shellSettings);
+            IWorkContextAccessor workContextAccessor = shellContext.LifetimeScope.Resolve<IWorkContextAccessor>();
+            WorkContext workContext = workContextAccessor.GetContext();
+
             workContextValue = DependencyResolver.Current.GetService<IWorkContextAccessor>();
 
             var workContextAccessor = (IWorkContextAccessor)workContextValue;

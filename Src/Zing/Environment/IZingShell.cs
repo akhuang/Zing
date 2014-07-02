@@ -9,5 +9,6 @@ namespace Zing.Environment
     {
         void Activate();
         void Terminate();
+
     }
 }

@@ -16,7 +16,7 @@ namespace Zing.Environment
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<WorkContextAccessor>()
-                .As<IWorkContextAccessor>().InstancePerMatchingLifetimeScope("shell");
+                .As<IWorkContextAccessor>();//.InstancePerMatchingLifetimeScope("shell");
 
             builder.Register(ctx => new WorkContextImplementation(ctx.Resolve<IComponentContext>()))
                 .As<WorkContext>()

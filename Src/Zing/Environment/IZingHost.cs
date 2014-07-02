@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Zing.Environment.Configuration;
+using Zing.Environment.ShellBuilder;
 
 namespace Zing.Environment
 {
@@ -23,7 +25,7 @@ namespace Zing.Environment
         /// </summary>
         void EndRequest();
 
-        //ShellContext GetShellContext(ShellSettings shellSettings);
+        ShellContext GetShellContext(ShellSettings shellSettings);
 
         /// <summary>
         /// Can be used to build an temporary self-contained instance of a shell's configured code.

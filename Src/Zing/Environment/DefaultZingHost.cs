@@ -89,7 +89,8 @@ namespace Zing.Environment
             Logger.Debug("Activating context for tenant {0}", context.Settings.Name);
             context.Shell.Activate();
 
-            _shellContexts = (_shellContexts ?? Enumerable.Empty<ShellContext>()).Union(new[] { context });
+            _shellContexts = (_shellContexts ?? Enumerable.Empty<ShellContext>())
+                            .Concat(new[] { context }).ToArray();
             _runningShellTable.Add(context.Settings);
         }
 
@@ -103,6 +104,11 @@ namespace Zing.Environment
 
             Logger.Debug("Creating shell context for tenant {0}", settings.Name);
             return _shellContextFactory.CreateShellContext(settings);
+        }
+
+        public ShellContext GetShellContext(ShellSettings shellSettings)
+        {
+            return BuildCurrent().SingleOrDefault(shellContext => shellContext.Settings.Name.Equals(shellSettings.Name));
         }
 
         public void BeginRequest()
