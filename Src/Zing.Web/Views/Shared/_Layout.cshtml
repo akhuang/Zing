@@ -10,9 +10,9 @@
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/kendo")
-
 </head>
 <body>
+    @{Html.RenderAction("IndexTemp", "Home");}
     <div class="wrapper">
         <!-- BEGIN TOP NAV -->
         <div class="top-navbar">
@@ -45,12 +45,10 @@
                     <!-- End button nav toggle -->
                     <!-- Begin user session nav -->
                     <ul class="nav-user navbar-right">
-                        <li class="dropdown">
-                            <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="http://diliat.in/themeforest/sentir/1.0.0/assets/img/avatar/avatar-1.jpg"
-                                     class="avatar img-circle" alt="Avatar">
-                                Hi, <strong>Paris Hawker</strong>
-                            </a>
+                        <li class="dropdown"><a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="http://diliat.in/themeforest/sentir/1.0.0/assets/img/avatar/avatar-1.jpg"
+                                class="avatar img-circle" alt="Avatar">
+                            Hi, <strong>Paris Hawker</strong> </a>
                             <ul class="dropdown-menu square primary margin-list-rounded with-triangle">
                                 <li><a href="#fakelink">Account setting</a></li>
                                 <li><a href="#fakelink">Payment setting</a></li>
@@ -67,109 +65,83 @@
                     <div class="collapse navbar-collapse" id="main-fixed-nav">
                         <!-- Begin nav search form -->
                         <form class="navbar-form navbar-left" role="search">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search">
-                            </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
                         </form>
                         <!-- End nav search form -->
                         <ul class="nav navbar-nav navbar-left">
                             <!-- Begin nav notification -->
-                            <li class="dropdown">
-                                <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="badge badge-danger icon-count">7</span> <i class="fa fa-bell"></i>
-                                </a>
+                            <li class="dropdown"><a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="badge badge-danger icon-count">7</span> <i class="fa fa-bell"></i></a>
                                 <ul class="dropdown-menu square with-triangle">
                                     <li>
                                         <div class="nav-dropdown-heading">
                                             Notifications
                                         </div>
                                         <!-- /.nav-dropdown-heading -->
-                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 350px;">
-                                            <div class="nav-dropdown-content scroll-nav-dropdown" style="overflow: hidden; width: auto; height: 350px;">
+                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto;
+                                            height: 350px;">
+                                            <div class="nav-dropdown-content scroll-nav-dropdown" style="overflow: hidden; width: auto;
+                                                height: 350px;">
                                                 <ul>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-2.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Thomas White</strong> posted on your profile page <span class="small-caps">
-                                                                17
-                                                                seconds ago
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-3.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Doina Slaivici</strong> uploaded photo <span class="small-caps">10 minutes ago</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-4.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Harry Nichols</strong> commented on your post <span class="small-caps">
-                                                                40 minutes
-                                                                ago
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-5.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Mihaela Cihac</strong> send you a message <span class="small-caps">2 hours ago</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-6.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Harold Chavez</strong> change his avatar <span class="small-caps">Yesterday</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-7.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Elizabeth Owens</strong> posted on your profile page <span class="small-caps">Yesterday</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-8.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Frank Oliver</strong> commented on your post <span class="small-caps">
-                                                                A week
-                                                                ago
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-9.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Mya Weastell</strong> send you a message <span class="small-caps">
-                                                                April 15,
-                                                                2014
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-10.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            <strong>Carl Rodriguez</strong> joined your weekend party <span class="small-caps">
-                                                                April
-                                                                01, 2014
-                                                            </span>
-                                                        </a>
-                                                    </li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-2.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Thomas White</strong> posted on your profile page <span class="small-caps">17
+                                                            seconds ago </span></a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-3.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Doina Slaivici</strong> uploaded photo <span class="small-caps">10 minutes ago</span>
+                                                    </a></li>
+                                                    <li><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-4.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Harry Nichols</strong> commented on your post <span class="small-caps">40 minutes
+                                                            ago </span></a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-5.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Mihaela Cihac</strong> send you a message <span class="small-caps">2 hours ago</span>
+                                                    </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-6.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Harold Chavez</strong> change his avatar <span class="small-caps">Yesterday</span>
+                                                    </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-7.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Elizabeth Owens</strong> posted on your profile page <span class="small-caps">
+                                                            Yesterday</span> </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-8.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Frank Oliver</strong> commented on your post <span class="small-caps">A week
+                                                            ago </span></a></li>
+                                                    <li><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-9.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Mya Weastell</strong> send you a message <span class="small-caps">April 15,
+                                                            2014 </span></a></li>
+                                                    <li><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-10.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        <strong>Carl Rodriguez</strong> joined your weekend party <span class="small-caps">April
+                                                            01, 2014 </span></a></li>
                                                 </ul>
                                             </div>
-                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute;
+                                                top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99;
+                                                right: 1px; background-position: initial initial; background-repeat: initial initial;">
                                             </div>
-                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute;
+                                                top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51);
+                                                opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial;
+                                                background-repeat: initial initial;">
                                             </div>
                                         </div>
                                         <!-- /.nav-dropdown-content scroll-nav-dropdown -->
@@ -181,42 +153,53 @@
                             </li>
                             <!-- End nav notification -->
                             <!-- Begin nav task -->
-                            <li class="dropdown">
-                                <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="badge badge-warning icon-count">3</span> <i class="fa fa-tasks"></i>
-                                </a>
+                            <li class="dropdown"><a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="badge badge-warning icon-count">3</span> <i class="fa fa-tasks"></i>
+                            </a>
                                 <ul class="dropdown-menu square margin-list-rounded with-triangle">
                                     <li>
                                         <div class="nav-dropdown-heading">
                                             Tasks
                                         </div>
                                         <!-- /.nav-dropdown-heading -->
-                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 350px;">
-                                            <div class="nav-dropdown-content scroll-nav-dropdown" style="overflow: hidden; width: auto; height: 350px;">
+                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto;
+                                            height: 350px;">
+                                            <div class="nav-dropdown-content scroll-nav-dropdown" style="overflow: hidden; width: auto;
+                                                height: 350px;">
                                                 <ul>
-                                                    <li class="unread">
-                                                        <a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed"></i>Creating documentation <span class="small-caps">Completed : Yesterday</span> </a>
+                                                    <li class="unread"><a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed">
+                                                    </i>Creating documentation <span class="small-caps">Completed : Yesterday</span> </a>
                                                     </li>
-                                                    <li><a href="#fakelink"><i class="fa fa-clock-o absolute-left-content icon-task progress"></i>Eating sands <span class="small-caps">Deadline : Tomorrow</span> </a></li>
-                                                    <li><a href="#fakelink"><i class="fa fa-clock-o absolute-left-content icon-task progress"></i>Sending payment <span class="small-caps">Deadline : Next week</span> </a></li>
-                                                    <li>
-                                                        <a href="#fakelink"><i class="fa fa-exclamation-circle absolute-left-content icon-task uncompleted"></i>Uploading new version <span class="small-caps">Deadline: 2 seconds ago</span> </a>
+                                                    <li><a href="#fakelink"><i class="fa fa-clock-o absolute-left-content icon-task progress">
+                                                    </i>Eating sands <span class="small-caps">Deadline : Tomorrow</span> </a></li>
+                                                    <li><a href="#fakelink"><i class="fa fa-clock-o absolute-left-content icon-task progress">
+                                                    </i>Sending payment <span class="small-caps">Deadline : Next week</span> </a></li>
+                                                    <li><a href="#fakelink"><i class="fa fa-exclamation-circle absolute-left-content icon-task uncompleted">
+                                                    </i>Uploading new version <span class="small-caps">Deadline: 2 seconds ago</span> </a>
                                                     </li>
-                                                    <li><a href="#fakelink"><i class="fa fa-exclamation-circle absolute-left-content icon-task uncompleted"></i>Drinking coffee <span class="small-caps">Deadline : 2 hours ago</span> </a></li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed"></i>Walking to nowhere <span class="small-caps">Completed : over a year ago</span> </a>
+                                                    <li><a href="#fakelink"><i class="fa fa-exclamation-circle absolute-left-content icon-task uncompleted">
+                                                    </i>Drinking coffee <span class="small-caps">Deadline : 2 hours ago</span> </a></li>
+                                                    <li class="unread"><a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed">
+                                                    </i>Walking to nowhere <span class="small-caps">Completed : over a year ago</span> </a>
                                                     </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed"></i>Sleeping under bridge <span class="small-caps">Completed : Dec 31, 2013</span> </a>
+                                                    <li class="unread"><a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed">
+                                                    </i>Sleeping under bridge <span class="small-caps">Completed : Dec 31, 2013</span> </a>
                                                     </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed"></i>Buying some cigarettes <span class="small-caps">Completed : 2 days ago</span> </a>
+                                                    <li class="unread"><a href="#fakelink"><i class="fa fa-check-circle-o absolute-left-content icon-task completed">
+                                                    </i>Buying some cigarettes <span class="small-caps">Completed : 2 days ago</span> </a>
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute;
+                                                top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99;
+                                                right: 1px; background-position: initial initial; background-repeat: initial initial;">
                                             </div>
-                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute;
+                                                top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51);
+                                                opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial;
+                                                background-repeat: initial initial;">
                                             </div>
                                         </div>
                                         <!-- /.nav-dropdown-content scroll-nav-dropdown -->
@@ -228,94 +211,74 @@
                             </li>
                             <!-- End nav task -->
                             <!-- Begin nav message -->
-                            <li class="dropdown">
-                                <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="badge badge-success icon-count">9</span> <i class="fa fa-envelope"></i>
-                                </a>
+                            <li class="dropdown"><a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="badge badge-success icon-count">9</span> <i class="fa fa-envelope">
+                                </i></a>
                                 <ul class="dropdown-menu square margin-list-rounded with-triangle">
                                     <li>
                                         <div class="nav-dropdown-heading">
                                             Messages
                                         </div>
                                         <!-- /.nav-dropdown-heading -->
-                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 350px;">
-                                            <div class="nav-dropdown-content scroll-nav-dropdown" style="overflow: hidden; width: auto; height: 350px;">
+                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto;
+                                            height: 350px;">
+                                            <div class="nav-dropdown-content scroll-nav-dropdown" style="overflow: hidden; width: auto;
+                                                height: 350px;">
                                                 <ul>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-25.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit <span class="small-caps">
-                                                                17
-                                                                seconds ago
-                                                            </span>
-                                                        </a>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-25.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit <span class="small-caps">17
+                                                            seconds ago </span></a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-24.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat
+                                                        <span class="small-caps">10 minutes ago</span> </a></li>
+                                                    <li><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-23.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        I think so <span class="small-caps">40 minutes ago</span> </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-22.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Yes, I'll be waiting <span class="small-caps">2 hours ago</span> </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-21.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Thank you! <span class="small-caps">Yesterday</span> </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-20.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        No problem! I will never remember that <span class="small-caps">Yesterday</span>
+                                                    </a></li>
+                                                    <li class="unread"><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-19.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Tak gepuk ndasmu sisan lho dab! <span class="small-caps">A week ago</span> </a>
                                                     </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-24.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat
-                                                            <span class="small-caps">10 minutes ago</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-23.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            I think so <span class="small-caps">40 minutes ago</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-22.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Yes, I'll be waiting <span class="small-caps">2 hours ago</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-21.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Thank you! <span class="small-caps">Yesterday</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-20.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            No problem! I will never remember that <span class="small-caps">Yesterday</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="unread">
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-19.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Tak gepuk ndasmu sisan lho dab! <span class="small-caps">A week ago</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-18.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Sorry bro, aku or atau sing jenenge ngono kui <span class="small-caps">April 15, 2014</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#fakelink">
-                                                            <img src="assets/img/avatar/avatar-17.jpg" class="absolute-left-content img-circle"
-                                                                 alt="Avatar">
-                                                            Will you send me an invitation for your weeding party? <span class="small-caps">
-                                                                April
-                                                                01, 2014
-                                                            </span>
-                                                        </a>
-                                                    </li>
+                                                    <li><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-18.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Sorry bro, aku or atau sing jenenge ngono kui <span class="small-caps">April 15, 2014</span>
+                                                    </a></li>
+                                                    <li><a href="#fakelink">
+                                                        <img src="assets/img/avatar/avatar-17.jpg" class="absolute-left-content img-circle"
+                                                            alt="Avatar">
+                                                        Will you send me an invitation for your weeding party? <span class="small-caps">April
+                                                            01, 2014 </span></a></li>
                                                 </ul>
                                             </div>
-                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute;
+                                                top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99;
+                                                right: 1px; background-position: initial initial; background-repeat: initial initial;">
                                             </div>
-                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute;
+                                                top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51);
+                                                opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial;
+                                                background-repeat: initial initial;">
                                             </div>
                                         </div>
                                         <!-- /.nav-dropdown-content scroll-nav-dropdown -->
@@ -327,22 +290,22 @@
                             </li>
                             <!-- End nav message -->
                             <!-- Begin nav friend requuest -->
-                            <li class="dropdown">
-                                <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="badge badge-info icon-count">2</span> <i class="fa fa-users"></i>
-                                </a>
+                            <li class="dropdown"><a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="badge badge-info icon-count">2</span> <i class="fa fa-users"></i></a>
                                 <ul class="dropdown-menu square margin-list-rounded with-triangle">
                                     <li>
                                         <div class="nav-dropdown-heading">
                                             Friend requests
                                         </div>
                                         <!-- /.nav-dropdown-heading -->
-                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 350px;">
-                                            <div class="nav-dropdown-content static-list scroll-nav-dropdown" style="overflow: hidden; width: auto; height: 350px;">
+                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto;
+                                            height: 350px;">
+                                            <div class="nav-dropdown-content static-list scroll-nav-dropdown" style="overflow: hidden;
+                                                width: auto; height: 350px;">
                                                 <ul>
                                                     <li>
                                                         <img src="assets/img/avatar/avatar-12.jpg" class="absolute-left-content img-circle"
-                                                             alt="Avatar">
+                                                            alt="Avatar">
                                                         <div class="row">
                                                             <div class="col-xs-6">
                                                                 <strong>Craig Dixon</strong> <span class="small-caps">2 murtual friends</span>
@@ -361,7 +324,7 @@
                                                     </li>
                                                     <li>
                                                         <img src="assets/img/avatar/avatar-13.jpg" class="absolute-left-content img-circle"
-                                                             alt="Avatar">
+                                                            alt="Avatar">
                                                         <div class="row">
                                                             <div class="col-xs-6">
                                                                 <strong>Mikayla King</strong> <span class="small-caps">20 murtual friends</span>
@@ -380,7 +343,7 @@
                                                     </li>
                                                     <li>
                                                         <img src="assets/img/avatar/avatar-14.jpg" class="absolute-left-content img-circle"
-                                                             alt="Avatar">
+                                                            alt="Avatar">
                                                         <div class="row">
                                                             <div class="col-xs-6">
                                                                 <strong>Richard Dixon</strong> <span class="small-caps">1 murtual friend</span>
@@ -399,7 +362,7 @@
                                                     </li>
                                                     <li>
                                                         <img src="assets/img/avatar/avatar-15.jpg" class="absolute-left-content img-circle"
-                                                             alt="Avatar">
+                                                            alt="Avatar">
                                                         <div class="row">
                                                             <div class="col-xs-6">
                                                                 <strong>Brenda Fuller</strong> <span class="small-caps">8 murtual friends</span>
@@ -418,7 +381,7 @@
                                                     </li>
                                                     <li>
                                                         <img src="assets/img/avatar/avatar-16.jpg" class="absolute-left-content img-circle"
-                                                             alt="Avatar">
+                                                            alt="Avatar">
                                                         <div class="row">
                                                             <div class="col-xs-6">
                                                                 <strong>Ryan Ortega</strong> <span class="small-caps">122 murtual friends</span>
@@ -437,7 +400,7 @@
                                                     </li>
                                                     <li>
                                                         <img src="assets/img/avatar/avatar-17.jpg" class="absolute-left-content img-circle"
-                                                             alt="Avatar">
+                                                            alt="Avatar">
                                                         <div class="row">
                                                             <div class="col-xs-6">
                                                                 <strong>Jessica Gutierrez</strong> <span class="small-caps">45 murtual friends</span>
@@ -456,9 +419,16 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute; top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollBar" style="background-color: rgb(0, 0, 0); width: 4px; position: absolute;
+                                                top: 0px; opacity: 0.4; display: block; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99;
+                                                right: 1px; background-position: initial initial; background-repeat: initial initial;">
                                             </div>
-                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51); opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial; background-repeat: initial initial;">
+                                            <div class="slimScrollRail" style="width: 4px; height: 100%; position: absolute;
+                                                top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px;
+                                                border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(51, 51, 51);
+                                                opacity: 0.3; z-index: 90; right: 1px; background-position: initial initial;
+                                                background-repeat: initial initial;">
                                             </div>
                                         </div>
                                         <!-- /.nav-dropdown-content scroll-nav-dropdown -->
@@ -480,29 +450,32 @@
         </div>
         <!-- /.top-navbar -->
         <!-- END TOP NAV -->
-        <div class="sidebar-left sidebar-nicescroller" tabindex="5000" style="overflow: hidden; outline: none;">
+        <div class="sidebar-left sidebar-nicescroller" tabindex="5000" style="overflow: hidden;
+            outline: none;">
             <ul class="sidebar-menu">
                 <li><a href="/home/index"><i class="fa fa-dashboard icon-sidebar"></i>Dashboard</a></li>
-                <li>
-                    <a href="#fakelink"><i class="fa fa-desktop icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>Layout template <span class="badge badge-warning span-sidebar">3</span> </a>
+                <li><a href="#fakelink"><i class="fa fa-desktop icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>Layout template <span class="badge badge-warning span-sidebar">3</span> </a>
                     <ul class="submenu">
                         <li><a href="#fakelink">Default layout<span class="label label-success span-sidebar">CURRENT</span></a></li>
                         <li><a href="layout-no-sidebar-right.html">No sidebar right</a></li>
                         <li><a href="layout-profile-left.html">Profile summary left</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#fakelink"><i class="fa fa-flask icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>Widget UI kits </a>
+                <li><a href="#fakelink"><i class="fa fa-flask icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>Widget UI kits </a>
                     <ul class="submenu">
                         <li><a href="widget-default.html">Default</a></li>
                         <li><a href="widget-store.html">Store</a></li>
-                        <li><a href="widget-real-estate.html">Real estate <span class="label label-danger span-sidebar">HOT</span></a></li>
+                        <li><a href="widget-real-estate.html">Real estate <span class="label label-danger span-sidebar">
+                            HOT</span></a></li>
                         <li><a href="widget-blog.html">Blog</a></li>
-                        <li><a href="widget-social.html">Social <span class="label label-danger span-sidebar">HOT</span></a></li>
+                        <li><a href="widget-social.html">Social <span class="label label-danger span-sidebar">
+                            HOT</span></a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#fakelink"><i class="fa fa-folder icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>Basic elements <span class="label label-info span-sidebar">BS3</span> </a>
+                <li><a href="#fakelink"><i class="fa fa-folder icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>Basic elements <span class="label label-info span-sidebar">BS3</span> </a>
                     <ul class="submenu">
                         <li><a href="element-typography.html">Typography</a></li>
                         <li><a href="element-form.html">Form element</a></li>
@@ -512,10 +485,11 @@
                         <li><a href="element-button.html">Button</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#fakelink"><i class="fa fa-folder-open icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>More elements </a>
+                <li><a href="#fakelink"><i class="fa fa-folder-open icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>More elements </a>
                     <ul class="submenu">
-                        <li><a href="element-icon.html">Icons <span class="badge badge-warning span-sidebar">3</span></a></li>
+                        <li><a href="element-icon.html">Icons <span class="badge badge-warning span-sidebar">
+                            3</span></a></li>
                         <li><a href="element-box-panel.html">Box &amp; panel</a></li>
                         <li><a href="element-nav-dropdown.html">Nav &amp; dropdown</a></li>
                         <li><a href="element-breadcrumb-pagination.html">Breadcrumb &amp; pagination</a></li>
@@ -527,16 +501,16 @@
                         <li><a href="element-extra.html">Extra custom elements</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#fakelink"><i class="fa fa-table icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>Tables </a>
+                <li><a href="#fakelink"><i class="fa fa-table icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>Tables </a>
                     <ul class="submenu">
                         <li><a href="table-static.html">Static table</a></li>
                         <li><a href="table-color.html">Table color</a></li>
                         <li><a href="table-datatable.html">Jquery datatable</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#fakelink"><i class="fa fa-bar-chart-o icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar"></i>Chart or Graph </a>
+                <li><a href="#fakelink"><i class="fa fa-bar-chart-o icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>Chart or Graph </a>
                     <ul class="submenu">
                         <li><a href="chart-morris.html">Morris chart</a></li>
                         <li><a href="chart-c3.html">C3 chart</a></li>
@@ -546,14 +520,12 @@
                 </li>
             </ul>
         </div>
-
         <div class="page-content">
             <div class="container-fluid">
                 @RenderBody()
             </div>
         </div>
     </div>
-
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/app.js")

@@ -39,21 +39,21 @@ namespace Zing.Mvc.Routes
 
             // this is not called often, but is intended to surface problems before
             // the actual collection is modified
-            var preloading = new RouteCollection();
-            foreach (var routeDescriptor in routesArray)
-            {
+            //var preloading = new RouteCollection();
+            //foreach (var routeDescriptor in routesArray)
+            //{
 
-                // extract the WebApi route implementation
-                var httpRouteDescriptor = routeDescriptor as HttpRouteDescriptor;
-                if (httpRouteDescriptor != null)
-                {
-                    var httpRouteCollection = new RouteCollection();
-                    httpRouteCollection.MapHttpRoute(httpRouteDescriptor.Name, httpRouteDescriptor.RouteTemplate, httpRouteDescriptor.Defaults);
-                    routeDescriptor.Route = httpRouteCollection.First();
-                }
+            //    // extract the WebApi route implementation
+            //    var httpRouteDescriptor = routeDescriptor as HttpRouteDescriptor;
+            //    if (httpRouteDescriptor != null)
+            //    {
+            //        var httpRouteCollection = new RouteCollection();
+            //        httpRouteCollection.MapHttpRoute(httpRouteDescriptor.Name, httpRouteDescriptor.RouteTemplate, httpRouteDescriptor.Defaults);
+            //        routeDescriptor.Route = httpRouteCollection.First();
+            //    }
 
-                preloading.Add(routeDescriptor.Name, routeDescriptor.Route);
-            }
+            //    preloading.Add(routeDescriptor.Name, routeDescriptor.Route);
+            //}
 
 
             using (_routeCollection.GetWriteLock())

@@ -32,6 +32,11 @@ namespace Zing.Web.Controllers
             _membershipServiceInModule = membershipServiceInModule;
         }
 
+        [ChildActionOnly]
+        public ActionResult IndexTemp()
+        {
+            return View();
+        }
         public ActionResult Index()
         {
             Logger.Debug("Index");

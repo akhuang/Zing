@@ -34,7 +34,7 @@ namespace Zing.Environment
 
         public void Activate()
         {
-            //var allRoutes = new List<RouteDescriptor>();
+            var allRoutes = new List<RouteDescriptor>();
             //allRoutes.AddRange(_routeProviders.SelectMany(provider => provider.GetRoutes()));
             //allRoutes.AddRange(_httpRouteProviders.SelectMany(provider => provider.GetRoutes()));
 
