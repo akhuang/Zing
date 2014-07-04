@@ -31,44 +31,12 @@ namespace Zing.Mvc.Routes
             //_extensionManager = extensionManager;
         }
 
-        public void Publish(IEnumerable<RouteDescriptor> routes)
+        public void Publish()
         {
-            var routesArray = routes
-                .OrderByDescending(r => r.Priority)
-                .ToArray();
-
-            // this is not called often, but is intended to surface problems before
-            // the actual collection is modified
-            //var preloading = new RouteCollection();
-            //foreach (var routeDescriptor in routesArray)
-            //{
-
-            //    // extract the WebApi route implementation
-            //    var httpRouteDescriptor = routeDescriptor as HttpRouteDescriptor;
-            //    if (httpRouteDescriptor != null)
-            //    {
-            //        var httpRouteCollection = new RouteCollection();
-            //        httpRouteCollection.MapHttpRoute(httpRouteDescriptor.Name, httpRouteDescriptor.RouteTemplate, httpRouteDescriptor.Defaults);
-            //        routeDescriptor.Route = httpRouteCollection.First();
-            //    }
-
-            //    preloading.Add(routeDescriptor.Name, routeDescriptor.Route);
-            //}
-
-
             using (_routeCollection.GetWriteLock())
             {
                 // existing routes are removed while the collection is briefly inaccessable
-                var cropArray = _routeCollection
-                    .OfType<ShellRoute>()
-                    .Where(sr => sr.ShellSettingsName == _shellSettings.Name)
-                    .ToArray();
-
-                foreach (var crop in cropArray)
-                {
-                    _routeCollection.Remove(crop);
-                }
-
+                var routesArray = _routeCollection.ToArray();
                 // new routes are added
                 foreach (var routeDescriptor in routesArray)
                 {
@@ -102,16 +70,25 @@ namespace Zing.Mvc.Routes
                     //}
 
                     // Route-level setting overrides module-level setting (from manifest).
-                    var sessionStateBehavior = routeDescriptor.SessionState == SessionStateBehavior.Default ? defaultSessionState : routeDescriptor.SessionState;
+                    //var sessionStateBehavior = routeDescriptor.SessionState == SessionStateBehavior.Default ? defaultSessionState : routeDescriptor.SessionState;
 
-                    var shellRoute = new ShellRoute(routeDescriptor.Route, _shellSettings, _workContextAccessor, _runningShellTable)
-                    {
-                        IsHttpRoute = routeDescriptor is HttpRouteDescriptor,
-                        SessionState = sessionStateBehavior
-                    };
-                    _routeCollection.Add(routeDescriptor.Name, shellRoute);
+                    //var shellRoute = new ShellRoute(routeDescriptor.Route, _shellSettings, _workContextAccessor, _runningShellTable)
+                    //{
+                    //    IsHttpRoute = routeDescriptor is HttpRouteDescriptor,
+                    //    SessionState = sessionStateBehavior
+                    //};
+                    //_routeCollection.Add(routeDescriptor.Name, shellRoute);
                 }
             }
         }
+
+        #region IRoutePublisher Members
+
+        public void Publish(IEnumerable<RouteDescriptor> routes)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

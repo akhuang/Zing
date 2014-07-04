@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Zing.Logging;
 using Zing.Mvc.Routes;
+using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace Zing.Environment
 {
@@ -16,9 +18,11 @@ namespace Zing.Environment
         //private readonly IEnumerable<IModelBinderProvider> _modelBinderProviders;
         //private readonly IModelBinderPublisher _modelBinderPublisher;
         //private readonly ISweepGenerator _sweepGenerator;
+        private readonly RouteCollection _routeCollection;
 
-        public DefaultZingShell()
+        public DefaultZingShell(RouteCollection routeCollection)
         {
+            _routeCollection = routeCollection;
             //_eventsFactory = eventsFactory;
             //_routeProviders = routeProviders;
             //_httpRouteProviders = httpRouteProviders;
@@ -35,6 +39,7 @@ namespace Zing.Environment
         public void Activate()
         {
             var allRoutes = new List<RouteDescriptor>();
+
             //allRoutes.AddRange(_routeProviders.SelectMany(provider => provider.GetRoutes()));
             //allRoutes.AddRange(_httpRouteProviders.SelectMany(provider => provider.GetRoutes()));
 
