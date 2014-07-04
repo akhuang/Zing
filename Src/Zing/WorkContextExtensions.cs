@@ -9,6 +9,7 @@ using System.Web.Http.Controllers;
 using Autofac;
 using Zing.Environment;
 using Zing.Environment.Configuration;
+using Zing.Environment.ShellBuilder;
 
 namespace Zing
 {
@@ -40,14 +41,15 @@ namespace Zing
             IRunningShellTable runningShellTable = DependencyResolver.Current.GetService<IRunningShellTable>();
             ShellSettings shellSettings = runningShellTable.Match(new HttpContextWrapper(ctx));
 
-            IOrchardHost orchardHost = HostContainer.Resolve<IOrchardHost>();
-            ShellContext shellContext = orchardHost.GetShellContext(shellSettings);
+            //IOrchardHost orchardHost = HostContainer.Resolve<IOrchardHost>();
+            IZingHost zingHost = DependencyResolver.Current.GetService<IZingHost>();
+            ShellContext shellContext = zingHost.GetShellContext(shellSettings);
             IWorkContextAccessor workContextAccessor = shellContext.LifetimeScope.Resolve<IWorkContextAccessor>();
-            WorkContext workContext = workContextAccessor.GetContext();
+            //WorkContext workContext = workContextAccessor.GetContext();
 
-            workContextValue = DependencyResolver.Current.GetService<IWorkContextAccessor>();
+            //workContextValue = DependencyResolver.Current.GetService<IWorkContextAccessor>();
 
-            var workContextAccessor = (IWorkContextAccessor)workContextValue;
+            //workContextAccessor = (IWorkContextAccessor)workContextValue;
             return workContextAccessor.GetContext(requestContext.HttpContext);
         }
 
