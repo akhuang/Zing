@@ -31,7 +31,7 @@ namespace Zing.Mvc.Routes
             //_extensionManager = extensionManager;
         }
 
-        public void Publish()
+        public void Publish(IEnumerable<RouteDescriptor> routes)
         {
             using (_routeCollection.GetWriteLock())
             {
@@ -72,7 +72,7 @@ namespace Zing.Mvc.Routes
                     // Route-level setting overrides module-level setting (from manifest).
                     //var sessionStateBehavior = routeDescriptor.SessionState == SessionStateBehavior.Default ? defaultSessionState : routeDescriptor.SessionState;
 
-                    //var shellRoute = new ShellRoute(routeDescriptor.Route, _shellSettings, _workContextAccessor, _runningShellTable)
+                    //var shellRoute = new ShellRoute(routeDescriptor, _shellSettings, _workContextAccessor, _runningShellTable)
                     //{
                     //    IsHttpRoute = routeDescriptor is HttpRouteDescriptor,
                     //    SessionState = sessionStateBehavior
@@ -81,14 +81,5 @@ namespace Zing.Mvc.Routes
                 }
             }
         }
-
-        #region IRoutePublisher Members
-
-        public void Publish(IEnumerable<RouteDescriptor> routes)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

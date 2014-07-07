@@ -19,8 +19,19 @@ namespace Zing.Environment
                 .As<IWorkContextAccessor>();//.InstancePerMatchingLifetimeScope("shell");
 
             builder.Register(ctx => new WorkContextImplementation(ctx.Resolve<IComponentContext>()))
-                .As<WorkContext>()
-                .InstancePerMatchingLifetimeScope("work");
+                .As<WorkContext>();
+            //.InstancePerMatchingLifetimeScope("work");
+
+            var exportedTypes = typeof(WorkContext).Assembly.GetExportedTypes().Where(t => t.IsClass);
+            foreach (var item in exportedTypes.Where(x => typeof(IDependency).IsAssignableFrom(x)))
+            {
+                var registration = builder.RegisterType(item);
+
+                foreach (var interfaceType in item.GetInterfaces().Where(itf => typeof(IDependency).IsAssignableFrom(itf)))
+                {
+                    registration.As(interfaceType);
+                }
+            }
 
             builder.RegisterType<WorkContextProperty<HttpContextBase>>()
                 .As<WorkContextProperty<HttpContextBase>>()

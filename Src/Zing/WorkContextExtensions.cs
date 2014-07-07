@@ -48,7 +48,7 @@ namespace Zing
             //WorkContext workContext = workContextAccessor.GetContext();
 
             //workContextValue = DependencyResolver.Current.GetService<IWorkContextAccessor>();
-            //return shellContext.LifetimeScope.Resolve<WorkContext>();
+            return shellContext.LifetimeScope.Resolve<WorkContext>();
             //workContextAccessor = (IWorkContextAccessor)workContextValue;
             return workContextAccessor.GetContext(requestContext.HttpContext);
         }

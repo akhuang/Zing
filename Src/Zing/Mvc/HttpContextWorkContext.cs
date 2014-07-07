@@ -18,6 +18,7 @@ namespace Zing.Mvc
             if (name == "HttpContext")
             {
                 var result = (T)(object)_httpContextAccessor.Current();
+                return ctx => result;
             }
 
             return null;
