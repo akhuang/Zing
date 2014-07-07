@@ -5,7 +5,22 @@ using System.Text;
 
 namespace Zing.Mvc
 {
-    class HttpContextWorkContext
+    public class HttpContextWorkContext : IWorkContextStateProvider
     {
+        readonly IHttpContextAccessor _httpContextAccessor;
+        public HttpContextWorkContext(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public Func<WorkContext, T> Get<T>(string name)
+        {
+            if (name == "HttpContext")
+            {
+                var result = (T)(object)_httpContextAccessor.Current();
+            }
+
+            return null;
+        }
     }
 }

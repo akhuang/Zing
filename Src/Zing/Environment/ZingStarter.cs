@@ -31,6 +31,7 @@ namespace Zing.Environment
 
             FluentMetadataConfiguration.RegisterEachConfigurationWithContainer(r => builder.RegisterType(r.MetadataConfigurationType).As(r.InterfaceType));
 
+            builder.RegisterType<
             RegisterVolatileProvider<AppDataFolder, IAppDataFolder>(builder);
 
             builder.RegisterType<DefaultZingHost>().As<IZingHost>().SingleInstance();
