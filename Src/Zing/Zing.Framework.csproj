@@ -199,6 +199,9 @@
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Mvc\ActionFilter\AutoMapAttribute.cs" />
     <Compile Include="Mvc\ActionFilter\AutoMapFilter.cs" />
+    <Compile Include="Security\FormsAuthenticationService.cs" />
+    <Compile Include="Security\InternalAuthorize.cs" />
+    <Compile Include="Security\SecurityFilter.cs" />
     <Compile Include="ServiceBase.cs" />
     <Compile Include="Data\SessionFactoryHolder.cs" />
     <Compile Include="Data\SessionLocator.cs" />

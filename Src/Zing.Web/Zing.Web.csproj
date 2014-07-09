@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Default1Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PagerController.cs" />
@@ -605,6 +606,7 @@
     <Content Include="Views\Pager\Index.cshtml" />
     <Content Include="Views\Home\Grid.cshtml" />
     <Content Include="Views\Home\IndexTemp.cshtml" />
+    <Content Include="Views\Account\Logon.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

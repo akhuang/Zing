@@ -12,9 +12,11 @@ using Zing.Mvc;
 using Zing.UI.Navigation;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
+using Zing.Security;
 
 namespace Zing.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         //
@@ -37,6 +39,7 @@ namespace Zing.Web.Controllers
         {
             return View();
         }
+         
         public ActionResult Index()
         {
             Logger.Debug("Index");
