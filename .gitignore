@@ -13,3 +13,5 @@ obj
 # NuGet Packages Directory
 packages
 
+/Src/Zing.Framework.Tests/TestResult.xml
+/Src/Zing.Framework.Tests/Zing.Framework.Tests.csproj.VisualState.xml

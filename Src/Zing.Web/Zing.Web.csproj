@@ -187,6 +187,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\img\tiny.jpg" />
     <Content Include="Content\kendo\Black\editor.png" />
     <Content Include="Content\kendo\Black\imagebrowser.png" />
     <Content Include="Content\kendo\Black\indeterminate.gif" />
@@ -387,6 +388,11 @@
     <Content Include="Content\kendo\Uniform\slider-v.gif" />
     <Content Include="Content\kendo\Uniform\sprite.png" />
     <Content Include="Content\kendo\Uniform\sprite_2x.png" />
+    <Content Include="Content\Logon.css" />
+    <Content Include="Content\PIE\PIE.htc" />
+    <Content Include="Content\PIE\PIE.js" />
+    <Content Include="Content\PIE\PIE_uncompressed.htc" />
+    <Content Include="Content\PIE\PIE_uncompressed.js" />
     <Content Include="Content\site.css" />
     <Content Include="Global.asax" />
     <None Include="Content\bootstrap-theme.css.map" />
