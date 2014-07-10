@@ -16,39 +16,43 @@
     <div class="buc-login-box">
         <div class="login-container">
             <div class="header">
+
             </div>
             <form name="loginForm" id="loginForm" action="" method="post">
-            <input type="hidden" name="return" value="" />
-            <div class="legend">
-                登录中心</div>
-            <hr>
-            <hr class="decoration">
-            <div class="hint">
-            </div>
-            <fieldset>
-                <div id="container">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="icon-user"></i></span>
-                        <input type="text" class="form-control" placeholder="Username">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="icon-key"></i></span>
-                        <input type="password" class="form-control" placeholder="Password">
-                    </div>
+                <input type="hidden" name="return" value="" />
+                <div class="legend">
+                    登录中心
                 </div>
-                <label class="checkbox" id="keepLogin">
-                    <input type="checkbox" id="loginMaintain" name="login_maintain">
-                    &nbsp;保持登录
-                </label>
-                <button type="submit" class="btn-login" onfocus="blur()">
-                    登录</button>
-                <input type="hidden" name="event_submit_do_sso_login" value="true">
-                <input type="hidden" name="umidTokenId" value="Tc56b4df09651159d9021b03330297db7">
-            </fieldset>
+                <hr>
+                <hr class="decoration">
+                <div class="hint">
+                </div>
+                <fieldset>
+                    <div id="container">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon-user"></i></span>
+                            <input type="text" class="form-control" name="userName" id="userName" placeholder="Username" data-val="true" data-val-required="用户名不能为空"><span data-valmsg-for="userName"></span>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon-key"></i></span>
+                            <input type="password" class="form-control" placeholder="Password">
+                        </div>
+                    </div>
+                    <label class="checkbox" id="keepLogin">
+                        <input type="checkbox" id="loginMaintain" name="login_maintain">
+                        &nbsp;保持登录
+                    </label>
+                    <button type="submit" class="btn-login">
+                        登录
+                    </button>
+                    <input type="hidden" name="event_submit_do_sso_login" value="true">
+                    <input type="hidden" name="umidTokenId" value="Tc56b4df09651159d9021b03330297db7">
+                </fieldset>
             </form>
         </div>
     </div>
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
 </body>
 </html>
