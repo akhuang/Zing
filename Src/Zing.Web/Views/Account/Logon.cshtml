@@ -10,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>登录</title>
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Scripts/qTip/jquery.qtip.css")
     @Styles.Render("~/Content/Logon.css")
 </head>
 <body>
@@ -31,11 +32,11 @@
                     <div id="container">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="icon-user"></i></span>
-                            <input type="text" class="form-control" name="userName" id="userName" placeholder="Username" data-val="true" data-val-required="用户名不能为空"><span data-valmsg-for="userName"></span>
+                            <input type="text" class="form-control" name="userName" id="userName" placeholder="Username" data-val="true" data-val-required="用户名不能为空"><span data-valmsg-for="userName" data-valmsg-replace="true"></span>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="icon-key"></i></span>
-                            <input type="password" class="form-control" placeholder="Password">
+                            <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="Password" data-val="true" data-val-digits="必须输入正整数"><span data-valmsg-for="userPwd" data-valmsg-replace="true"></span>
                         </div>
                     </div>
                     <label class="checkbox" id="keepLogin">
@@ -54,5 +55,7 @@
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/qTip/jquery.qtip.js")
+
 </body>
 </html>
