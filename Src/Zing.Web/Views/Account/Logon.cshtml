@@ -36,11 +36,11 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="icon-key"></i></span>
-                            <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="Password" data-val="true" data-val-digits="必须输入正整数"><span data-valmsg-for="userPwd" data-valmsg-replace="true"></span>
+                            <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="Password" data-val="true" data-val-required="密码不能为空"><span data-valmsg-for="userPwd" data-valmsg-replace="true"></span>
                         </div>
                     </div>
                     <label class="checkbox" id="keepLogin">
-                        <input type="checkbox" id="loginMaintain" name="login_maintain">
+                        <input type="checkbox" id="loginMaintain" name="login_maintain" style="margin:0;position:static;">
                         &nbsp;保持登录
                     </label>
                     <button type="submit" class="btn-login">

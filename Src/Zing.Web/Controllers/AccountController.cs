@@ -16,5 +16,10 @@ namespace Zing.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Logon()
+        {
+
+        }
     }
 }
