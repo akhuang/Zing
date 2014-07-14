@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Web", "Zing.Web\Zing.Web.csproj", "{8C5FA83F-059F-4BD7-A813-46FF93A04C23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Framework", "Zing\Zing.Framework.csproj", "{9B0546FF-2871-4E97-8448-BB3AD038F0FA}"
@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{371BF2
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Mvc", "Zing.Mvc\Zing.Mvc.csproj", "{A54062C0-0D41-4357-81B5-E972D6E4F029}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Core", "Zing.Core\Zing.Core.csproj", "{E269A286-CFB0-40ED-8161-4BAF4546EAE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{A54062C0-0D41-4357-81B5-E972D6E4F029}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54062C0-0D41-4357-81B5-E972D6E4F029}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54062C0-0D41-4357-81B5-E972D6E4F029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
