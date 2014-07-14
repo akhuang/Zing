@@ -17,9 +17,9 @@ namespace Zing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Logon()
+        public ActionResult Logon(int id)
         {
-
+            return View();
         }
     }
 }
