@@ -41,9 +41,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\MembershipService.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Security\" />
+    <ProjectReference Include="..\Zing\Zing.Framework.csproj">
+      <Project>{9b0546ff-2871-4e97-8448-bb3ad038f0fa}</Project>
+      <Name>Zing.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
