@@ -4,16 +4,18 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Zing.Security;
+using Zing.Framework.Security;
 
 namespace Zing.Web.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAuthenticationService _authenticationService;
-
-        public AccountController(IAuthenticationService authenticationService)
+        private readonly IMembershipService _membershipService;
+        public AccountController(IAuthenticationService authenticationService, IMembershipService membershipService)
         {
             _authenticationService = authenticationService;
+            _membershipService = membershipService;
         }
         //
         // GET: /Account/
@@ -24,10 +26,47 @@ namespace Zing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Logon(string userName, string userPwd)
+        public ActionResult Logon(string userName, string userPwd, string returnUrl, bool createPersistenseCookie)
         {
-            _authenticationService.SignIn(
-            return View();
+            var user = ValidateLogOn(userName, userPwd);
+
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            _authenticationService.SignIn(user, createPersistenseCookie);
+
+            return new RedirectResult(returnUrl);
+        }
+
+        private IUser ValidateLogOn(string userName, string userPwd)
+        {
+            bool validate = true;
+            if (string.IsNullOrEmpty(userName))
+            {
+                ModelState.AddModelError("userName", "用户名不能为空");
+                validate = false;
+            }
+
+            if (string.IsNullOrEmpty(userPwd))
+            {
+                ModelState.AddModelError("password", "密码不能为空");
+                validate = false;
+            }
+
+            if (!validate)
+            {
+                return null;
+            }
+
+            IUser user = _membershipService.ValidateUser(userName, userPwd);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("user", "登录失败");
+            }
+            return user;
         }
     }
 }

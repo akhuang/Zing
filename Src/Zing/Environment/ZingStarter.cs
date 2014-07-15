@@ -12,6 +12,7 @@ using System.Web.Mvc;
 using Autofac.Integration.Mvc;
 using Zing.Mvc;
 using Zing.Data;
+using Zing.Security;
 
 
 namespace Zing.Environment
@@ -44,6 +45,8 @@ namespace Zing.Environment
                     builder.RegisterType<ShellContainerRegistrations>().As<IShellContainerRegistrations>().SingleInstance();
                 }
             }
+
+            builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
 
             builder.RegisterType<RunningShellTable>().As<IRunningShellTable>().SingleInstance();
             builder.RegisterType<DefaultZingShell>().As<IZingShell>().InstancePerMatchingLifetimeScope("shell");
