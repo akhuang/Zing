@@ -26,7 +26,7 @@ namespace Zing.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Logon(string userName, string userPwd, string returnUrl, bool createPersistenseCookie)
+        public ActionResult Logon(string userName, string userPwd, string returnUrl, bool rememberMe = false)
         {
             var user = ValidateLogOn(userName, userPwd);
 
@@ -35,7 +35,7 @@ namespace Zing.Web.Controllers
                 return View();
             }
 
-            _authenticationService.SignIn(user, createPersistenseCookie);
+            _authenticationService.SignIn(user, rememberMe);
 
             return new RedirectResult(returnUrl);
         }
@@ -64,7 +64,7 @@ namespace Zing.Web.Controllers
 
             if (user == null)
             {
-                ModelState.AddModelError("user", "登录失败");
+                ModelState.AddModelError("", "登录失败");
             }
             return user;
         }

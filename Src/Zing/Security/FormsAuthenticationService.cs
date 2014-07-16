@@ -8,19 +8,20 @@ using Zing.Mvc;
 using Zing.Logging;
 using System.Web.Security;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Zing.Security
 {
     public class FormsAuthenticationService : IAuthenticationService
     {
-        private readonly ShellSettings _setting;
+        private ShellSettings _setting;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IUser _signedInUser;
         private bool _isAuthenticated;
 
-        public FormsAuthenticationService(ShellSettings settings, IHttpContextAccessor httpContextAccessor)
+        public FormsAuthenticationService(IHttpContextAccessor httpContextAccessor)
         {
-            _setting = settings;
+            //_setting = settings;
             _httpContextAccessor = httpContextAccessor;
             ExpirationTimeSpan = TimeSpan.FromDays(30);
         }
@@ -33,6 +34,7 @@ namespace Zing.Security
 
         public void SignIn(IUser user, bool createPersistentCookie)
         {
+            _setting = DependencyResolver.Current.GetService<ShellSettings>();
             var now = DateTime.Now;
             var userData = string.Concat(Convert.ToString(user.Id), ";", _setting.Name);
 

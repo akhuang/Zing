@@ -46,8 +46,6 @@ namespace Zing.Environment
                 }
             }
 
-            builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
-
             builder.RegisterType<RunningShellTable>().As<IRunningShellTable>().SingleInstance();
             builder.RegisterType<DefaultZingShell>().As<IZingShell>().InstancePerMatchingLifetimeScope("shell");
 

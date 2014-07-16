@@ -19,37 +19,36 @@
             <div class="header">
             </div>
             <form name="loginForm" id="loginForm" action="" method="post">
-            <input type="hidden" name="return" value="" />
             <div class="legend">
                 登录中心
             </div>
             <hr>
             <hr class="decoration">
             <div class="hint">
+                @Html.ValidationSummary(true)
             </div>
             <fieldset>
                 <div id="container">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="icon-user"></i></span>
                         <input type="text" class="form-control" name="userName" id="userName" placeholder="Username"
-                            data-val="true" data-val-required="用户名不能为空">
+                            data-val="true" data-val-required="用户名不能为空" />
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="icon-key"></i></span>
                         <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="Password"
-                            data-val="true" data-val-required="密码不能为空">
+                            data-val="true" data-val-required="密码不能为空" />
                     </div>
                 </div>
                 <label class="checkbox" id="keepLogin">
-                    <input type="checkbox" id="loginMaintain" name="login_maintain" style="margin: 0;
-                        position: static;">
+                    @* @Html.CheckBox("rememberMe", false, new { style = "margin: 0; position: static;" })*@
+                    <input type="checkbox" id="rememberMe" name="rememberMe" style="margin: 0; position: static;"
+                        value="false" />
                     &nbsp;保持登录
                 </label>
                 <button type="submit" class="btn-login">
                     登录
                 </button>
-                <input type="hidden" name="event_submit_do_sso_login" value="true">
-                <input type="hidden" name="umidTokenId" value="Tc56b4df09651159d9021b03330297db7">
             </fieldset>
             </form>
         </div>

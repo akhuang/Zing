@@ -1,6 +1,6 @@
 Name: Default
 DataProvider: SqlServer
-DataConnectionString: Data Source=WIN-FPMRKDTX3YI;Initial Catalog=orchard;Persist Security Info=True;User ID=sa;Password=sa123
+DataConnectionString: Data Source=.;Initial Catalog=zing.security;Persist Security Info=True;User ID=sa;Password=sa
 DataPrefix: null
 RequestUrlHost: null
 RequestUrlPrefix: null

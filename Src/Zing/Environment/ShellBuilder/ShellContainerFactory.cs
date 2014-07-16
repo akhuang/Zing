@@ -9,6 +9,9 @@ using System.Text;
 using Zing.Environment.Configuration;
 using Zing.Mvc;
 using Zing.Mvc.Routes;
+using Zing.Security;
+using Autofac.Integration.Mvc;
+using System.Web.Mvc;
 
 namespace Zing.Environment.ShellBuilder
 {
@@ -50,6 +53,7 @@ namespace Zing.Environment.ShellBuilder
                     //var registration = builder.RegisterModule(new MvcModule());
                     //.WithProperty("Feature", item.Feature)
                     //.WithMetadata("Feature", item.Feature);
+
                 });
 
             return intermediateScope.BeginLifetimeScope(
@@ -60,6 +64,8 @@ namespace Zing.Environment.ShellBuilder
 
                     //builder.Register(ctx => dynamicProxyContext);
                     builder.Register(ctx => settings);
+                    builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
+
                     //builder.Register(ctx => blueprint.Descriptor);
                     //builder.Register(ctx => blueprint);
 
@@ -70,6 +76,7 @@ namespace Zing.Environment.ShellBuilder
                     //}
 
                     builder.RegisterModule(new MvcModule());
+                     
                     //builder.RegisterType<RoutePublisher>().As<IRoutePublisher>();
 
                     //foreach (var item in blueprint.Dependencies.Where(t => typeof(IDependency).IsAssignableFrom(t.Type)))
