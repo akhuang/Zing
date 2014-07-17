@@ -34,6 +34,7 @@ namespace Zing.Environment.ShellBuilder
 
         public ILifetimeScope CreateContainer(ShellSettings settings)
         {
+            //DependencyResolver.Current.
             var intermediateScope = _lifetimeScope.BeginLifetimeScope(
                 builder =>
                 {
@@ -76,7 +77,9 @@ namespace Zing.Environment.ShellBuilder
                     //}
 
                     builder.RegisterModule(new MvcModule());
-                     
+
+
+
                     //builder.RegisterType<RoutePublisher>().As<IRoutePublisher>();
 
                     //foreach (var item in blueprint.Dependencies.Where(t => typeof(IDependency).IsAssignableFrom(t.Type)))

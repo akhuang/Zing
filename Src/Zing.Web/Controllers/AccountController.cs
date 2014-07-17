@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Zing.Security;
 using Zing.Framework.Security;
+using Zing.Mvc.Extensions;
 
 namespace Zing.Web.Controllers
 {
@@ -37,7 +38,7 @@ namespace Zing.Web.Controllers
 
             _authenticationService.SignIn(user, rememberMe);
 
-            return new RedirectResult(returnUrl);
+            return this.RedirectLocal(returnUrl);
         }
 
         private IUser ValidateLogOn(string userName, string userPwd)

@@ -25,7 +25,7 @@ namespace Zing.Environment
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new DataModule());
             builder.RegisterModule(new WorkContextModule());
-            //builder.RegisterModule(new MvcModule());
+            builder.RegisterModule(new MvcModule());
             builder.RegisterType<DefaultHostEnvironment>().As<IHostEnvironment>();
             builder.RegisterType<AppDataFolderRoot>().As<IAppDataFolderRoot>().SingleInstance();
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
@@ -50,6 +50,8 @@ namespace Zing.Environment
             builder.RegisterType<DefaultZingShell>().As<IZingShell>().InstancePerMatchingLifetimeScope("shell");
 
             registrations(builder);
+
+            builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

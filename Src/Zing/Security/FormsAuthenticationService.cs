@@ -34,10 +34,9 @@ namespace Zing.Security
 
         public void SignIn(IUser user, bool createPersistentCookie)
         {
-            _setting = DependencyResolver.Current.GetService<ShellSettings>();
             var now = DateTime.Now;
-            var userData = string.Concat(Convert.ToString(user.Id), ";", _setting.Name);
-
+            //var userData = string.Concat(Convert.ToString(user.Id), ";", _setting.Name);
+            var userData = user.Id.ToString();
             var ticket = new FormsAuthenticationTicket(
                 1,
                 user.UserName,
@@ -58,10 +57,10 @@ namespace Zing.Security
 
             var httpContext = _httpContextAccessor.Current();
 
-            if (!string.IsNullOrEmpty(_setting.RequestUrlPrefix))
-            {
-                cookie.Path = GetCookiePath(httpContext);
-            }
+            //if (!string.IsNullOrEmpty(_setting.RequestUrlPrefix))
+            //{
+            //    cookie.Path = GetCookiePath(httpContext);
+            //}
 
             if (FormsAuthentication.CookieDomain != null)
             {
@@ -88,7 +87,7 @@ namespace Zing.Security
                 cookiePath += '/';
             }
 
-            cookiePath += _setting.RequestUrlPrefix;
+            //cookiePath += _setting.RequestUrlPrefix;
 
             return cookiePath;
         }
