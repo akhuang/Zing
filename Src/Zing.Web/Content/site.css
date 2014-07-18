@@ -513,6 +513,8 @@ ul.sidebar-menu li.selected a, ul.sidebar-menu li.selected a:hover, ul.sidebar-m
     margin-bottom:0px;
     margin-right:0px;
     margin-left:0px; 
+    
+    border-top: 1px solid #E6E8EA;
 }
 
 .page-content.toggle
