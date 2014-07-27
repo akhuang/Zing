@@ -2,7 +2,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="row" >
+<div class="row">
     @(Html.Kendo().Grid<Zing.Modules.Users.ViewModels.UserViewModel>()
         .Name("grid")
         .Columns(columns =>
@@ -11,17 +11,16 @@
             columns.Bound(c => c.NormalizedUserName).Width(190);
             columns.Bound(c => c.Email);
         })
-        .HtmlAttributes(new { style = "height: 100%;" })
-        .Scrollable()
-        .Groupable()
-        .Sortable()
-        .Pageable(pageable => pageable
-            .Refresh(true)
-            .PageSizes(true)
-            .ButtonCount(5))
-        .DataSource(dataSource => dataSource
-            .Ajax()
-            .Read(read => read.Action("Customers_Read", "Home"))
-        )
-)
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template(@<text>
+                <div class="toolbar">
+                    @(Html.Kendo().Button().Name("btnAdd").HtmlAttributes(new { type = "button" }).Content("add user").Events(x => x.Click("onClick")))
+                </div>
+            </text>);
+        }).HtmlAttributes(new { style = "height: 100%;" }).Scrollable().Sortable()
+                                .Pageable(pageable => pageable.Refresh(true).PageSizes(true).ButtonCount(5))
+                                .DataSource(dataSource => dataSource.Ajax().Read(read => read.Action("Customers_Read", "Home")))
+
+    )
 </div>
