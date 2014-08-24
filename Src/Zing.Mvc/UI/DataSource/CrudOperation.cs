@@ -15,6 +15,7 @@ namespace Kendo.Mvc.UI
         {            
             RouteValues = new RouteValueDictionary();
             Data = new ClientHandlerDescriptor();
+            Cache = true;
         }
 
         private string Encode(string value)
@@ -23,6 +24,7 @@ namespace Kendo.Mvc.UI
             value = Regex.Replace(value, "(%20)*%23(%20)*", "#", RegexOptions.IgnoreCase);
             value = Regex.Replace(value, "(%20)*%24%7B(%20)*", "${", RegexOptions.IgnoreCase);
             value = Regex.Replace(value, "(%20)*%7D(%20)*", "}", RegexOptions.IgnoreCase);
+            value = Regex.Replace(value, "(%20)*%7B0(%20)*", "{0", RegexOptions.IgnoreCase);
 
             return value;
         }
@@ -46,6 +48,16 @@ namespace Kendo.Mvc.UI
                 if (Type.HasValue())
                 {
                     json["type"] = Type;
+                }
+
+                if (!string.IsNullOrEmpty(ContentType))
+                {
+                    json["contentType"] = ContentType;
+                }
+
+                if (!Cache)
+                {
+                    json["cache"] = Cache;
                 }
             }
         }
@@ -115,5 +127,8 @@ namespace Kendo.Mvc.UI
             get;
             set;
         }
+
+        public string ContentType { get; set; }
+        public bool Cache { get; set; }
     }
 }

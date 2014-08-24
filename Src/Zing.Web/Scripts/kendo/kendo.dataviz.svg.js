@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.svg",
-    name: "Output: SVG",
-    description: "Support for SVG rendering",
-    category: "dataviz",
-    depends: [ "dataviz.core" ]
-});
+(function(f, define){
+    define([ "./kendo.dataviz.core" ], f);
+})(function(){
 
 (function () {
 
@@ -162,6 +158,18 @@ kendo_module({
             );
         },
 
+        createClipPath: function(id, box) {
+            var view = this,
+                clipPath = view.definitions[id];
+            if(!clipPath) {
+                clipPath = new SVGClipPath({id: id});
+                clipPath.children.push(view.createRect(box, {}));
+                view.definitions[id] = clipPath;
+            }
+
+            return clipPath;
+        },
+
         createText: function(content, options) {
             return this.decorate(
                 new SVGText(content, options)
@@ -256,10 +264,22 @@ kendo_module({
         }
     });
 
-    var SVGText = ViewElement.extend({
+    var SVGViewElement = ViewElement.extend({
+        renderClipPath: function () {
+            var element = this,
+                id = element.options.clipPathId,
+                clipPath = "";
+            if (id) {
+                clipPath = element.renderAttr("clip-path", "url(#" + id + ")");
+            }
+            return clipPath;
+        }
+    });
+
+    var SVGText = SVGViewElement.extend({
         init: function(content, options) {
             var text = this;
-            ViewElement.fn.init.call(text, options);
+            SVGViewElement.fn.init.call(text, options);
 
             text.content = content;
             text.template = SVGText.template;
@@ -274,7 +294,7 @@ kendo_module({
                     "style='font: #= d.options.font #; " +
                     "#= d.renderCursor() #' " +
                     "fill='#= d.options.color #'>" +
-                    "#= d.content #</text>"
+                    "${ d.content }</text>"
                 );
             }
         },
@@ -321,15 +341,16 @@ kendo_module({
         }
     });
 
-    var SVGPath = ViewElement.extend({
+    var SVGPath = SVGViewElement.extend({
         init: function(options) {
             var path = this;
-            ViewElement.fn.init.call(path, options);
+            SVGViewElement.fn.init.call(path, options);
 
             path.template = SVGPath.template;
             if (!path.template) {
                 path.template = SVGPath.template = renderTemplate(
                     "<path #= d.renderId() #" +
+                    "#= d.renderClipPath() #" +
                     "style='display: #= d.renderDisplay() #; " +
                     "#= d.renderCursor() #' " +
                     "#= d.renderDataAttributes() # " +
@@ -708,7 +729,7 @@ kendo_module({
         }
     });
 
-    var SVGGroup = ViewElement.extend({
+    var SVGGroup = SVGViewElement.extend({
         init: function(options) {
             var group = this;
             ViewElement.fn.init.call(group, options);
@@ -719,7 +740,7 @@ kendo_module({
                 renderTemplate(
                     "<g#= d.renderId() #" +
                     "#= d.renderDataAttributes() #" +
-                    "#= d.renderAttr(\"clip-path\", d.options.clipPath) #>" +
+                    "#= d.renderClipPath() #>" +
                     "#= d.renderContent() #</g>"
                 );
             }
@@ -995,7 +1016,7 @@ kendo_module({
                     );
                 }
 
-                element.options.clipPath = "url(#" + clipId + ")";
+                element.options.clipPathId = clipId;
             }
 
             return element;
@@ -1075,3 +1096,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

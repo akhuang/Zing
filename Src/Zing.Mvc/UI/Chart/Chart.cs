@@ -352,16 +352,39 @@ namespace Kendo.Mvc.UI
             }
         }
 
+        private void ProcessDataSource()
+        {
+            DataSourceRequest request = new DataSourceRequest();
+
+            DataSource.Process(request, true);
+        }
+
         protected virtual void SerializeDataSource(IDictionary<string, object> options)
         {
-            if (!string.IsNullOrEmpty(DataSource.Transport.Read.Url))
+            if (DataSource.Type == DataSourceType.Custom)
+            {
+                DataSource.Data = Data;
+
+                if (DataSource.CustomType == "aspnetmvc-ajax" && DataSource.Data != null)
+                {
+                    ProcessDataSource();
+                }
+
+                IDictionary<string, object> result = DataSource.ToJson();
+                options.Add("dataSource", result);
+            }
+            else if (!string.IsNullOrEmpty(DataSource.Transport.Read.Url))
             {
                 if (!DataSource.Transport.Read.Type.HasValue())
                 {
                     DataSource.Transport.Read.Type = "POST";
                 }
 
-                DataSource.Type = DataSourceType.Ajax;
+                if (DataSource.Type == null)
+                {
+                    DataSource.Type = DataSourceType.Ajax;
+                }
+
                 options.Add("dataSource", DataSource.ToJson());
             }
             else if (Data != null)

@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.vml",
-    name: "Output: VML",
-    description: "Support for VML rendering",
-    category: "dataviz",
-    depends: [ "dataviz.core" ]
-});
+(function(f, define){
+    define([ "./kendo.dataviz.core" ], f);
+})(function(){
 
 (function () {
 
@@ -59,7 +55,8 @@ kendo_module({
 
             view.decorators.push(
                 new VMLOverlayDecorator(view),
-                new VMLGradientDecorator(view)
+                new VMLGradientDecorator(view),
+                new VMLClipDecorator(view)
             );
 
             if (dataviz.ui.Chart) {
@@ -205,6 +202,18 @@ kendo_module({
             );
         },
 
+        createClipPath: function(id, box) {
+            var view = this,
+                clipPath = view.definitions[id];
+
+            if(!clipPath) {
+                clipPath = view.decorate(new VMLClipRect(box, {id: id}));
+                view.definitions[id] = clipPath;
+            }
+
+            return clipPath;
+        },
+
         createGradient: function(options) {
             var validRadial = defined(options.cx) && defined(options.cy) && defined(options.bbox);
 
@@ -235,7 +244,7 @@ kendo_module({
                     "font: #= d.options.font #; color: #= d.options.color #; " +
                     "visibility: #= d.renderVisibility() #; white-space: nowrap; " +
                     "#= d.renderCursor() #'>" +
-                    "#= d.content #</kvml:textbox>"
+                    "${ d.content }</kvml:textbox>"
                 );
             }
         },
@@ -290,7 +299,7 @@ kendo_module({
                     "#= d.renderPath() #" +
                     "<kvml:fill color='#= d.options.color #' />" +
                     "<kvml:textpath on='true' style='font: #= d.options.font #;' " +
-                    "fitpath='false' string='#= d.content #' /></kvml:shape>"
+                    "fitpath='false' string='${ d.content }' /></kvml:shape>"
                 );
             }
         },
@@ -638,8 +647,8 @@ kendo_module({
                 endAngle -= 1 - angle;
             }
 
-            outerStartPoint = roundPointCoordinates(config.point(startAngle)),
-            innerStartPoint = roundPointCoordinates(config.point(startAngle, true)),
+            outerStartPoint = roundPointCoordinates(config.point(startAngle));
+            innerStartPoint = roundPointCoordinates(config.point(startAngle, true));
             outerEndPoint = roundPointCoordinates(config.point(endAngle));
             innerEndPoint = roundPointCoordinates(config.point(endAngle, true));
 
@@ -778,10 +787,10 @@ kendo_module({
             if (!clipRect.template) {
                 clipRect.template = VMLClipRect.template = renderTemplate(
                     "<#= d.tagName # #= d.renderId() #" +
-                        "style='position:absolute; " +
-                        "width:#= d.box.width() #px; height:#= d.box.height() #px; " +
-                        "top:#= d.box.y1 #px; " +
-                        "left:#= d.box.x1 #px; " +
+                        "style='position:absolute;" +
+                        "width:#= d.box.width() #px; height:#= d.box.height() + d.box.y1#px; " +
+                        "top:0px; " +
+                        "left:0px; " +
                         "clip:#= d._renderClip() #;' >" +
                     "#= d.renderContent() #</#= d.tagName #>"
                 );
@@ -971,6 +980,25 @@ kendo_module({
         }
     };
 
+    function VMLClipDecorator(view) {
+        this.view = view;
+    }
+
+    VMLClipDecorator.prototype = {
+        decorate: function (element) {
+            var decorator = this,
+                view = decorator.view,
+                clipPath = view.definitions[element.options.clipPathId];
+            if (clipPath) {
+                clipPath = clipPath.clone();
+                clipPath.options.id = uniqueId();
+                clipPath.children.push(element);
+                return clipPath;
+            }
+            return element;
+        }
+    };
+
     var VMLClipAnimationDecorator = Class.extend({
         init: function(view) {
             this.view = view;
@@ -1050,6 +1078,7 @@ kendo_module({
     deepExtend(dataviz, {
         VMLCircle: VMLCircle,
         VMLClipAnimationDecorator: VMLClipAnimationDecorator,
+        VMLClipDecorator: VMLClipDecorator,
         VMLClipRect: VMLClipRect,
         VMLFill: VMLFill,
         VMLGroup: VMLGroup,
@@ -1071,3 +1100,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -11,29 +11,24 @@ namespace Kendo.Mvc.UI
         {
             //>> Initialization
         
-        //<< Initialization
-
-            
+        //<< Initialization            
         }
-
-        
 
         //>> Fields
         
-        public string Position { get; set; }
-        
         //<< Fields
+        public MapControlPosition? Position { get; set; }
 
         protected override void Serialize(IDictionary<string, object> json)
         {
             //>> Serialization
         
-            if (Position.HasValue())
-            {
-                json["position"] = Position;
-            }
-            
         //<< Serialization
+            if (Position.HasValue)
+            {
+                var pos = Position.ToString();
+                json["position"] = pos.ToLowerInvariant()[0] + pos.Substring(1);
+            }
         }
     }
 }

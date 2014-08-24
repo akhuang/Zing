@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.buttongroup",
-    name: "ButtonGroup",
-    category: "mobile",
-    description: "The Kendo mobile ButtonGroup widget is a linear set of grouped buttons.",
-    depends: [ "mobile.application" ]
-});
+(function(f, define){
+    define([ "./kendo.mobile.application" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -125,11 +121,14 @@ kendo_module({
                 return;
             }
 
-            var that = this;
-            that.select(e.currentTarget);
-            that.trigger(SELECT);
+            this.select(e.currentTarget);
+            this.trigger(SELECT, { index: this.selectedIndex });
         }
     });
 
     ui.plugin(ButtonGroup);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

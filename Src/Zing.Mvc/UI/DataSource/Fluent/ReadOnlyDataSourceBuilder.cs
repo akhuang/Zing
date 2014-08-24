@@ -86,6 +86,26 @@
             return this;
         }
 
+        /// <summary>
+        /// Use it to configure Custom binding.
+        /// </summary>
+        public ReadOnlyCustomDataSourceBuilder Custom()
+        {
+            dataSource.Type = DataSourceType.Custom;
+
+            return new ReadOnlyCustomDataSourceBuilder(dataSource, viewContext, urlGenerator);
+        }
+
+        /// <summary>
+        /// Use it to configure SignalR binding.
+        /// </summary>
+        public ReadOnlySignalRDataSourceBuilder SignalR()
+        {
+            dataSource.Type = DataSourceType.Custom;
+
+            return new ReadOnlySignalRDataSourceBuilder(dataSource);
+        }
+
         protected virtual void SetOperationUrl(CrudOperation operation, string actionName, string controllerName, object routeValues)
         {
             operation.Action(actionName, controllerName, routeValues);

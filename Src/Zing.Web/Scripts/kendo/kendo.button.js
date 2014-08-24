@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "button",
-    name: "Button",
-    category: "web",
-    description: "The Button widget displays styled buttons.",
-    depends: [ "core" ]
-});
+(function(f, define){
+    define([ "./kendo.core" ], f);
+})(function(){
 
 (function ($, undefined) {
     var kendo = window.kendo,
@@ -121,7 +117,7 @@ kendo_module({
                 isEmpty = true;
 
                 element.contents().not("span.k-sprite").not("span.k-icon").not("img.k-image").each(function(idx, el){
-                    if (el.nodeType == 1 || el.nodeType == 3 && el.nodeValue.trim().length > 0) {
+                    if (el.nodeType == 1 || el.nodeType == 3 && $.trim(el.nodeValue).length > 0) {
                         isEmpty = false;
                     }
                 });
@@ -173,3 +169,7 @@ kendo_module({
     kendo.ui.plugin(Button);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

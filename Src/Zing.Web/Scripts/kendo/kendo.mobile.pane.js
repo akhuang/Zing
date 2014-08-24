@@ -1,19 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.pane",
-    name: "Pane",
-    category: "mobile",
-    description: "Mobile Pane",
-    depends: [ "mobile.view", "mobile.loader" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.mobile.view", "./kendo.mobile.loader" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -57,13 +52,14 @@ kendo_module({
             }
 
             this.history = [];
+
             this.historyCallback = function(url, params) {
                 var transition = that.transition;
                 that.transition = null;
-                that.viewEngine.showView(url, transition, params);
+                return that.viewEngine.showView(url, transition, params);
             };
 
-            that._historyNavigate = function(url) {
+            this._historyNavigate = function(url) {
                 var params = kendo.parseQueryStringParams(url);
 
                 if (url === BACK) {
@@ -77,6 +73,12 @@ kendo_module({
                     that.history.push(url);
                 }
 
+                that.historyCallback(url, params);
+            };
+
+            this._historyReplace = function(url) {
+                var params = kendo.parseQueryStringParams(url);
+                that.history[that.history.length - 1] = url;
                 that.historyCallback(url, params);
             };
 
@@ -95,15 +97,28 @@ kendo_module({
             });
 
             that.viewEngine.bind("showStart", function() {
+                that.loader.transition();
                 that.closeActiveDialogs();
+            });
+
+            that.viewEngine.bind("after", function(e) {
+                that.loader.transitionDone();
             });
 
             that.viewEngine.bind(VIEW_SHOW, function(e) {
                 that.trigger(VIEW_SHOW, e);
             });
 
-            that.viewEngine.bind(SAME_VIEW_REQUESTED, function(e) {
-                that.trigger(SAME_VIEW_REQUESTED, e);
+            that.viewEngine.bind("loadStart", function() {
+                that.loader.show();
+            });
+
+            that.viewEngine.bind("loadComplete", function() {
+                that.loader.hide();
+            });
+
+            that.viewEngine.bind(SAME_VIEW_REQUESTED, function() {
+                that.trigger(SAME_VIEW_REQUESTED);
             });
 
             that.viewEngine.bind("viewTypeDetermined", function(e) {
@@ -158,8 +173,7 @@ kendo_module({
 
         destroy: function() {
             Widget.fn.destroy.call(this);
-
-            kendo.destroy(this.element);
+            this.viewEngine.destroy();
         },
 
         navigate: function(url, transition) {
@@ -170,6 +184,16 @@ kendo_module({
             this.transition = transition;
 
             this._historyNavigate(url);
+        },
+
+        replace: function(url, transition) {
+            if (url instanceof View) {
+                url = url.id;
+            }
+
+            this.transition = transition;
+
+            this._historyReplace(url);
         },
 
         bindToRouter: function(router) {
@@ -191,11 +215,21 @@ kendo_module({
             });
 
             router.bind("routeMissing", function(e) {
-                that.historyCallback(e.url, e.params);
+                if (!that.historyCallback(e.url, e.params)) {
+                    e.preventDefault();
+                }
+            });
+
+            router.bind("same", function() {
+                that.trigger(SAME_VIEW_REQUESTED);
             });
 
             that._historyNavigate = function(url) {
                 router.navigate(url);
+            };
+
+            that._historyReplace = function(url) {
+                router.replace(url);
             };
         },
 
@@ -233,7 +267,8 @@ kendo_module({
         },
 
         _appLinkClick: function (e) {
-            var remote = e.currentTarget.href && e.currentTarget.href[0] !== "#" && this.options.serverNavigation;
+            var href = $(e.currentTarget).attr("href");
+            var remote = href && href[0] !== "#" && this.options.serverNavigation;
 
             if(!remote && attrValue($(e.currentTarget), "rel") != EXTERNAL) {
                 e.preventDefault();
@@ -297,3 +332,7 @@ kendo_module({
     };
     ui.plugin(Pane);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

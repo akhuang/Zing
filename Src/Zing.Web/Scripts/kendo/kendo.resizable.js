@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "resizable",
-    name: "Resizable",
-    category: "framework",
-    depends: [ "core", "draganddrop" ],
-    advanced: true
-});
+(function(f, define){
+    define([ "./kendo.core", "./kendo.draganddrop" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -108,7 +104,6 @@ kendo_module({
 
         _resize: function(e) {
             var that = this,
-                handle = $(e.currentTarget),
                 maxPosition = that._maxPosition,
                 minPosition = that._minPosition,
                 currentPosition = that._initialElementPosition + (e[that._positionMouse].location - that._initialMousePosition),
@@ -195,3 +190,7 @@ kendo_module({
     kendo.ui.plugin(Resizable);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

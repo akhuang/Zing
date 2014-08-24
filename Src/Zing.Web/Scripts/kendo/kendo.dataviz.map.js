@@ -1,11 +1,15 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
+(function(f, define){
+    define([ "./kendo.data", "./kendo.userevents", "./kendo.tooltip", "./kendo.dataviz.core", "./kendo.mobile.scroller", "./kendo.core", "./kendo.draganddrop" ], f);
+})(function(){
+
 (function () {
 
     // TODO
@@ -55,6 +59,10 @@
         return defined(value) ? value : defaultValue;
     }
 
+    function sqr(value) {
+        return value * value;
+    }
+
     // Template helpers =======================================================
     function renderAttr(name, value) {
         return defined(value) ? " " + name + "='" + value + "' " : "";
@@ -75,6 +83,20 @@
         }
 
         return size;
+    }
+
+    function renderPos(pos) {
+        var result = [];
+
+        if (pos) {
+            var parts = kendo.toHyphens(pos).split("-");
+
+            for (var i = 0; i < parts.length; i++) {
+                result.push("k-pos-" + parts[i]);
+            }
+        }
+
+        return result.join(" ");
     }
 
     // Mixins =================================================================
@@ -100,12 +122,15 @@
             rad: rad,
             renderAttr: renderAttr,
             renderAllAttr: renderAllAttr,
+            renderPos: renderPos,
             renderSize: renderSize,
+            sqr: sqr,
             valueOrDefault: valueOrDefault
         }
     });
 
 })(window.kendo.jQuery);
+
 (function () {
 
     // Imports ================================================================
@@ -144,6 +169,8 @@
                     this.geometryChange();
                 }
             }
+
+            return this;
         },
 
         get: function(field) {
@@ -237,6 +264,18 @@
 
         separator = separator || " ";
         return x + separator + y;
+    };
+
+    Point.create = function(arg0, arg1) {
+        if (defined(arg0)) {
+            if (arg0 instanceof Point) {
+                return arg0.clone();
+            } else if (arguments.length === 1 && arg0.length === 2) {
+                return new Point(arg0[0], arg0[1]);
+            } else {
+                return new Point(arg0, arg1);
+            }
+        }
     };
 
     var Rect = Class.extend({
@@ -373,11 +412,11 @@
     });
 
 })(window.kendo.jQuery);
-(function () {
+
+(function ($) {
 
     // Imports ================================================================
-    var $ = jQuery,
-        doc = document,
+    var doc = document,
         noop = $.noop,
         toString = Object.prototype.toString,
 
@@ -656,6 +695,7 @@
     });
 
 })(window.kendo.jQuery);
+
 (function () {
 
     // Imports ================================================================
@@ -893,6 +933,7 @@
     });
 
 })(window.kendo.jQuery);
+
 (function ($) {
 
     // Imports ================================================================
@@ -1399,6 +1440,7 @@
     });
 
 })(window.kendo.jQuery);
+
 (function ($) {
 
     // Imports ================================================================
@@ -1442,16 +1484,6 @@
             "mouseenter",
             "mouseleave"
         ],
-
-        // TODO
-        // This translation negates the Movable offset
-        // and is not strictly necessary.
-        // Figure out a better API
-        translate: function(offset) {
-            var style = this.element.style;
-            style.top = -offset.y;
-            style.left = -offset.x;
-        },
 
         draw: function(element) {
             var surface = this;
@@ -1925,19 +1957,18 @@
     });
 
 })(window.kendo.jQuery);
-kendo_module({
-    id: "dataviz.map",
-    name: "Map",
-    category: "dataviz",
-    description: "",
-    depends: [ "data", "userevents", "dataviz.core", "dataviz.svg", "dataviz.themes" ]
-});
 
 (function ($, undefined) {
     // Imports ================================================================
     var math = Math,
+        abs = math.abs,
+        atan = math.atan,
+        atan2 = math.atan2,
+        cos = math.cos,
         max = math.max,
         min = math.min,
+        sin = math.sin,
+        tan = math.tan,
 
         kendo = window.kendo,
         Class = kendo.Class,
@@ -1947,7 +1978,9 @@ kendo_module({
 
         util = dataviz.util,
         defined = util.defined,
+        rad = util.rad,
         round = util.round,
+        sqr = util.sqr,
         valueOrDefault = util.valueOrDefault;
 
     // Implementation =========================================================
@@ -1962,6 +1995,9 @@ kendo_module({
             }
         },
 
+        DISTANCE_ITERATIONS: 100,
+        DISTANCE_CONVERGENCE: 1e-12,
+        DISTANCE_PRECISION: 2,
         FORMAT: "{0:N6},{1:N6}",
 
         toArray: function() {
@@ -1986,6 +2022,96 @@ kendo_module({
             this.lng = this.lng % 180;
             this.lat = this.lat % 90;
             return this;
+        },
+
+        distanceTo: function(dest, datum) {
+            return this.greatCircleTo(dest, datum).distance;
+        },
+
+        greatCircleTo: function(dest, datum) {
+            dest = Location.create(dest);
+            datum = datum || dataviz.map.datums.WGS84;
+
+            if (!dest || this.clone().round(8).equals(dest.clone().round(8))) {
+                return {
+                    distance: 0,
+                    azimuthFrom: 0,
+                    azimuthTo: 0
+                };
+            }
+
+            // See http://en.wikipedia.org/wiki/Vincenty's_formulae#Notation
+            // o == sigma
+            // A == alpha
+            var a = datum.a;
+            var b = datum.b;
+            var f = datum.f;
+
+            var L = rad(dest.lng - this.lng);
+
+            var U1 = atan((1 - f) * tan(rad(this.lat)));
+            var sinU1 = sin(U1);
+            var cosU1 = cos(U1);
+
+            var U2 = atan((1 - f) * tan(rad(dest.lat)));
+            var sinU2 = sin(U2);
+            var cosU2 = cos(U2);
+
+            var lambda = L;
+            var prevLambda;
+
+            var i = this.DISTANCE_ITERATIONS;
+            var converged = false;
+
+            var sinLambda;
+            var cosLambda;
+            var sino;
+            var cosA2;
+            var coso;
+            var cos2om;
+            var sigma;
+
+            while (!converged && i-- > 0) {
+                sinLambda = sin(lambda);
+                cosLambda = cos(lambda);
+                sino = math.sqrt(
+                    sqr(cosU2 * sinLambda) + sqr(cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+                );
+
+                coso = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
+                sigma = atan2(sino, coso);
+
+                var sinA = cosU1 * cosU2 * sinLambda / sino;
+                cosA2 = 1 - sqr(sinA);
+                cos2om = 0;
+                if (cosA2 !== 0) {
+                    cos2om = coso - 2 * sinU1 * sinU2 / cosA2;
+                }
+
+                prevLambda = lambda;
+                var C = f / 16 * cosA2 * (4 + f * (4 - 3 * cosA2));
+                lambda = L + (1 - C) * f * sinA * (
+                    sigma + C * sino * (cos2om + C * coso * (-1 + 2 * sqr(cos2om)))
+                );
+
+                converged = abs(lambda - prevLambda) <= this.DISTANCE_CONVERGENCE;
+            }
+
+            var u2 = cosA2 * (sqr(a) - sqr(b)) / sqr(b);
+            var A = 1 + u2 / 16384 * (4096 + u2 * (-768 + u2 * (320 - 175 * u2)));
+            var B = u2 / 1024 * (256 + u2 * (-128 + u2 * (74 - 47 * u2)));
+            var deltao = B * sino * (cos2om + B / 4 * (
+                coso * (-1 + 2 * sqr(cos2om)) - B / 6 * cos2om * (-3 + 4 * sqr(sino)) * (-3 + 4 * sqr(cos2om))
+            ));
+
+            var azimuthFrom = atan2(cosU2 * sinLambda, cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
+            var azimuthTo = atan2(cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda);
+
+            return {
+                distance: round(b * A * (sigma - deltao), this.DISTANCE_PRECISION),
+                azimuthFrom: util.deg(azimuthFrom),
+                azimuthTo: util.deg(azimuthTo)
+            };
         }
     });
 
@@ -2002,35 +2128,53 @@ kendo_module({
         return new Location(ll[0], ll[1]);
     };
 
-    Location.create = function(arg0, arg1) {
-        if (defined(arg0)) {
-            if (arg0 instanceof Location) {
-                return arg0;
-            } else if (arguments.length === 1 && arg0.length === 2) {
-                return Location.fromLatLng(arg0);
+    Location.create = function(a, b) {
+        if (defined(a)) {
+            if (a instanceof Location) {
+                return a.clone();
+            } else if (arguments.length === 1 && a.length === 2) {
+                return Location.fromLatLng(a);
             } else {
-                return new Location(arg0, arg1);
+                return new Location(a, b);
             }
         }
     };
 
     var Extent = Class.extend({
         init: function(nw, se) {
-            this.nw = nw;
-            this.se = se;
+            nw = Location.create(nw);
+            se = Location.create(se);
+
+            if (nw.lng + 180 > se.lng + 180 &&
+                nw.lat + 90 < se.lat + 90) {
+                this.se = nw;
+                this.nw = se;
+            } else {
+                this.se = se;
+                this.nw = nw;
+            }
         },
 
         contains: function(loc) {
             var nw = this.nw,
                 se = this.se,
-                lng = valueOrDefault(loc.lng, loc[0]),
-                lat = valueOrDefault(loc.lat, loc[1]);
+                lng = valueOrDefault(loc.lng, loc[1]),
+                lat = valueOrDefault(loc.lat, loc[0]);
 
             return loc &&
                    lng + 180 >= nw.lng + 180 &&
                    lng + 180 <= se.lng + 180 &&
                    lat + 90 >= se.lat + 90 &&
                    lat + 90 <= nw.lat + 90;
+        },
+
+        center: function() {
+            var nw = this.nw;
+            var se = this.se;
+
+            var lng = nw.lng + (se.lng - nw.lng) / 2;
+            var lat = nw.lat + (se.lat - nw.lat) / 2;
+            return new Location(lat, lng);
         },
 
         containsAny: function(locs) {
@@ -2045,8 +2189,8 @@ kendo_module({
         include: function(loc) {
             var nw = this.nw,
                 se = this.se,
-                lng = valueOrDefault(loc.lng, loc[0]),
-                lat = valueOrDefault(loc.lat, loc[1]);
+                lng = valueOrDefault(loc.lng, loc[1]),
+                lat = valueOrDefault(loc.lat, loc[0]);
 
             nw.lng = min(nw.lng, lng);
             nw.lat = max(nw.lat, lat);
@@ -2065,15 +2209,35 @@ kendo_module({
             var nw = this.nw,
                 se = this.se;
 
+            return {nw: this.nw, ne: new Location(nw.lat, se.lng),
+                    se: this.se, sw: new Location(nw.lng, se.lat)};
+        },
+
+        toArray: function() {
+            var nw = this.nw,
+                se = this.se;
+
             return [nw, new Location(nw.lat, se.lng),
                     se, new Location(nw.lng, se.lat)];
         },
 
         overlaps: function(extent) {
-            return this.containsAny(extent.edges()) ||
-                   extent.containsAny(this.edges());
+            return this.containsAny(extent.toArray()) ||
+                   extent.containsAny(this.toArray());
         }
     });
+
+    Extent.World = new Extent([90, -180], [-90, 180]);
+
+    Extent.create = function(a, b) {
+        if (a instanceof Extent) {
+            return a;
+        } else if (a && b) {
+            return new Extent(a, b);
+        } else if (a && a.length === 4 && !b) {
+            return new Extent([a[0], a[1]], [a[2], a[3]]);
+        }
+    };
 
     // Exports ================================================================
     deepExtend(dataviz, {
@@ -2084,79 +2248,6 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
-kendo_module({
-    id: "dataviz.compass",
-    name: "Compass",
-    category: "dataviz",
-    depends: [ "dataviz.core" ],
-    advanced: true
-});
-
-(function ($) {
-    var kendo = window.kendo;
-    var Widget = kendo.ui.Widget;
-    var NS = ".kendoCompass";
-
-    function button(dir) {
-       return kendo.format(
-           '<button class="k-button k-compass-{0}">' +
-               '<span class="k-icon k-i-arrow-{0}"/>' +
-           '</button>', dir);
-    }
-
-    var BUTTONS = button("n") + button("e") + button("s") + button("w");
-
-    var Compass = Widget.extend({
-        init: function(element, options) {
-            Widget.fn.init.call(this, element, options);
-            this._initOptions(options);
-
-            this.element.addClass("k-widget k-header k-shadow k-compass")
-                        .append(BUTTONS)
-                        .on("click" + NS, ".k-button", $.proxy(this, "_click"));
-        },
-
-        options: {
-            name: "Compass",
-            panStep: 1
-        },
-
-        events: [
-            "pan"
-        ],
-
-        _click: function(e) {
-            var x = 0;
-            var y = 0;
-            var panStep = this.options.panStep;
-            var button = $(e.currentTarget);
-
-            if (button.is(".k-compass-n")) {
-                y = 1;
-            } else if (button.is(".k-compass-s")) {
-                y = -1;
-            } else if (button.is(".k-compass-e")) {
-                x = 1;
-            } else if (button.is(".k-compass-w")) {
-                x = -1;
-            }
-
-            this.trigger("pan", {
-                x: x * panStep,
-                y: y * panStep
-            });
-        }
-    });
-
-    kendo.dataviz.ui.plugin(Compass);
-})(jQuery);
-kendo_module({
-    id: "dataviz.attribution",
-    name: "Attribution",
-    category: "dataviz",
-    depends: [ "dataviz.core" ],
-    advanced: true
-});
 
 (function() {
     var kendo = window.kendo,
@@ -2269,6 +2360,198 @@ kendo_module({
 
     kendo.dataviz.ui.plugin(Attribution);
 })(jQuery);
+
+(function ($) {
+    var kendo = window.kendo;
+    var Widget = kendo.ui.Widget;
+    var keys = kendo.keys;
+    var proxy = $.proxy;
+
+    var NS = ".kendoNavigator";
+    var BUTTONS = button("n") + button("e") + button("s") + button("w");
+
+    var Navigator = Widget.extend({
+        init: function(element, options) {
+            Widget.fn.init.call(this, element, options);
+            this._initOptions(options);
+
+            this.element.addClass("k-widget k-header k-shadow k-navigator")
+                        .append(BUTTONS)
+                        .on("click" + NS, ".k-button", proxy(this, "_click"));
+
+            var parentElement = this.element.parent().closest("[" + kendo.attr("role") + "]");
+            this._keyroot = parentElement.length > 0 ? parentElement : this.element;
+            this._tabindex(this._keyroot);
+
+            this._keydown = proxy(this._keydown, this);
+            this._keyroot.on("keydown", this._keydown);
+        },
+
+        options: {
+            name: "Navigator",
+            panStep: 1
+        },
+
+        events: [
+            "pan"
+        ],
+
+        dispose: function() {
+            this._keyroot.off("keydown", this._keydown);
+        },
+
+        _pan: function(x, y) {
+            var panStep = this.options.panStep;
+            this.trigger("pan", {
+                x: x * panStep,
+                y: y * panStep
+            });
+        },
+
+        _click: function(e) {
+            var x = 0;
+            var y = 0;
+            var button = $(e.currentTarget);
+
+            if (button.is(".k-navigator-n")) {
+                y = 1;
+            } else if (button.is(".k-navigator-s")) {
+                y = -1;
+            } else if (button.is(".k-navigator-e")) {
+                x = 1;
+            } else if (button.is(".k-navigator-w")) {
+                x = -1;
+            }
+
+            this._pan(x, y);
+        },
+
+        _keydown: function(e) {
+            switch (e.which) {
+                case keys.UP:
+                    this._pan(0, 1);
+                    e.preventDefault();
+                    break;
+
+                case keys.DOWN:
+                    this._pan(0, -1);
+                    e.preventDefault();
+                    break;
+
+                case keys.RIGHT:
+                    this._pan(1, 0);
+                    e.preventDefault();
+                    break;
+
+                case keys.LEFT:
+                    this._pan(-1, 0);
+                    e.preventDefault();
+                    break;
+            }
+        }
+    });
+
+    // Helper functions =======================================================
+    function button(dir) {
+       return kendo.format(
+           '<button class="k-button k-navigator-{0}">' +
+               '<span class="k-icon k-i-arrow-{0}"/>' +
+           '</button>', dir);
+    }
+
+    // Exports ================================================================
+    kendo.dataviz.ui.plugin(Navigator);
+
+})(jQuery);
+
+(function ($) {
+    var kendo = window.kendo;
+    var Widget = kendo.ui.Widget;
+    var keys = kendo.keys;
+    var proxy = $.proxy;
+
+    var NS = ".kendoZoomControl";
+    var BUTTONS = button("in", "+") + button("out", "-");
+
+    var PLUS = 187;
+    var MINUS = 189;
+    var FF_PLUS = 61;
+    var FF_MINUS = 173;
+
+    var ZoomControl = Widget.extend({
+        init: function(element, options) {
+            Widget.fn.init.call(this, element, options);
+            this._initOptions(options);
+
+            this.element.addClass("k-widget k-zoom-control k-button-wrap k-buttons-horizontal")
+                        .append(BUTTONS)
+                        .on("click" + NS, ".k-button", proxy(this, "_click"));
+
+            var parentElement = this.element.parent().closest("[" + kendo.attr("role") + "]");
+            this._keyroot = parentElement.length > 0 ? parentElement : this.element;
+
+            this._tabindex(this._keyroot);
+
+            this._keydown = proxy(this._keydown, this);
+            this._keyroot.on("keydown", this._keydown);
+        },
+
+        options: {
+            name: "ZoomControl",
+            zoomStep: 1
+        },
+
+        events: [
+            "change"
+        ],
+
+        _change: function(dir) {
+            var zoomStep = this.options.zoomStep;
+            this.trigger("change", {
+                delta: dir * zoomStep
+            });
+        },
+
+        _click: function(e) {
+            var button = $(e.currentTarget);
+            var dir = 1;
+
+            if (button.is(".k-zoom-out")) {
+                dir = -1;
+            }
+
+            this._change(dir);
+        },
+
+        _keydown: function(e) {
+            switch (e.which) {
+                case keys.NUMPAD_PLUS:
+                case PLUS:
+                case FF_PLUS:
+                    this._change(1);
+                    break;
+
+                case keys.NUMPAD_MINUS:
+                case MINUS:
+                case FF_MINUS:
+                    this._change(-1);
+                    break;
+            }
+        }
+    });
+
+    // Helper functions =======================================================
+    function button(dir, symbol) {
+       return kendo.format(
+           '<button class="k-button k-zoom-{0}" title="zoom-{0}">{1}</button>',
+           dir, symbol);
+    }
+
+    // Exports ================================================================
+    kendo.dataviz.ui.plugin(ZoomControl);
+
+})(jQuery);
+
 (function ($, undefined) {
     // Imports ================================================================
     var math = Math,
@@ -2512,6 +2795,126 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+(function ($, undefined) {
+    // Imports ================================================================
+    var proxy = $.proxy,
+        noop = $.noop,
+
+        kendo = window.kendo,
+        Class = kendo.Class,
+
+        dataviz = kendo.dataviz,
+        deepExtend = kendo.deepExtend,
+        defined = dataviz.defined,
+
+        Extent = dataviz.map.Extent,
+
+        util = dataviz.util,
+        valueOrDefault = util.valueOrDefault;
+
+    // Implementation =========================================================
+    var Layer = Class.extend({
+        init: function(map, options) {
+            this._initOptions(options);
+            this.map = map;
+
+            this.element = $("<div class='k-layer'></div>")
+               .css({
+                   "zIndex": this.options.zIndex,
+                   "opacity": this.options.opacity
+               })
+               .appendTo(map.scrollElement);
+
+            this._beforeReset = proxy(this._beforeReset, this);
+            this._reset = proxy(this.reset, this);
+            this._resize = proxy(this._resize, this);
+            this._panEnd = proxy(this._panEnd, this);
+            this._activate();
+
+            this._updateAttribution();
+        },
+
+        destroy: function() {
+            this._deactivate();
+        },
+
+        show: function() {
+            this.reset();
+            this._activate();
+            this._applyExtent(true);
+        },
+
+        hide: function() {
+            this._deactivate();
+            this._setVisibility(false);
+        },
+
+        reset: function() {
+            this._applyExtent();
+        },
+
+        _beforeReset: $.noop,
+
+        _resize: $.noop,
+
+        _panEnd: function() {
+            this._applyExtent();
+        },
+
+        _applyExtent: function() {
+            var options = this.options;
+
+            var zoom = this.map.zoom();
+            var matchMinZoom = !defined(options.minZoom) || zoom >= options.minZoom;
+            var matchMaxZoom = !defined(options.maxZoom) || zoom <= options.maxZoom;
+
+            var extent = Extent.create(options.extent);
+            var inside = !extent || extent.overlaps(this.map.extent());
+
+            this._setVisibility(matchMinZoom && matchMaxZoom && inside);
+        },
+
+        _setVisibility: function(visible) {
+            this.element.css("display", visible ? "" : "none");
+        },
+
+        _activate: function() {
+            var map = this.map;
+            map.bind("beforeReset", this._beforeReset);
+            map.bind("reset", this._reset);
+            map.bind("resize", this._resize);
+            map.bind("panEnd", this._panEnd);
+        },
+
+        _deactivate: function() {
+            var map = this.map;
+            map.unbind("beforeReset", this._beforeReset);
+            map.unbind("reset", this._reset);
+            map.unbind("resize", this._resize);
+            map.unbind("panEnd", this._panEnd);
+        },
+
+        _updateAttribution: function() {
+            var attr = this.map.attribution;
+
+            if (attr) {
+                attr.add(this.options.attribution);
+            }
+        }
+    });
+
+    // Exports ================================================================
+    deepExtend(dataviz, {
+        map: {
+            layers: {
+                Layer: Layer
+            }
+        }
+    });
+
+})(window.kendo.jQuery);
+
 (function ($, undefined) {
     // Imports ================================================================
     var proxy = $.proxy,
@@ -2522,6 +2925,8 @@ kendo_module({
 
         dataviz = kendo.dataviz,
         deepExtend = kendo.deepExtend,
+        last = dataviz.last,
+        defined = dataviz.util.defined,
 
         g = dataviz.geometry,
 
@@ -2529,23 +2934,20 @@ kendo_module({
         Group = d.Group,
 
         map = dataviz.map,
-        Location = map.Location;
+        Location = map.Location,
+        Layer = map.layers.Layer;
 
     // Implementation =========================================================
-    var ShapeLayer = Class.extend({
+    var ShapeLayer = Layer.extend({
         init: function(map, options) {
-            this._initOptions(options);
-            this.map = map;
+            Layer.fn.init.call(this, map, options);
 
-            this.element = $("<div class='k-layer'></div>")
-                .appendTo(map.scrollElement);
-
-            this.movable = new kendo.ui.Movable(this.element);
             this.surface = d.Surface.create(this.element[0], {
                 width: map.scrollElement.width(),
                 height: map.scrollElement.height()
             });
 
+            this.movable = new kendo.ui.Movable(this.surface.element);
             this._markers = [];
 
             this._click = this._handler("shapeClick");
@@ -2557,46 +2959,38 @@ kendo_module({
             this._mouseleave = this._handler("shapeMouseLeave");
             this.surface.bind("mouseleave", this._mouseleave);
 
-            map.bind("reset", proxy(this.reset, this));
-            map.bind("resize", proxy(this.resize, this));
-            map.bind("panEnd", proxy(this._panEnd, this));
-
             this._loader = new GeoJSONLoader(this.map, this.options.style, this);
             this._initDataSource();
-
-            this._updateAttribution();
         },
 
         options: {
-            autoBind: true,
-            dataSource: {}
+            autoBind: true
         },
 
-        _updateAttribution: function() {
-            var attr = this.map.attribution;
+        destroy: function() {
+            Layer.fn.destroy.call(this);
 
-            if (attr) {
-                attr.add(this.options.attribution);
-            }
+            this.surface.destroy();
+            this.dataSource.unbind("change", this._dataChange);
         },
 
         reset: function() {
-            this.surface.translate({ x: 0, y: 0 });
-            this.movable.moveTo({ x: 0, y: 0 });
+            Layer.fn.reset.call(this);
+            this._translateSurface();
 
             if (this._data) {
                 this._load(this._data);
             }
         },
 
-        resize: function() {
+        _beforeReset: function() {
+            this.surface.clear();
+        },
+
+        _resize: function() {
             this.surface.setSize(
                 this.map.getSize()
             );
-        },
-
-        polygon: function(coords, style) {
-            this.surface.draw(this._buildPolygon(coords, style));
         },
 
         _initDataSource: function() {
@@ -2618,7 +3012,6 @@ kendo_module({
         _load: function(data) {
             this._data = data;
             this._clearMarkers();
-            this.surface.clear();
 
             for (var i = 0; i < data.length; i++) {
                 var shape = this._loader.parse(data[i]);
@@ -2631,7 +3024,7 @@ kendo_module({
         shapeCreated: function(shape) {
             var cancelled = false;
             if (shape instanceof d.Circle) {
-                cancelled = !this._createMarker(shape);
+                cancelled = defined(this._createMarker(shape));
             }
 
             if (!cancelled) {
@@ -2643,20 +3036,15 @@ kendo_module({
         },
 
         _createMarker: function(shape) {
-            var dataItem = shape.dataItem;
-            var marker = map.Marker.create({
-               location: shape.location.toArray()
-            }, this.map.options.markerDefaults);
-            marker.dataItem = dataItem;
+            var marker = this.map.markers.bind({
+                location: shape.location
+            }, shape.dataItem);
 
-            var args = { marker: marker };
-            var cancelled = this.map.trigger("markerCreated", args);
-            if (!cancelled) {
-                this.map.markers.add(marker);
+            if (marker) {
                 this._markers.push(marker);
             }
 
-            return cancelled;
+            return marker;
         },
 
         _clearMarkers: function() {
@@ -2666,12 +3054,19 @@ kendo_module({
             this._markers = [];
         },
 
-        _panEnd: function() {
+        _panEnd: function(e) {
+            Layer.fn._panEnd.call(this, e);
+            this._translateSurface();
+        },
+
+        _translateSurface: function() {
             var map = this.map;
             var nw = map.locationToView(map.extent().nw);
 
-            this.surface.translate(nw);
-            this.movable.moveTo(nw);
+            if (this.surface.translate) {
+                this.surface.translate(nw);
+                this.movable.moveTo(nw);
+            }
         },
 
         _handler: function(event) {
@@ -2731,13 +3126,13 @@ kendo_module({
             switch(geometry.type) {
                 case "LineString":
                     path = this._loadPolygon(container, [coords], dataItem);
-                    path.options.fill = null;
+                    this._setLineFill(path);
                     break;
 
                 case "MultiLineString":
                     for (i = 0; i < coords.length; i++) {
                         path = this._loadPolygon(container, [coords[i]], dataItem);
-                        path.options.fill = null;
+                        this._setLineFill(path);
                     }
                     break;
 
@@ -2760,6 +3155,13 @@ kendo_module({
                         this._loadPoint(container, coords[i], dataItem);
                     }
                     break;
+            }
+        },
+
+        _setLineFill: function(path) {
+            var segments = path.segments;
+            if (segments.length < 4 || !segments[0].anchor.equals(last(segments).anchor)) {
+                path.options.fill = null;
             }
         },
 
@@ -2850,6 +3252,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
 (function ($, undefined) {
     // Imports ================================================================
     var math = Math,
@@ -2867,65 +3270,61 @@ kendo_module({
         g = dataviz.geometry,
         Point = g.Point,
 
-        Extent = dataviz.map.Extent,
-        Location = dataviz.map.Location,
+        Layer = dataviz.map.layers.Layer,
 
         util = dataviz.util,
         renderSize = util.renderSize,
         limit = util.limitValue;
 
-    // Constants ==============================================================
-    var DEFAULT_WIDTH = 600,
-        DEFAULT_HEIGHT = 400;
-
     // Image tile layer =============================================================
-    var TileLayer = Class.extend({
+    var TileLayer = Layer.extend({
         init: function(map, options) {
-            var layer = this,
-                viewType = layer._viewType();
+            Layer.fn.init.call(this, map, options);
 
-            options = deepExtend({}, options, {
-                width: map.element.width() || DEFAULT_WIDTH,
-                height: map.element.height() || DEFAULT_HEIGHT
-            });
-
-            layer._initOptions(options);
-            layer.map = map;
-
-            layer.element = $("<div class='k-layer'></div>")
-                           .css({
-                               "zIndex": layer.options.zIndex,
-                               "opacity": layer.options.opacity
-                           })
-                           .appendTo(map.scrollElement);
-
-            layer._view = new viewType(layer.element, layer.options);
-
-            map.bind("reset", proxy(layer.reset, layer));
-            map.bind("resize", proxy(this.resize, layer));
-            if (kendo.support.mobileOS) {
-                map.bind("panEnd", proxy(layer._render, layer));
-            } else {
-                map.bind("pan", proxy(layer._pan, layer));
+            if (typeof this.options.subdomains === "string") {
+                this.options.subdomains = this.options.subdomains.split("");
             }
 
-            this._updateAttribution();
+            var viewType = this._viewType();
+            this._view = new viewType(this.element, this.options);
         },
 
-        opitons: {
-            settingsUrl: "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/#= mapType #?output=json&jsonp=bingTileParams&include=ImageryProviders&key=#= key #"
+        destroy: function() {
+            Layer.fn.destroy.call(this);
+
+            this._view.destroy();
+            this._view = null;
         },
 
-        _updateAttribution: function() {
-            var attr = this.map.attribution;
-
-            if (attr) {
-                attr.add(this.options.attribution);
-            }
+        reset: function() {
+            Layer.fn.reset.call(this);
+            this._updateView();
+            this._view.clear();
+            this._view.reset();
         },
 
         _viewType: function() {
             return TileView;
+        },
+
+        _activate: function() {
+            Layer.fn._activate.call(this);
+
+            if (!kendo.support.mobileOS) {
+                if (!this._pan) {
+                    this._pan = proxy(this._throttleRender, this);
+                }
+
+                this.map.bind("pan", this._pan);
+            }
+        },
+
+        _deactivate: function() {
+            Layer.fn._deactivate.call(this);
+
+            if (this._pan) {
+                this.map.unbind("pan", this._pan);
+            }
         },
 
         _updateView: function() {
@@ -2942,107 +3341,29 @@ kendo_module({
             view.zoom(map.zoom());
         },
 
-        destroy: function() {
-            this._view.destroy();
-            this._view = null;
-        },
-
-        reset: function() {
-            this._updateView();
-            this._view.clear();
-            this._view.reset();
-        },
-
-        resize: function() {
+        _resize: function() {
             this._render();
         },
 
-        _pan: function() {
+        _throttleRender: function() {
             var layer = this,
                 now = new Date(),
-                timestamp = layer._pan.timestamp;
+                timestamp = layer._renderTimestamp;
 
             if (!timestamp || now - timestamp > 100) {
                 this._render();
-                layer._pan.timestamp = now;
+                layer._renderTimestamp = now;
             }
+        },
+
+        _panEnd: function(e) {
+            Layer.fn._panEnd.call(this, e);
+            this._render();
         },
 
         _render: function() {
             this._updateView();
             this._view.render();
-        }
-    });
-
-    var BingLayer = TileLayer.extend({
-        init: function(map, options) {
-            this._initOptions(options);
-
-            var settingsTemplate = template(this.options.settingsUrl),
-                settingsUrl = settingsTemplate({
-                    key: this.options.key,
-                    mapType: this.options.mapType
-                });
-
-            this.map = map;
-
-            $.ajax({
-                url: settingsUrl,
-                type: "get",
-                dataType: "jsonp",
-                jsonpCallback: "bingTileParams",
-                success: proxy(this._success, this)
-            });
-        },
-
-        options: {
-            settingsUrl: "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/#= mapType #?output=json&jsonp=bingTileParams&include=ImageryProviders&key=#= key #",
-            mapType: "road"
-        },
-
-        _success: function(data) {
-            var resource = this.resource = data.resourceSets[0].resources[0];
-
-            TileLayer.fn.init.call(this, this.map, {
-                urlTemplate: resource.imageUrl
-                    .replace("{subdomain}", "#= subdomain #")
-                    .replace("{quadkey}", "#= quadkey #")
-                    .replace("{culture}", "#= culture #"),
-                subdomains: resource.imageUrlSubdomains,
-                maxZoom: resource.zoomMax,
-                minZoom: resource.zoomMin
-            });
-
-            this._addAttribution();
-            this.reset();
-        },
-
-        _viewType: function() {
-            return BingView;
-        },
-
-        _addAttribution: function() {
-            var attr = this.map.attribution;
-            if (attr) {
-                var items = this.resource.imageryProviders;
-                if (items) {
-                    for (var i = 0; i < items.length; i++) {
-                        var item = items[i];
-                        for (var y = 0; y < item.coverageAreas.length; y++) {
-                            var area = item.coverageAreas[y];
-                            attr.add({
-                                text: item.attribution,
-                                minZoom: area.zoomMin,
-                                maxZoom: area.zoomMax,
-                                extent: new Extent(
-                                    new Location(area.bbox[2], area.bbox[1]),
-                                    new Location(area.bbox[0], area.bbox[3])
-                                )
-                            });
-                        }
-                    }
-                }
-            }
         }
     });
 
@@ -3110,7 +3431,8 @@ kendo_module({
 
             return new Point(
                 x * this.options.tileSize,
-                y * this.options.tileSize);
+                y * this.options.tileSize
+            );
         },
 
         subdomainText: function() {
@@ -3142,37 +3464,34 @@ kendo_module({
                         y: firstTileIndex.y + y
                     });
 
-                    if (!tile.visible) {
+                    if (!tile.options.visible) {
                         this.element.append(tile.element);
-                        tile.visible = true;
+                        tile.options.visible = true;
                     }
                 }
             }
         },
 
         createTile: function(currentIndex) {
-            var index = this.wrapIndex(currentIndex),
-                point = this.indexToPoint(currentIndex),
-                offset = point.clone().subtract(this.basePoint),
-                urlTemplate = template(this.options.urlTemplate),
-                tileOptions = {
-                    index: index,
-                    currentIndex: currentIndex,
-                    point: point,
-                    offset: roundPoint(offset),
-                    zoom: this._zoom,
-                    url: urlTemplate(this.tileUrlOptions(index))
-                };
+            var options = this.tileOptions(currentIndex);
 
-            return this.pool.get(this._center, tileOptions);
+            return this.pool.get(this._center, options);
         },
 
-        tileUrlOptions: function(index) {
+        tileOptions: function(currentIndex) {
+            var index = this.wrapIndex(currentIndex),
+                point = this.indexToPoint(currentIndex),
+                offset = point.clone().subtract(this.basePoint);
+
             return {
+                index: index,
+                currentIndex: currentIndex,
+                point: point,
+                offset: roundPoint(offset),
                 zoom: this._zoom,
-                x: index.x,
-                y: index.y,
-                subdomain: this.subdomainText()
+                subdomain: this.subdomainText(),
+                urlTemplate: this.options.urlTemplate,
+                errorUrlTemplate: this.options.errorUrlTemplate
             };
         },
 
@@ -3196,67 +3515,69 @@ kendo_module({
         }
     });
 
-    var BingView = TileView.extend({
-        options: {
-            culture: "en-Us"
-        },
-
-        tileUrlOptions: function(index) {
-            return {
-                quadkey: this.tileQuadKey(index),
-                subdomain: this.subdomainText(),
-                culture: this.options.culture
-            };
-        },
-
-        tileQuadKey: function(index) {
-            var quadKey = "",
-                digit, mask, i;
-
-            for (i = this._zoom; i > 0; i--) {
-                digit = 0;
-                mask = 1 << (i - 1);
-
-                if ((index.x & mask) !== 0) {
-                    digit++;
-                }
-
-                if ((index.y & mask) !== 0) {
-                    digit += 2;
-                }
-
-                quadKey += digit;
-            }
-
-            return quadKey;
-        }
-    });
-
     var ImageTile = Class.extend({
         init: function(options) {
-            this.element = $("<img style='position: absolute; display: block; visibility: visible;' unselectable='on'></img>");
-            this.load(options);
-            this.visible = false;
+            this._initOptions(options);
+            this.createElement();
+            this.load();
+            // initially the image should be
+            this.options.visible = false;
+        },
+
+        options: {
+            urlTemplate: "",
+            errorUrlTemplate: "",
+            visible: false
+        },
+
+        createElement: function() {
+            this.element = $("<img style='position: absolute; display: block; visibility: visible;' />")
+                            .error(proxy(function(e) {
+                                e.target.setAttribute("src", this.errorUrl());
+                            }, this));
         },
 
         load: function(options) {
+            this.options = deepExtend({}, this.options, options);
+
             var htmlElement = this.element[0];
 
             htmlElement.style.visibility = "visible";
             htmlElement.style.display = "block";
+            htmlElement.style.top = renderSize(this.options.offset.y);
+            htmlElement.style.left = renderSize(this.options.offset.x);
+            htmlElement.setAttribute("src", this.url());
 
-            htmlElement.setAttribute("src", options.url);
-            this.url = options.url;
+            this.options.id = tileId(this.options.currentIndex, this.options.zoom);
+            this.options.visible = true;
+        },
 
-            htmlElement.style.top = renderSize(options.offset.y);
-            htmlElement.style.left = renderSize(options.offset.x);
-            this.offset = options.offset;
+        url: function() {
+            var urlResult = template(this.options.urlTemplate);
 
-            this.point = options.point;
-            this.index = options.index;
-            this.currentIndex = options.currentIndex;
-            this.id = "x:" + this.currentIndex.x + "y:" + this.currentIndex.y + "zoom:" + options.zoom;
-            this.visible = true;
+            return urlResult(this.urlOptions());
+        },
+
+        errorUrl: function() {
+            var urlResult = template(this.options.errorUrlTemplate);
+
+            return urlResult(this.urlOptions());
+        },
+
+        urlOptions: function() {
+            var options = this.options;
+            return {
+                zoom: options.zoom,
+                subdomain: options.subdomain,
+                z: options.zoom,
+                x: options.index.x,
+                y: options.index.y,
+                s: options.subdomain,
+                quadkey: options.quadkey,
+                q: options.quadkey,
+                culture: options.culture,
+                c: options.culture
+            };
         },
 
         destroy: function() {
@@ -3305,12 +3626,12 @@ kendo_module({
         _create: function(options) {
             var pool = this,
                 items = pool._items,
-                tileId = pool._tileId(options),
+                id = tileId(options.currentIndex, options.zoom),
                 oldTile, i, item, tile;
 
             for (i = 0; i < items.length; i++) {
                 item = items[i];
-                if (item.id === tileId) {
+                if (item.options.id === id) {
                     oldTile = item;
                     tile = oldTile;
                 }
@@ -3326,22 +3647,18 @@ kendo_module({
             return tile;
         },
 
-        _tileId: function(options) {
-            return "x:" + options.currentIndex.x + "y:" + options.currentIndex.y + "zoom:" + options.zoom;
-        },
-
         _update: function(center, options) {
             var pool = this,
                 items = pool._items,
                 dist = -Number.MAX_VALUE,
                 currentDist, index, i, item;
 
-            var tileId = pool._tileId(options);
+            var id = tileId(options.currentIndex, options.zoom);
 
             for (i = 0; i < items.length; i++) {
                 item = items[i];
-                currentDist = item.point.clone().distanceTo(center);
-                if (item.id === tileId) {
+                currentDist = item.options.point.clone().distanceTo(center);
+                if (item.options.id === id) {
                     return items[i];
                 }
 
@@ -3362,6 +3679,10 @@ kendo_module({
         return new Point(round(point.x), round(point.y));
     }
 
+    function tileId(index, zoom) {
+            return "x:" + index.x + "y:" + index.y + "zoom:" + zoom;
+    }
+
     // Exports ================================================================
     deepExtend(dataviz, {
         map: {
@@ -3369,18 +3690,160 @@ kendo_module({
                 tile: TileLayer,
                 TileLayer: TileLayer,
 
-                bing: BingLayer,
-                BingLayer: BingLayer,
-
                 ImageTile: ImageTile,
                 TilePool: TilePool,
-                TileView: TileView,
+                TileView: TileView
+            }
+        }
+    });
+
+})(window.kendo.jQuery);
+
+(function ($, undefined) {
+    // Imports ================================================================
+    var math = Math,
+
+        proxy = $.proxy,
+
+        kendo = window.kendo,
+        Class = kendo.Class,
+        template = kendo.template,
+
+        dataviz = kendo.dataviz,
+        deepExtend = kendo.deepExtend,
+
+        Extent = dataviz.map.Extent,
+        Location = dataviz.map.Location,
+        Layer = dataviz.map.layers.Layer,
+
+        TileLayer = dataviz.map.layers.TileLayer,
+        TileView = dataviz.map.layers.TileView;
+
+    // Bing tile layer =============================================================
+    var BingLayer = TileLayer.extend({
+        init: function(map, options) {
+            this._initOptions(options);
+
+            var settingsTemplate = template(this.options.settingsUrl),
+                settingsUrl = settingsTemplate({
+                    key: this.options.key,
+                    imagerySet: this.options.imagerySet
+                });
+
+            this.map = map;
+
+            $.ajax({
+                url: settingsUrl,
+                type: "get",
+                dataType: "jsonp",
+                jsonpCallback: "bingTileParams",
+                success: proxy(this._success, this)
+            });
+        },
+
+        options: {
+            settingsUrl: "http://dev.virtualearth.net/REST/v1/Imagery/Metadata/#= imagerySet #?output=json&jsonp=bingTileParams&include=ImageryProviders&key=#= key #",
+            imagerySet: "road"
+        },
+
+        _success: function(data) {
+            if (data && data.resourceSets.length) {
+                var resource = this.resource = data.resourceSets[0].resources[0];
+
+                TileLayer.fn.init.call(this, this.map, {
+                    urlTemplate: resource.imageUrl
+                        .replace("{subdomain}", "#= subdomain #")
+                        .replace("{quadkey}", "#= quadkey #")
+                        .replace("{culture}", "#= culture #"),
+                    subdomains: resource.imageUrlSubdomains,
+                    maxZoom: resource.zoomMax,
+                    minZoom: resource.zoomMin
+                });
+
+                this._addAttribution();
+                this.reset();
+            }
+        },
+
+        _viewType: function() {
+            return BingView;
+        },
+
+        _addAttribution: function() {
+            var attr = this.map.attribution;
+            if (attr) {
+                var items = this.resource.imageryProviders;
+                if (items) {
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+                        for (var y = 0; y < item.coverageAreas.length; y++) {
+                            var area = item.coverageAreas[y];
+                            attr.add({
+                                text: item.attribution,
+                                minZoom: area.zoomMin,
+                                maxZoom: area.zoomMax,
+                                extent: new Extent(
+                                    new Location(area.bbox[2], area.bbox[1]),
+                                    new Location(area.bbox[0], area.bbox[3])
+                                )
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    var BingView = TileView.extend({
+        options: {
+            culture: "en-Us"
+        },
+
+        tileOptions: function(currentIndex) {
+            var options = TileView.fn.tileOptions.call(this, currentIndex);
+
+            options.culture = this.options.culture;
+            options.quadkey = this.tileQuadKey(this.wrapIndex(currentIndex));
+
+            return options;
+        },
+
+        tileQuadKey: function(index) {
+            var quadKey = "",
+                digit, mask, i;
+
+            for (i = this._zoom; i > 0; i--) {
+                digit = 0;
+                mask = 1 << (i - 1);
+
+                if ((index.x & mask) !== 0) {
+                    digit++;
+                }
+
+                if ((index.y & mask) !== 0) {
+                    digit += 2;
+                }
+
+                quadKey += digit;
+            }
+
+            return quadKey;
+        }
+    });
+
+    // Exports ================================================================
+    deepExtend(dataviz, {
+        map: {
+            layers: {
+                bing: BingLayer,
+                BingLayer: BingLayer,
                 BingView: BingView
             }
         }
     });
 
 })(window.kendo.jQuery);
+
 (function ($, undefined) {
     // Imports ================================================================
     var doc = document,
@@ -3390,36 +3853,38 @@ kendo_module({
 
         kendo = window.kendo,
         Class = kendo.Class,
+        DataSource = kendo.data.DataSource,
         Tooltip = kendo.ui.Tooltip,
 
         dataviz = kendo.dataviz,
         deepExtend = kendo.deepExtend,
 
         map = dataviz.map,
-        Location = map.Location;
+        Location = map.Location,
+        Layer = map.layers.Layer;
 
     // Implementation =========================================================
-    var MarkerLayer = Class.extend({
+    var MarkerLayer = Layer.extend({
         init: function(map, options) {
-            this._initOptions(options);
+            Layer.fn.init.call(this, map, options);
 
             this.items = [];
-            this.map = map;
-            this.element = $("<div class='k-layer'></div>")
-                            .css("zIndex", this.options.zIndex)
-                            .appendTo(map.scrollElement);
-
-            this.reset = proxy(this.reset, this);
-            map.bind("reset", this.reset);
+            this._initDataSource();
         },
 
-        dispose: function() {
-            this.map.unbind("reset", this.reset);
+        destroy: function() {
+            Layer.fn.destroy.call(this);
+
+            this.dataSource.unbind("change", this._dataChange);
             this.clear();
         },
 
         options: {
-            zIndex: 1000
+            zIndex: 1000,
+            autoBind: true,
+            dataSource: {},
+            locationField: "location",
+            titleField: "title"
         },
 
         add: function(arg) {
@@ -3432,15 +3897,8 @@ kendo_module({
             }
         },
 
-        _addOne: function(arg) {
-            var marker = Marker.create(arg, this.options.markerDefaults);
-            marker.addTo(this);
-
-            return marker;
-        },
-
         remove: function(marker) {
-            marker.dispose();
+            marker.destroy();
 
             var index = indexOf(marker, this.items);
             if (index > -1) {
@@ -3450,7 +3908,7 @@ kendo_module({
 
         clear: function() {
             for (var i = 0; i < this.items.length; i++) {
-                this.items[i].dispose();
+                this.items[i].destroy();
             }
 
             this.items = [];
@@ -3458,17 +3916,67 @@ kendo_module({
 
         update: function(marker) {
             // TODO: Do not show markers outside the map extent
-            var loc = marker.options.location;
+            var loc = marker.location();
             if (loc) {
-                loc = Location.create(loc);
                 marker.showAt(this.map.locationToView(loc));
             }
         },
 
         reset: function() {
+            Layer.fn.reset.call(this);
             var items = this.items;
             for (var i = 0; i < items.length; i++) {
                 this.update(items[i]);
+            }
+        },
+
+        bind: function (options, dataItem) {
+            var marker = map.Marker.create(options, this.options);
+            marker.dataItem = dataItem;
+
+            var args = { marker: marker };
+            var cancelled = this.map.trigger("markerCreated", args);
+            if (!cancelled) {
+                this.add(marker);
+                return marker;
+            }
+        },
+
+        _addOne: function(arg) {
+            var marker = Marker.create(arg, this.options);
+            marker.addTo(this);
+
+            return marker;
+        },
+
+        _initDataSource: function() {
+            var dsOptions = this.options.dataSource;
+            this._dataChange = proxy(this._dataChange, this);
+            this.dataSource = DataSource
+                .create(dsOptions)
+                .bind("change", this._dataChange);
+
+            if (dsOptions && this.options.autoBind) {
+                this.dataSource.fetch();
+            }
+        },
+
+        _dataChange: function(data) {
+            this._load(data.items);
+        },
+
+        _load: function(data) {
+            this._data = data;
+            this.clear();
+
+            var getLocation = kendo.getter(this.options.locationField);
+            var getTitle = kendo.getter(this.options.titleField);
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                this.bind({
+                    location: getLocation(dataItem),
+                    title: getTitle(dataItem)
+                }, dataItem);
             }
         }
     });
@@ -3484,11 +3992,17 @@ kendo_module({
             this.layer.update(this);
         },
 
-        setLocation: function(loc) {
-            this.options.location = Location.create(loc);
+        location: function(value) {
+            if (value) {
+                this.options.location = Location.create(value).toArray();
 
-            if (this.layer) {
-                this.layer.update(this);
+                if (this.layer) {
+                    this.layer.update(this);
+                }
+
+                return this;
+            } else {
+                return Location.create(this.options.location);
             }
         },
 
@@ -3517,7 +4031,7 @@ kendo_module({
             }
         },
 
-        dispose: function() {
+        destroy: function() {
             this.layer = null;
             this.hide();
         },
@@ -3529,7 +4043,7 @@ kendo_module({
 
                 this.element = $(doc.createElement("span"))
                     .addClass("k-marker k-marker-" + kendo.toHyphens(options.shape || "pin"))
-                    .attr("alt", options.title)
+                    .attr("title", options.title)
                     .css("zIndex", options.zIndex);
 
                 if (layer) {
@@ -3542,20 +4056,21 @@ kendo_module({
 
         renderTooltip: function() {
             var marker = this;
-            var options = marker.options.tooltip;
+            var title = marker.options.title;
+            var options = marker.options.tooltip || {};
 
             if (options && Tooltip) {
                 var template = options.template;
                 if (template) {
                     var contentTemplate = kendo.template(template);
                     options.content = function(e) {
-                        e.location = Location.create(marker.options.location);
+                        e.location = marker.location();
                         e.marker = marker;
                         return contentTemplate(e);
                     };
                 }
 
-                if (options.content || options.contentUrl) {
+                if (title || options.content || options.contentUrl) {
                     this.tooltip = new Tooltip(this.element, options);
                     this.tooltip.marker = this;
                 }
@@ -3583,13 +4098,6 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
-kendo_module({
-    id: "dataviz.map",
-    name: "Map",
-    category: "dataviz",
-    description: "The Kendo DataViz Map displays spatial data",
-    depends: [ "data", "userevents", "tooltip", "dataviz.core", "mobile.scroller" ]
-});
 
 (function ($, undefined) {
     // Imports ================================================================
@@ -3605,11 +4113,11 @@ kendo_module({
         deepExtend = kendo.deepExtend,
 
         dataviz = kendo.dataviz,
-        Compass = dataviz.ui.Compass,
-        Attribution = dataviz.ui.Attribution,
+        ui = dataviz.ui,
         defined = dataviz.defined,
 
         g = dataviz.geometry,
+        Point = g.Point,
 
         map = dataviz.map,
         Extent = map.Extent,
@@ -3618,6 +4126,7 @@ kendo_module({
 
         util = dataviz.util,
         limit = util.limitValue,
+        renderPos = util.renderPos,
         valueOrDefault = util.valueOrDefault;
 
     // Constants ==============================================================
@@ -3659,10 +4168,11 @@ kendo_module({
         options: {
             name: "Map",
             controls: {
+                attribution: true,
                 navigator: {
                     panStep: 100
                 },
-                attribution: true
+                zoom: true
             },
             layers: [],
             layerDefaults: {
@@ -3676,6 +4186,12 @@ kendo_module({
                             width: 0.5
                         }
                     }
+                },
+                marker: {
+                    shape: "pinTarget",
+                    tooltip: {
+                        position: "top"
+                    }
                 }
             },
             center: [0, 0],
@@ -3687,15 +4203,14 @@ kendo_module({
             markerDefaults: {
                 shape: "pinTarget",
                 tooltip: {
-                    autoHide: false,
-                    position: "top",
-                    showOn: "click"
+                    position: "top"
                 }
             },
             wraparound: true
         },
 
         events:[
+            "beforeReset",
             "click",
             "reset",
             "pan",
@@ -3711,6 +4226,25 @@ kendo_module({
 
         destroy: function() {
             this.scroller.destroy();
+
+            if (this.navigator) {
+                this.navigator.destroy();
+            }
+
+            if (this.attribution) {
+                this.attribution.destroy();
+            }
+
+            if (this.zoomControl) {
+                this.zoomControl.destroy();
+            }
+
+            this.markers.destroy();
+
+            for (var i = 0; i < this.layers.length; i++) {
+                this.layers[i].destroy();
+            }
+
             Widget.fn.destroy.call(this);
         },
 
@@ -3741,16 +4275,13 @@ kendo_module({
             }
         },
 
-        extent: function() {
-            var nw = this._getOrigin();
-            var bottomRight = this.locationToLayer(nw);
-            var size = this.viewSize();
-
-            bottomRight.x += size.width;
-            bottomRight.y += size.height;
-
-            var se = this.layerToLocation(bottomRight);
-            return new Extent(nw, se);
+        extent: function(extent) {
+            if (extent) {
+                this._setExtent(extent);
+                return this;
+            } else {
+                return this._getExtent();
+            }
         },
 
         setOptions: function(options) {
@@ -3766,6 +4297,7 @@ kendo_module({
 
         layerToLocation: function(point, zoom) {
             var clamp = !this.options.wraparound;
+            point = Point.create(point);
             return  this.crs.toLocation(point, this._layerSize(zoom), clamp);
         },
 
@@ -3779,6 +4311,7 @@ kendo_module({
 
         viewToLocation: function(point, zoom) {
             var origin = this.locationToLayer(this._getOrigin(), zoom);
+            point = Point.create(point);
             point = point.clone().add(origin);
             return this.layerToLocation(point, zoom);
         },
@@ -3849,6 +4382,38 @@ kendo_module({
             return this._origin;
         },
 
+        _setExtent: function(extent) {
+            extent = Extent.create(extent);
+            this.center(extent.center());
+
+            var width = this.element.width();
+            var height = this.element.height();
+            for (var zoom = this.options.maxZoom; zoom >= this.options.minZoom; zoom--) {
+                var nw = this.locationToLayer(extent.nw, zoom);
+                var se = this.locationToLayer(extent.se, zoom);
+                var layerWidth = math.abs(se.x - nw.x);
+                var layerHeight = math.abs(se.y - nw.y);
+
+                if (layerWidth <= width && layerHeight <= height) {
+                    break;
+                }
+            }
+
+            this.zoom(zoom);
+        },
+
+        _getExtent: function() {
+            var nw = this._getOrigin();
+            var bottomRight = this.locationToLayer(nw);
+            var size = this.viewSize();
+
+            bottomRight.x += size.width;
+            bottomRight.y += size.height;
+
+            var se = this.layerToLocation(bottomRight);
+            return new Extent(nw, se);
+        },
+
         _zoomAround: function(pivot, level) {
             this._setOrigin(this.layerToLocation(pivot, level), level);
             this.zoom(level);
@@ -3857,27 +4422,51 @@ kendo_module({
         _initControls: function() {
             var controls = this.options.controls;
 
-            if (Compass && controls.navigator && !kendo.support.mobileOS) {
-                this._createCompass(controls.navigator);
-            }
-
-            if (Attribution && controls.attribution) {
+            if (ui.Attribution && controls.attribution) {
                 this._createAttribution(controls.attribution);
             }
+
+            if (!kendo.support.mobileOS) {
+                if (ui.Navigator && controls.navigator) {
+                    this._createNavigator(controls.navigator);
+                }
+
+                if (ui.ZoomControl && controls.zoom) {
+                    this._createZoomControl(controls.zoom);
+                }
+            }
         },
 
-        _createCompass: function(options) {
-            var element = $(doc.createElement("div")).appendTo(this.element);
-            var compass = this.compass = new Compass(element, options);
+        _createControlElement: function(options, defaultPos) {
+            var pos = options.position || defaultPos;
+            var posSelector = "." + renderPos(pos).replace(" ", ".");
+            var wrap = $(".k-map-controls" + posSelector, this.element);
+            if (wrap.length === 0) {
+                wrap = $("<div>")
+                       .addClass("k-map-controls " + renderPos(pos))
+                       .appendTo(this.element);
+            }
 
-            this._compassPan = proxy(this._compassPan, this);
-            compass.bind("pan", this._compassPan);
-
-            this._compassCenter = proxy(this._compassCenter, this);
-            compass.bind("center", this._compassCenter);
+            return $("<div>").appendTo(wrap);
         },
 
-        _compassPan: function(e) {
+        _createAttribution: function(options) {
+            var element = this._createControlElement(options, "bottomRight");
+            this.attribution = new ui.Attribution(element, options);
+        },
+
+        _createNavigator: function(options) {
+            var element = this._createControlElement(options, "topLeft");
+            var navigator = this.navigator = new ui.Navigator(element, options);
+
+            this._navigatorPan = proxy(this._navigatorPan, this);
+            navigator.bind("pan", this._navigatorPan);
+
+            this._navigatorCenter = proxy(this._navigatorCenter, this);
+            navigator.bind("center", this._navigatorCenter);
+        },
+
+        _navigatorPan: function(e) {
             var map = this;
             var scroller = map.scroller;
 
@@ -3896,26 +4485,39 @@ kendo_module({
             map.scroller.scrollTo(-x, -y);
         },
 
-        _compassCenter: function() {
+        _navigatorCenter: function() {
             this.center(this.options.center);
         },
 
-        _createAttribution: function(options) {
-            var element = $(doc.createElement("div")).appendTo(this.element);
-            this.attribution = new Attribution(element, options);
+        _createZoomControl: function(options) {
+            var element = this._createControlElement(options, "topLeft");
+            var zoomControl = this.zoomControl = new ui.ZoomControl(element, options);
+
+            this._zoomControlChange = proxy(this._zoomControlChange, this);
+            zoomControl.bind("change", this._zoomControlChange);
+        },
+
+        _zoomControlChange: function(e) {
+            if (!this.trigger("zoomStart", { originalEvent: e })) {
+                this.zoom(this.zoom() + e.delta);
+                this.trigger("zoomEnd", { originalEvent: e });
+            }
         },
 
         _initScroller: function() {
             var friction = kendo.support.mobileOS ? FRICTION_MOBILE : FRICTION;
+            var zoomable = this.options.zoomable !== false;
             var scroller = this.scroller = new kendo.mobile.ui.Scroller(
                 this.element.children(0), {
                     friction: friction,
                     velocityMultiplier: VELOCITY_MULTIPLIER,
-                    zoom: true
+                    zoom: zoomable,
+                    mousewheelScrolling: false
                 });
 
             scroller.bind("scroll", proxy(this._scroll, this));
             scroller.bind("scrollEnd", proxy(this._scrollEnd, this));
+            scroller.userEvents.bind("gesturestart", proxy(this._scaleStart, this));
             scroller.userEvents.bind("gestureend", proxy(this._scale, this));
 
             this.scrollElement = scroller.scrollElement;
@@ -3936,9 +4538,7 @@ kendo_module({
         },
 
         _initMarkers: function() {
-            this.markers = new map.layers.MarkerLayer(this, {
-                markerDefaults: this.options.markerDefaults
-            });
+            this.markers = new map.layers.MarkerLayer(this, this.options.markerDefaults);
             this.markers.add(this.options.markers);
         },
 
@@ -3966,6 +4566,15 @@ kendo_module({
             });
         },
 
+        _scaleStart: function(e) {
+            if (this.trigger("zoomStart", { originalEvent: e })) {
+                var touch = e.touches[1];
+                if (touch) {
+                    touch.cancel();
+                }
+            }
+        },
+
         _scale: function(e) {
             var scale = this.scroller.movable.scale;
             var zoom = this._scaleToZoom(scale);
@@ -3975,6 +4584,7 @@ kendo_module({
             var originPoint = centerPoint.subtract(gestureCenter);
 
             this._zoomAround(originPoint, zoom);
+            this.trigger("zoomEnd", { originalEvent: e });
         },
 
         _scaleToZoom: function(scaleDelta) {
@@ -3992,6 +4602,7 @@ kendo_module({
 
             this._viewOrigin = this._getOrigin(true);
             this._resetScroller();
+            this.trigger("beforeReset");
             this.trigger("reset");
         },
 
@@ -4012,17 +4623,24 @@ kendo_module({
 
             scroller.movable.round = true;
 
-            x.makeVirtual();
-            y.makeVirtual();
-
             var xBounds = { min: -topLeft.x, max: scale - topLeft.x };
+            var yBounds = { min: -topLeft.y, max: scale - topLeft.y };
+
             if (this.options.wraparound) {
                 xBounds.min = -maxScale;
                 xBounds.max = maxScale;
             }
-            x.virtualSize(xBounds.min, xBounds.max);
 
-            var yBounds = { min: -topLeft.y, max: scale - topLeft.y };
+            if (this.options.pannable === false) {
+                var viewSize = this.viewSize();
+                xBounds.min = yBounds.min = 0;
+                xBounds.max = viewSize.width;
+                yBounds.max = viewSize.height;
+            }
+
+            x.makeVirtual();
+            y.makeVirtual();
+            x.virtualSize(xBounds.min, xBounds.max);
             y.virtualSize(yBounds.min, yBounds.max);
 
             this._virtualSize = { x: xBounds, y: yBounds };
@@ -4065,16 +4683,16 @@ kendo_module({
             var fromZoom = this.zoom();
             var toZoom = limit(fromZoom + delta, options.minZoom, options.maxZoom);
 
-            if (toZoom !== fromZoom) {
-                this.trigger("zoomStart", { originalEvent: e });
+            if (options.zoomable !== false && toZoom !== fromZoom) {
+                if (!this.trigger("zoomStart", { originalEvent: e })) {
+                    var cursor = this.eventOffset(e);
+                    var location = this.viewToLocation(cursor);
+                    var postZoom = this.locationToLayer(location, toZoom);
+                    var origin = postZoom.subtract(cursor);
+                    this._zoomAround(origin, toZoom);
 
-                var cursor = this.eventOffset(e);
-                var location = this.viewToLocation(cursor);
-                var postZoom = this.locationToLayer(location, toZoom);
-                var origin = postZoom.subtract(cursor);
-                this._zoomAround(origin, toZoom);
-
-                this.trigger("zoomEnd", { originalEvent: e });
+                    this.trigger("zoomEnd", { originalEvent: e });
+                }
             }
         }
     });
@@ -4083,3 +4701,7 @@ kendo_module({
     dataviz.ui.plugin(Map);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

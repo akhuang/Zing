@@ -21,15 +21,15 @@ namespace Kendo.Mvc.UI
         
             Controls = new MapControlsSettings();
                 
-            LayerDefaults = new MapLayerDefaultsSettings();
-                
             Layers = new List<MapLayer>();
-
+                
             Markers = new List<MapMarker>();
-
-            MarkerDefaults = new MapMarkerDefaultsSettings(this);
                 
         //<< Initialization
+
+            LayerDefaults = new MapLayerDefaultsSettings(this);
+
+            MarkerDefaults = new MapMarkerDefaultsSettings(this);
         }
 
         public double[] Center { get; set; }
@@ -47,31 +47,31 @@ namespace Kendo.Mvc.UI
         public MapControlsSettings Controls
         {
             get;
-            private set;
+            set;
         }
         
         public MapLayerDefaultsSettings LayerDefaults
         {
             get;
-            private set;
+            set;
         }
         
         public List<MapLayer> Layers
         {
             get;
-            private set;
+            set;
         }
-
-        public List<MapMarker> Markers
-        {
-            get;
-            private set;
-        }
-
+        
         public MapMarkerDefaultsSettings MarkerDefaults
         {
             get;
-            private set;
+            set;
+        }
+        
+        public List<MapMarker> Markers
+        {
+            get;
+            set;
         }
         
         public double? MinZoom { get; set; }
@@ -80,9 +80,13 @@ namespace Kendo.Mvc.UI
         
         public double? MinSize { get; set; }
         
+        public bool? Pannable { get; set; }
+        
         public bool? Wraparound { get; set; }
         
         public double? Zoom { get; set; }
+        
+        public bool? Zoomable { get; set; }
         
         //<< Fields
 
@@ -142,6 +146,11 @@ namespace Kendo.Mvc.UI
                 json["minSize"] = MinSize;
             }
                 
+            if (Pannable.HasValue)
+            {
+                json["pannable"] = Pannable;
+            }
+                
             if (Wraparound.HasValue)
             {
                 json["wraparound"] = Wraparound;
@@ -150,6 +159,11 @@ namespace Kendo.Mvc.UI
             if (Zoom.HasValue)
             {
                 json["zoom"] = Zoom;
+            }
+                
+            if (Zoomable.HasValue)
+            {
+                json["zoomable"] = Zoomable;
             }
                 
         //<< Serialization

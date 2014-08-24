@@ -36,7 +36,7 @@ namespace Kendo.Mvc.UI
             set;
         }
 
-        public string OptionLabel
+        public object OptionLabel
         {
             get;
             set;
@@ -54,9 +54,36 @@ namespace Kendo.Mvc.UI
             set;
         }
 
+        public string ValueTemplate
+        {
+            get;
+            set;
+        }
+
+        public string ValueTemplateId
+        {
+            get;
+            set;
+        }
+
         public override void WriteInitializationScript(TextWriter writer)
         {
             var options = this.SeriailzeBaseOptions();
+
+            var idPrefix = "#";
+            if (IsInClientTemplate)
+            {
+                idPrefix = "\\" + idPrefix;
+            }
+
+            if (!string.IsNullOrEmpty(ValueTemplateId))
+            {
+                options["valueTemplate"] = new ClientHandlerDescriptor { HandlerName = string.Format("$('{0}{1}').html()", idPrefix, ValueTemplateId) };
+            }
+            else if (!string.IsNullOrEmpty(ValueTemplate))
+            {
+                options["valueTemplate"] = ValueTemplate;
+            }
 
             if (AutoBind != null)
             {
@@ -73,7 +100,7 @@ namespace Kendo.Mvc.UI
                 options["index"] = SelectedIndex;
             }
 
-            if (!string.IsNullOrEmpty(OptionLabel))
+            if (OptionLabel != null)
             {
                 options["optionLabel"] = OptionLabel;
             }

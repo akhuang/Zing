@@ -39,7 +39,7 @@ namespace Kendo.Mvc.UI
             Settings = new GridColumnSettings();            
             Visible = true;
             HeaderTemplate = new HtmlTemplate();
-            FooterTemplate = new HtmlTemplate<GridAggregateResult>();
+            FooterTemplate = new HtmlTemplate<GridAggregateResult>();            
         }
 
         /// <summary>
@@ -143,6 +143,16 @@ namespace Kendo.Mvc.UI
             if (!Encoded)
             {
                 json["encoded"] = Encoded;
+            }
+
+            if (Locked)
+            {
+                json["locked"] = Locked;
+            }
+
+            if (!Lockable)
+            {
+                json["lockable"] = Lockable;
             }
         }       
         
@@ -256,7 +266,33 @@ namespace Kendo.Mvc.UI
                 Settings.IncludeInMenu = value;
             }
         }
-  
+   
+        public virtual bool Locked
+        {
+            get
+            {
+                return Settings.Locked;
+            }
+            
+            set
+            {
+                Settings.Locked = value;
+            }
+        }
+
+        public virtual bool Lockable
+        {
+            get
+            {
+                return Settings.Lockable;
+            }
+
+            set
+            {
+                Settings.Lockable = value;
+            }
+        }
+
         public virtual bool Encoded
         {
             get

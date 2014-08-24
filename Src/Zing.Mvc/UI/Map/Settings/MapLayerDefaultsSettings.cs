@@ -8,33 +8,47 @@ namespace Kendo.Mvc.UI
 
     public class MapLayerDefaultsSettings : JsonObject
     {
-        public MapLayerDefaultsSettings()
+        public MapLayerDefaultsSettings(Map map)
         {
             //>> Initialization
         
+            Bing = new MapLayerDefaultsBingSettings();
+                
             Shape = new MapLayerDefaultsShapeSettings();
                 
             Tile = new MapLayerDefaultsTileSettings();
                 
         //<< Initialization
 
-            
+            Marker = new MapLayerDefaultsMarkerSettings(map);
         }
 
         
 
         //>> Fields
         
+        public MapLayerDefaultsMarkerSettings Marker
+        {
+            get;
+            set;
+        }
+        
         public MapLayerDefaultsShapeSettings Shape
         {
             get;
-            private set;
+            set;
         }
         
         public MapLayerDefaultsTileSettings Tile
         {
             get;
-            private set;
+            set;
+        }
+        
+        public MapLayerDefaultsBingSettings Bing
+        {
+            get;
+            set;
         }
         
         //<< Fields
@@ -43,6 +57,12 @@ namespace Kendo.Mvc.UI
         {
             //>> Serialization
         
+            var marker = Marker.ToJson();
+            if (marker.Any())
+            {
+                json["marker"] = marker;
+            }
+                
             var shape = Shape.ToJson();
             if (shape.Any())
             {
@@ -53,6 +73,12 @@ namespace Kendo.Mvc.UI
             if (tile.Any())
             {
                 json["tile"] = tile;
+            }
+                
+            var bing = Bing.ToJson();
+            if (bing.Any())
+            {
+                json["bing"] = bing;
             }
                 
         //<< Serialization

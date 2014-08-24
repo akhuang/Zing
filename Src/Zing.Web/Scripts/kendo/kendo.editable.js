@@ -1,19 +1,16 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "editable",
-    name: "Editable",
-    category: "framework",
-    depends: [ "datepicker", "numerictextbox", "validator", "binder" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.datepicker", "./kendo.numerictextbox", "./kendo.validator", "./kendo.binder" ], f);
+})(function(){
 
+/* jshint eqnull: true */
 (function($, undefined) {
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -189,7 +186,7 @@ kendo_module({
                 editor = isCustomEditor ? field.editor : editors[type],
                 container = that.element.find("[" + kendo.attr("container-for") + "=" + fieldName.replace(nameSpecialCharRegExp, "\\$1")+ "]");
 
-            editor = editor ? editor : editors["string"];
+            editor = editor ? editor : editors.string;
 
             if (isCustomEditor && typeof field.editor === "string") {
                 editor = function(container) {
@@ -210,7 +207,7 @@ kendo_module({
 
             values[e.field] = e.value;
 
-            input = $(':input[' + kendo.attr("bind") + '="' + (isBoolean ? 'checked:' : 'value:') + e.field.replace(nameSpecialCharRegExp, "\\$1") + '"]', that.element);
+            input = $(':input[' + kendo.attr("bind") + '*="' + (isBoolean ? 'checked:' : 'value:') + e.field.replace(nameSpecialCharRegExp, "\\$1") + '"]', that.element);
 
             try {
                 that._validationEventInProgress = true;
@@ -236,6 +233,10 @@ kendo_module({
             that.options.model.unbind("set", that._validateProxy);
 
             kendo.unbind(that.element);
+
+            if (that.validatable) {
+                that.validatable.destroy();
+            }
             kendo.destroy(that.element);
 
             that.element.removeData("kendoValidator");
@@ -283,12 +284,12 @@ kendo_module({
 
             that.options.model.bind("set", that._validateProxy);
 
-            that.validatable = container.kendoValidator({
+            that.validatable = new kendo.ui.Validator(container, {
                 validateOnBlur: false,
                 errorTemplate: that.options.errorTemplate || undefined,
-                rules: rules }).data("kendoValidator");
+                rules: rules });
 
-            var focusable = container.find(":kendoFocusable:first").focus();
+            var focusable = container.find(":kendoFocusable").eq(0).focus();
             if (oldIE) {
                 focusable.focus();
             }
@@ -297,3 +298,7 @@ kendo_module({
 
    ui.plugin(Editable);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

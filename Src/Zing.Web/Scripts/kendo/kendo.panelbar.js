@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "panelbar",
-    name: "PanelBar",
-    category: "web",
-    description: "The PanelBar widget displays hierarchical data as a multi-level expandable panel bar.",
-    depends: [ "core" ]
-});
+(function(f, define){
+    define([ "./kendo.core" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -400,7 +396,9 @@ kendo_module({
                         return that;
                     }
 
-                    that._updateSelected(link);
+                    if (!that._triggerEvent(SELECT, item)) {
+                        that._updateSelected(link);
+                    }
                 });
 
             return that;
@@ -670,7 +668,11 @@ kendo_module({
                     referenceItem.attr(ARIA_EXPANDED, false);
                 }
             } else {
-                items = $(item);
+                if (typeof item == "string" && item[0] != "<") {
+                    items = that.element.find(item);
+                } else {
+                    items = $(item);
+                }
                 that._updateItemsClasses(items);
             }
 
@@ -852,6 +854,8 @@ kendo_module({
         _toggleItem: function (element, isVisible) {
             var that = this,
                 childGroup = element.find(GROUPS),
+                link = element.find(LINKSELECTOR),
+                url = link.attr(HREF),
                 prevent, content;
 
             if (childGroup.length) {
@@ -863,7 +867,7 @@ kendo_module({
                 if (content.length) {
                     prevent = true;
 
-                    if (!content.is(EMPTY)) {
+                    if (!content.is(EMPTY) || url === undefined) {
                         that._toggleGroup(content, isVisible);
                     } else {
                         that._ajaxRequest(element, content, isVisible);
@@ -1068,3 +1072,7 @@ kendo_module({
     kendo.ui.plugin(PanelBar);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

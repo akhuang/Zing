@@ -19,20 +19,18 @@ namespace Kendo.Mvc.UI.Fluent
 
         //>> Fields
         
+        //<< Fields
+
         /// <summary>
         /// The position of the navigator control. Possible values include:
         /// </summary>
         /// <param name="value">The value that configures the position.</param>
-        public MapControlsNavigatorSettingsBuilder Position(string value)
+        public MapControlsNavigatorSettingsBuilder Position(MapControlPosition value)
         {
             container.Position = value;
 
             return this;
         }
-        
-        //<< Fields
-
-        
     }
 }
 

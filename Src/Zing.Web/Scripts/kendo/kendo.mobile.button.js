@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.button",
-    name: "Button",
-    category: "mobile",
-    description: "The Button widget navigates between mobile Application views when pressed.",
-    depends: [ "mobile.application", "userevents" ]
-});
+(function(f, define){
+    define([ "./kendo.mobile.application", "./kendo.userevents" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -55,10 +51,9 @@ kendo_module({
                 press: function(e) { that._activate(e); },
                 tap: function(e) { that._release(e); },
                 release: function(e) { highlightButton(that, e, false); },
-                // Prevent the navigation when scrolled in this case
-                // in THEORY this should not break anything in the other mode, too - but let's not take any chances
+                // prevent the navigation when native scrolling is present
                 end: function(e) {
-                    if (kendo.mobile.application.options.useNativeScrolling) {
+                    if (kendo.mobile.appLevelNativeScrolling() || that.viewHasNativeScrolling()) {
                         e.preventDefault();
                     }
                 }
@@ -256,3 +251,7 @@ kendo_module({
     ui.plugin(BackButton);
     ui.plugin(DetailButton);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

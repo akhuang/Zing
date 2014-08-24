@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "popup",
-    name: "Pop-up",
-    category: "framework",
-    depends: [ "core" ],
-    advanced: true
-});
+(function(f, define){
+    define([ "./kendo.core" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -49,12 +45,12 @@ kendo_module({
         TRANSFORM = cssPrefix + "transform",
         extend = $.extend,
         NS = ".kendoPopup",
-        styles = ["font-family",
-                   "font-size",
-                   "font-stretch",
-                   "font-style",
-                   "font-weight",
-                   "line-height"];
+        styles = ["font-size",
+                  "font-family",
+                  "font-stretch",
+                  "font-style",
+                  "font-weight",
+                  "line-height"];
 
     function contains(container, target) {
         return container === target || $.contains(container, target);
@@ -201,6 +197,9 @@ kendo_module({
                 WINDOW.unbind(RESIZE_SCROLL, that._resizeProxy);
             }
 
+            kendo.destroy(that.element.children());
+            element.removeData();
+
             if (options.appendTo[0] === document.body) {
                 parent = element.parent(".k-animation-container");
 
@@ -210,8 +209,6 @@ kendo_module({
                     element.remove();
                 }
             }
-
-            kendo.destroy(that.element.children());
         },
 
         open: function(x, y) {
@@ -221,10 +218,14 @@ kendo_module({
                 options = that.options,
                 direction = "down",
                 animation, wrapper,
-                anchor = $(options.anchor);
+                anchor = $(options.anchor),
+                mobile = element[0] && element.hasClass("km-widget");
 
             if (!that.visible()) {
                 if (options.copyAnchorStyles) {
+                    if (mobile && styles[0] == "font-size") {
+                        styles.shift();
+                    }
                     element.css(kendo.getComputedStyles(anchor[0], styles));
                 }
 
@@ -409,11 +410,12 @@ kendo_module({
 
         _position: function(fixed) {
             var that = this,
+                documentElement = $(document.documentElement),
                 element = that.element.css(POSITION, ""),
                 wrapper = that.wrapper,
                 options = that.options,
                 viewport = $(options.viewport),
-                viewportOffset = $(viewport).offset(),
+                viewportOffset = viewport.offset(),
                 anchor = $(options.anchor),
                 origins = options.origin.toLowerCase().split(" "),
                 positions = options.position.toLowerCase().split(" "),
@@ -421,7 +423,13 @@ kendo_module({
                 zoomLevel = support.zoomLevel(),
                 siblingContainer, parents,
                 parentZIndex, zIndex = 10002,
-                idx = 0, length;
+                idx = 0, length, viewportWidth, viewportHeight;
+
+            // $(window).height() uses documentElement to get the height
+            documentElement.css({ overflowX: "hidden", overflowY: "hidden" });
+            viewportWidth = viewport.width();
+            viewportHeight = viewport.height();
+            documentElement.css({ overflowX: "", overflowY: "" });
 
             siblingContainer = anchor.parents().filter(wrapper.siblings());
 
@@ -474,21 +482,21 @@ kendo_module({
                 location = extend({}, pos);
 
             if (collisions[0] === "fit") {
-                location.top += that._fit(offsets.top, wrapper.outerHeight(), viewport.height() / zoomLevel);
+                location.top += that._fit(offsets.top, wrapper.outerHeight(), viewportHeight / zoomLevel);
             }
 
             if (collisions[1] === "fit") {
-                location.left += that._fit(offsets.left, wrapper.outerWidth(), viewport.width() / zoomLevel);
+                location.left += that._fit(offsets.left, wrapper.outerWidth(), viewportWidth / zoomLevel);
             }
 
             var flipPos = extend({}, location);
 
             if (collisions[0] === "flip") {
-                location.top += that._flip(offsets.top, element.outerHeight(), anchor.outerHeight(), viewport.height() / zoomLevel, origins[0], positions[0], wrapper.outerHeight());
+                location.top += that._flip(offsets.top, element.outerHeight(), anchor.outerHeight(), viewportHeight / zoomLevel, origins[0], positions[0], wrapper.outerHeight());
             }
 
             if (collisions[1] === "flip") {
-                location.left += that._flip(offsets.left, element.outerWidth(), anchor.outerWidth(), viewport.width() / zoomLevel, origins[1], positions[1], wrapper.outerWidth());
+                location.left += that._flip(offsets.left, element.outerWidth(), anchor.outerWidth(), viewportWidth / zoomLevel, origins[1], positions[1], wrapper.outerWidth());
             }
 
             element.css(POSITION, ABSOLUTE);
@@ -564,3 +572,7 @@ kendo_module({
 
     ui.plugin(Popup);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

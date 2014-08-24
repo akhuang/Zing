@@ -23,13 +23,11 @@ namespace Kendo.Mvc.UI
 
             FluentDictionary.For(result)
                 .Add("type", series.Orientation == ChartSeriesOrientation.Horizontal ? "bar" : "column")
-                .Add("stack", series.Stacked, () => series.Stacked == true && !series.StackName.HasValue())
-                .Add("stack", series.StackName, () => series.StackName.HasValue())
                 .Add("aggregate", series.Aggregate.ToString().ToLowerInvariant(), () => series.Aggregate != null)
                 .Add("gap", series.Gap, () => series.Gap.HasValue)
                 .Add("spacing", series.Spacing, () => series.Spacing.HasValue)
-                .Add("field", series.Member, () => { return series.Data == null && series.Member != null; })
-                .Add("categoryField", series.CategoryMember, () => { return series.Data == null && series.CategoryMember.HasValue(); })
+                .Add("field", series.Member, () => series.Member != null)
+                .Add("categoryField", series.CategoryMember, () => series.CategoryMember.HasValue())
                 .Add("data", series.Data, () => { return series.Data != null; })
                 .Add("border", series.Border.CreateSerializer().Serialize(), ShouldSerializeBorder)
                 .Add("colorField", series.ColorMember, () => series.ColorMember.HasValue())
@@ -45,6 +43,26 @@ namespace Kendo.Mvc.UI
             if (labelsData.Count > 0)
             {
                 result.Add("labels", labelsData);
+            }
+
+            if (series.StackType.HasValue)
+            {
+                var type = series.StackType == ChartStackType.Stack100 ? "100%" : series.StackType.ToString().ToLowerInvariant();
+                var stack = new Dictionary<string, object> { { "type", type } };
+
+                if (series.StackGroup != null)
+                {
+                    stack.Add("group", series.StackGroup);
+                }
+
+                result.Add("stack", stack);
+            }
+            else if (series.StackGroup != null)
+            {
+                result.Add("stack", series.StackGroup);
+            } if (series.Stacked.HasValue)
+            {
+                result.Add("stack", series.Stacked);
             }
 
             return result;

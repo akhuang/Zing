@@ -1,19 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.loader",
-    name: "Loader",
-    category: "mobile",
-    description: "Mobile Loader",
-    depends: [ "core" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.core" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -29,6 +24,7 @@ kendo_module({
             Widget.fn.init.call(that, element, options);
 
             that.container = container;
+            that.captureEvents = false;
 
             that._attachCapture();
 
@@ -50,15 +46,16 @@ kendo_module({
                 return;
             }
 
+            that.captureEvents = true;
             that._loading = setTimeout(function() {
                 that.element.show();
             }, that.options.timeout);
         },
 
         hide: function() {
-            var that = this;
-            clearTimeout(that._loading);
-            that.element.hide();
+            this.captureEvents = false;
+            clearTimeout(this._loading);
+            this.element.hide();
         },
 
         changeMessage: function(message) {
@@ -67,21 +64,21 @@ kendo_module({
         },
 
         transition: function() {
-            this.transitioning = true;
+            this.captureEvents = true;
             this.container.css("pointer-events", "none");
         },
 
         transitionDone: function() {
-            this.transitioning = false;
+            this.captureEvents = false;
             this.container.css("pointer-events", "");
         },
 
         _attachCapture: function() {
             var that = this;
-            that.transitioning = false;
+            that.captureEvents = false;
 
             function capture(e) {
-                if (that.transitioning) {
+                if (that.captureEvents) {
                     e.preventDefault();
                 }
             }
@@ -94,3 +91,7 @@ kendo_module({
 
     ui.plugin(Loader);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

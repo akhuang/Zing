@@ -40,7 +40,7 @@ namespace Kendo.Mvc.UI.Fluent
         /// <summary>
         /// Sets the name of the stack that this series belongs to. Each unique name creates a new stack.
         /// </summary>
-        /// <param name="stackName">The name of the stack.</param>
+        /// <param name="stackGroup">The name of the stack group.</param>
         /// <example>
         /// <code lang="CS">
         ///  &lt;%= Html.Kendo().Chart(Model)
@@ -49,9 +49,33 @@ namespace Kendo.Mvc.UI.Fluent
         /// %&gt;
         /// </code>
         /// </example>
-        public TSeriesBuilder Stack(string stackName)
+        public TSeriesBuilder Stack(string stackGroup)
         {
-            Series.StackName = stackName;
+            Series.StackGroup = stackGroup;
+
+            return (TSeriesBuilder)this;
+        }
+
+        /// <summary>
+        /// Sets the name of the stack that this series belongs to. Each unique name creates a new stack.
+        /// </summary>
+        /// <param name="stackType">The stack type.</param>
+        /// <param name="stackGroup">The name of the stack group.</param>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Chart(Model)
+        ///             .Name("Chart")
+        ///             .Series(series => series.Bar(s => s.Sales).Stack("Female"))
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public TSeriesBuilder Stack(ChartStackType stackType, string stackGroup = null)
+        {
+            Series.StackType = stackType;
+
+            if (stackGroup != null) {
+                Series.StackGroup = stackGroup;
+            }
 
             return (TSeriesBuilder)this;
         }
@@ -237,6 +261,86 @@ namespace Kendo.Mvc.UI.Fluent
         public TSeriesBuilder NegativeColor(string color)
         {
             Series.NegativeColor = color;
+
+            return (TSeriesBuilder)this;
+        }
+
+        /// <summary>
+        /// Sets the value field for the series
+        /// </summary>
+        /// <param name="field">The value field for the series</param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///            .Name("Chart")
+        ///            .Series(series => series.Bar(Model.Records).Field("Value"))
+        ///            .Render();
+        /// %&gt;
+        /// </code>
+        /// </example>        
+        public TSeriesBuilder Field(string field)
+        {
+            Series.Member = field;
+
+            return (TSeriesBuilder) this;
+        }
+
+        /// <summary>
+        /// Sets the category field for the series
+        /// </summary>
+        /// <param name="categoryField">The category field for the series</param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///            .Name("Chart")
+        ///            .Series(series => series.Bar(Model.Records).Field("Value").CategoryField("Category"))
+        ///            .Render();
+        /// %&gt;
+        /// </code>
+        /// </example>        
+        public TSeriesBuilder CategoryField(string categoryField)
+        {
+            Series.CategoryMember = categoryField;
+
+            return (TSeriesBuilder) this;
+        }
+
+        /// <summary>
+        /// Sets the color field for the series
+        /// </summary>
+        /// <param name="colorField">The color field for the series</param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///            .Name("Chart")
+        ///            .Series(series => series.Bar(Model.Records).Field("Value").ColorField("Color"))
+        ///            .Render();
+        /// %&gt;
+        /// </code>
+        /// </example>        
+        public TSeriesBuilder ColorField(string colorField)
+        {
+            Series.ColorMember = colorField;
+
+            return (TSeriesBuilder)this;
+        }
+
+        /// <summary>
+        /// Sets the note text field for the series
+        /// </summary>
+        /// <param name="noteTextField">The note text field for the series</param>
+        /// <example>
+        /// <code lang="CS">
+        /// &lt;% Html.Kendo().Chart()
+        ///            .Name("Chart")
+        ///            .Series(series => series.Bar(Model.Records).Field("Value").NoteTextField("NoteText"))
+        ///            .Render();
+        /// %&gt;
+        /// </code>
+        /// </example>        
+        public TSeriesBuilder NoteTextField(string noteTextField)
+        {
+            Series.NoteTextMember = noteTextField;
 
             return (TSeriesBuilder)this;
         }

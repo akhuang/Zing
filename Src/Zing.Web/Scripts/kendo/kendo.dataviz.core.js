@@ -1,19 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.core",
-    name: "Core",
-    description: "The DataViz core functions",
-    category: "dataviz",
-    depends: [ "core" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.core" ], f);
+})(function(){
 
 (function ($, undefined) {
 
@@ -57,6 +52,7 @@ kendo_module({
         ID_PREFIX = "k",
         ID_POOL_SIZE = 1000,
         ID_START = 10000,
+        COORDINATE_LIMIT = 100000,
         INITIAL_ANIMATION_DURATION = 600,
         INSIDE = "inside",
         LEFT = "left",
@@ -427,6 +423,10 @@ kendo_module({
             var box = this;
 
             return [box.x1, box.y1, box.x2, box.y2].join(",");
+        },
+
+        overlaps: function(box) {
+            return !(box.y2 < this.y1 || this.y2 < box.y1 || box.x2 < this.x1 || this.x2 < box.x1);
         }
     };
 
@@ -607,6 +607,7 @@ kendo_module({
             element.children = [];
 
             element.options = deepExtend({}, element.options, options);
+            element.id = element.options.id;
         },
 
         reflow: function(targetBox) {
@@ -628,8 +629,7 @@ kendo_module({
 
         getViewElements: function(view) {
             var element = this,
-                options = element.options,
-                modelId = options.modelId,
+                modelId = element.modelId,
                 viewElements = [],
                 root,
                 children = element.children,
@@ -642,7 +642,7 @@ kendo_module({
 
                 if (!child.discoverable) {
                     child.options = child.options || {};
-                    child.options.modelId = modelId;
+                    child.modelId = modelId;
                 }
 
                 viewElements.push.apply(
@@ -660,10 +660,9 @@ kendo_module({
         },
 
         enableDiscovery: function() {
-            var element = this,
-                options = element.options;
+            var element = this;
 
-            options.modelId = IDPool.current.alloc();
+            element.modelId = IDPool.current.alloc();
             element.discoverable = true;
         },
 
@@ -671,8 +670,8 @@ kendo_module({
             var element = this,
                 children = element.children,
                 root = element.getRoot(),
-                modelId = element.options.modelId,
-                id = element.options.id,
+                modelId = element.modelId,
+                id = element.id,
                 pool = IDPool.current,
                 i;
 
@@ -785,10 +784,6 @@ kendo_module({
     });
 
     var BoxElement = ChartElement.extend({
-        init: function(options) {
-            ChartElement.fn.init.call(this, options);
-        },
-
         options: {
             align: LEFT,
             vAlign: TOP,
@@ -904,7 +899,7 @@ kendo_module({
                 border = options.border || {};
 
             return {
-                id: options.id,
+                id: this.id,
                 stroke: border.width ? border.color : "",
                 strokeWidth: border.width,
                 dashType: border.dashType,
@@ -913,7 +908,7 @@ kendo_module({
                 fillOpacity: options.opacity,
                 animation: options.animation,
                 zIndex: options.zIndex,
-                data: { modelId: options.modelId }
+                data: { modelId: boxElement.modelId }
             };
         }
     });
@@ -988,9 +983,10 @@ kendo_module({
             return [
                 view.createText(text.content,
                     deepExtend({}, options, {
+                        id: text.id,
                         x: text.box.x1, y: text.box.y1,
                         baseline: text.baseline,
-                        data: { modelId: options.modelId }
+                        data: { modelId: text.modelId }
                     })
                 )
             ];
@@ -1007,9 +1003,10 @@ kendo_module({
 
             text = new Text(content, deepExtend({ }, options, { align: LEFT, vAlign: TOP }));
             textBox.append(text);
+            textBox.content = content;
 
             if (textBox.hasBox()) {
-                text.options.id = uniqueId();
+                text.id = uniqueId();
             }
 
             // Calculate size
@@ -1064,16 +1061,8 @@ kendo_module({
     };
 
     var AxisLabel = TextBox.extend({
-        init: function(value, index, dataItem, options) {
-            var label = this,
-                text = value;
-
-            if (options.template) {
-                label.template = template(options.template);
-                text = label.template({ value: value, dataItem: dataItem });
-            } else if (options.format) {
-                text = label.formatValue(value, options);
-            }
+        init: function(value, text, index, dataItem, options) {
+            var label = this;
 
             label.text = text;
             label.value = value;
@@ -1085,10 +1074,6 @@ kendo_module({
             );
 
             label.enableDiscovery();
-        },
-
-        formatValue: function(value, options) {
-            return autoFormat(options.format, value);
         },
 
         click: function(widget, e) {
@@ -1104,6 +1089,53 @@ kendo_module({
             });
         }
     });
+
+    function createAxisTick(view, options, tickOptions) {
+        var tickX = options.tickX,
+            tickY = options.tickY,
+            position = options.position,
+            start, end;
+
+        if (options.vertical) {
+            start = Point2D(tickX, position);
+            end = Point2D(tickX + tickOptions.size, position);
+        } else {
+            start = Point2D(position, tickY);
+            end = Point2D(position, tickY + tickOptions.size);
+        }
+
+        return view.createLine(
+            start.x, start.y,
+            end.x, end.y, {
+                strokeWidth: tickOptions.width,
+                stroke: tickOptions.color,
+                align: options._alignLines
+            });
+    }
+
+    function createAxisGridLine(view, options, gridLine) {
+        var lineStart = options.lineStart,
+            lineEnd = options.lineEnd,
+            position = options.position,
+            start, end;
+
+        if (options.vertical) {
+            start = Point2D(lineStart, position);
+            end = Point2D(lineEnd, position);
+        } else {
+            start = Point2D(position, lineStart);
+            end = Point2D(position, lineEnd);
+        }
+        return view.createLine(
+            start.x, start.y,
+            end.x, end.y, {
+                data: { modelId: options.modelId },
+                strokeWidth: gridLine.width,
+                stroke: gridLine.color,
+                dashType: gridLine.dashType,
+                zIndex: -1
+            });
+    }
 
     var Axis = ChartElement.extend({
         init: function(options) {
@@ -1214,7 +1246,7 @@ kendo_module({
                 align = options.vertical ? RIGHT : CENTER,
                 labelOptions = deepExtend({ }, options.labels, {
                     align: align, zIndex: options.zIndex,
-                    modelId: options.modelId
+                    modelId: axis.modelId
                 }),
                 step = labelOptions.step;
 
@@ -1227,8 +1259,10 @@ kendo_module({
 
                 for (i = labelOptions.skip; i < labelsCount; i += step) {
                     label = axis.createAxisLabel(i, labelOptions);
-                    axis.append(label);
-                    axis.labels.push(label);
+                    if (label) {
+                        axis.append(label);
+                        axis.labels.push(label);
+                    }
                 }
             }
         },
@@ -1299,17 +1333,8 @@ kendo_module({
             for (i = 0; i < items.length; i++) {
                 item = deepExtend({}, notes, items[i]);
                 item.value = axis.parseNoteValue(item.value);
-                text = item.label.text;
-                if (item.label.template) {
-                    noteTemplate = template(item.label.template);
-                    text = noteTemplate({
-                        value: item.value
-                    });
-                } else if (item.label.format) {
-                    text = autoFormat(item.label.format, text);
-                }
 
-                note = new Note(deepExtend({}, item, { label: { text: text }}));
+                note = new Note(item.value, item.label.text, null, null, null, item);
 
                 if (note.options.visible) {
                     if (defined(note.options.position)) {
@@ -1342,7 +1367,10 @@ kendo_module({
                 lineBox = axis.lineBox(),
                 mirror = options.labels.mirror,
                 majorUnit = options.majorTicks.visible ? options.majorUnit : 0,
-                tickX, tickY, pos,
+                tickLineOptions= {
+                    _alignLines: options._alignLines,
+                    vertical: options.vertical
+                },
                 start, end;
 
             function render(tickPositions, tickOptions) {
@@ -1354,25 +1382,11 @@ kendo_module({
                             continue;
                         }
 
-                        tickX = mirror ? lineBox.x2 : lineBox.x2 - tickOptions.size;
-                        tickY = mirror ? lineBox.y1 - tickOptions.size : lineBox.y1;
-                        pos = tickPositions[i];
+                        tickLineOptions.tickX = mirror ? lineBox.x2 : lineBox.x2 - tickOptions.size;
+                        tickLineOptions.tickY = mirror ? lineBox.y1 - tickOptions.size : lineBox.y1;
+                        tickLineOptions.position = tickPositions[i];
 
-                        if (options.vertical) {
-                            start = Point2D(tickX, pos);
-                            end = Point2D(tickX + tickOptions.size, pos);
-                        } else {
-                            start = Point2D(pos, tickY);
-                            end = Point2D(pos, tickY + tickOptions.size);
-                        }
-
-                        ticks.push(view.createLine(
-                            start.x, start.y,
-                            end.x, end.y, {
-                                strokeWidth: tickOptions.width,
-                                stroke: tickOptions.color,
-                                align: options._alignLines
-                            }));
+                        ticks.push(createAxisTick(view, tickLineOptions, tickOptions));
                     }
                 }
             }
@@ -1473,9 +1487,9 @@ kendo_module({
 
                     if (vertical) {
                         slotX = plotArea.axisX.lineBox();
-                        slotY = axis.getSlot(item.from, item.to);
+                        slotY = axis.getSlot(item.from, item.to, true);
                     } else {
-                        slotX = axis.getSlot(item.from, item.to);
+                        slotX = axis.getSlot(item.from, item.to, true);
                         slotY = plotArea.axisY.lineBox();
                     }
 
@@ -1492,16 +1506,19 @@ kendo_module({
             var axis = this,
                 items = [],
                 options = axis.options,
-                modelId = axis.plotArea.options.modelId,
                 axisLineVisible = altAxis.options.line.visible,
                 majorGridLines = options.majorGridLines,
                 majorUnit = majorGridLines.visible ? options.majorUnit : 0,
                 vertical = options.vertical,
                 lineBox = altAxis.lineBox(),
-                lineStart = lineBox[vertical ? "x1" : "y1"],
-                lineEnd = lineBox[vertical ? "x2" : "y2"],
                 linePos = lineBox[vertical ? "y1" : "x1"],
-                pos, majorTicks = [], start, end;
+                lineOptions = {
+                    lineStart: lineBox[vertical ? "x1" : "y1"],
+                    lineEnd: lineBox[vertical ? "x2" : "y2"],
+                    vertical: vertical,
+                    modelId: axis.plotArea.modelId
+                },
+                pos, majorTicks = [];
 
             function render(tickPositions, gridLine) {
                 var count = tickPositions.length,
@@ -1512,27 +1529,10 @@ kendo_module({
                         pos = round(tickPositions[i]);
                         if (!inArray(pos, majorTicks)) {
                             if (i % gridLine.skipUnit !== 0 && (!axisLineVisible || linePos !== pos)) {
-                                if (options.vertical) {
-                                    start = Point2D(lineStart, pos);
-                                    end = Point2D(lineEnd, pos);
-                                } else {
-                                    start = Point2D(pos, lineStart);
-                                    end = Point2D(pos, lineEnd);
-                                }
+                                lineOptions.position = pos;
+                                items.push(createAxisGridLine(view, lineOptions, gridLine));
 
-                                if (start && end) {
-                                    items.push(view.createLine(
-                                        start.x, start.y,
-                                        end.x, end.y, {
-                                            data: { modelId: modelId },
-                                            strokeWidth: gridLine.width,
-                                            stroke: gridLine.color,
-                                            dashType: gridLine.dashType,
-                                            zIndex: -1
-                                        }));
-
-                                    majorTicks.push(pos);
-                                }
+                                majorTicks.push(pos);
                             }
                         }
                     }
@@ -1593,7 +1593,6 @@ kendo_module({
         arrangeLabels: function() {
             var axis = this,
                 options = axis.options,
-                labelOptions = options.labels,
                 labels = axis.labels,
                 labelsBetweenTicks = !options.justified,
                 vertical = options.vertical,
@@ -1605,7 +1604,7 @@ kendo_module({
 
             for (i = 0; i < labels.length; i++) {
                 var label = labels[i],
-                    tickIx = labelOptions.skip + labelOptions.step * i,
+                    tickIx = label.index,
                     labelSize = vertical ? label.box.height() : label.box.width(),
                     labelPos = tickPositions[tickIx] - (labelSize / 2),
                     firstTickPosition, nextTickPosition, middle, labelX;
@@ -1710,15 +1709,37 @@ kendo_module({
             }
             axis.box[pos + 1] -= axis.lineBox()[pos + 1] - lineBox[pos + 1];
             axis.box[pos + 2] -= axis.lineBox()[pos + 2] - lineBox[pos + 2];
+        },
+
+        axisLabelText: function(value, dataItem, options) {
+            var text = value;
+
+            if (options.template) {
+                var tmpl = template(options.template);
+                text = tmpl({ value: value, dataItem: dataItem });
+            } else if (options.format) {
+                if (options.format.match(FORMAT_REGEX)) {
+                    text = kendo.format(options.format, value);
+                } else {
+                    text = kendo.toString(value, options.format, options.culture);
+                }
+            }
+
+            return text;
         }
     });
 
     var Note = BoxElement.extend({
-        init: function(options) {
+        init: function(value, text, dataItem, category, series, options) {
             var note = this;
 
             BoxElement.fn.init.call(note, options);
             note.enableDiscovery();
+            note.value = value;
+            note.text = text;
+            note.dataItem = dataItem;
+            note.category = category;
+            note.series = series;
 
             note.render();
         },
@@ -1756,15 +1777,29 @@ kendo_module({
             var note = this,
                 options = note.options,
                 label = options.label,
+                text = note.text,
                 icon = options.icon,
                 size = icon.size,
-                dataModelId = { data: { modelId: options.modelId } },
+                dataModelId = { data: { modelId: note.modelId } },
                 box = Box2D(),
-                marker, width, height;
+                marker, width, height, noteTemplate;
 
             if (options.visible) {
                 if (defined(label) && label.visible) {
-                    note.label = new TextBox(label.text, deepExtend({}, label, dataModelId));
+                    if (label.template) {
+                        noteTemplate = template(label.template);
+                        text = noteTemplate({
+                            dataItem: note.dataItem,
+                            category: note.category,
+                            value: note.value,
+                            text: text,
+                            series: note.series
+                        });
+                    } else if (label.format) {
+                        text = autoFormat(label.format, text);
+                    }
+
+                    note.label = new TextBox(text, deepExtend({}, label, dataModelId));
                     note.append(note.label);
 
                     if (label.position === INSIDE) {
@@ -1874,7 +1909,7 @@ kendo_module({
             var note = this,
                 elements = BoxElement.fn.getViewElements.call(note, view),
                 group = view.createGroup({
-                    data: { modelId: note.options.modelId },
+                    data: { modelId: note.modelId },
                     zIndex: 1
                 });
 
@@ -1922,12 +1957,16 @@ kendo_module({
         },
 
         eventArgs: function(e) {
-            var note = this.parent,
+            var note = this,
                 options = note.options;
 
             return {
                 element: $(e.target),
-                text: defined(options.label) ? options.label.text : ""
+                text: defined(options.label) ? options.label.text : "",
+                dataItem: note.dataItem,
+                series: note.series,
+                value: note.value,
+                category: note.category
             };
         }
     });
@@ -2076,6 +2115,10 @@ kendo_module({
                 defaultOptions = axis.initDefaults(seriesMin, seriesMax, options);
 
             Axis.fn.init.call(axis, defaultOptions);
+        },
+
+        startValue: function() {
+            return 0;
         },
 
         options: {
@@ -2250,7 +2293,7 @@ kendo_module({
             return axis.getTickPositions(axis.options.minorUnit);
         },
 
-        getSlot: function(a, b) {
+        getSlot: function(a, b, limit) {
             var axis = this,
                 options = axis.options,
                 reverse = options.reverse,
@@ -2273,8 +2316,10 @@ kendo_module({
                 b = a || 0;
             }
 
-            a = math.max(math.min(a, options.max), options.min);
-            b = math.max(math.min(b, options.max), options.min);
+            if (limit) {
+                a = math.max(math.min(a, options.max), options.min);
+                b = math.max(math.min(b, options.max), options.min);
+            }
 
             if (vertical) {
                 p1 = options.max - math.max(a, b);
@@ -2284,8 +2329,8 @@ kendo_module({
                 p2 = math.max(a, b) - options.min;
             }
 
-            slotBox[valueAxis + 1] = lineStart + step * (reverse ? p2 : p1);
-            slotBox[valueAxis + 2] = lineStart + step * (reverse ? p1 : p2);
+            slotBox[valueAxis + 1] = math.max(math.min(lineStart + step * (reverse ? p2 : p1), COORDINATE_LIMIT), -COORDINATE_LIMIT);
+            slotBox[valueAxis + 2] = math.max(math.min(lineStart + step * (reverse ? p1 : p2), COORDINATE_LIMIT), -COORDINATE_LIMIT);
 
             return slotBox;
         },
@@ -2357,14 +2402,391 @@ kendo_module({
         createAxisLabel: function(index, labelOptions) {
             var axis = this,
                 options = axis.options,
-                value = round(options.min + (index * options.majorUnit), DEFAULT_PRECISION);
+                value = round(options.min + (index * options.majorUnit), DEFAULT_PRECISION),
+                text = axis.axisLabelText(value, null, labelOptions);
 
-            return new AxisLabel(value, index, null, labelOptions);
+            return new AxisLabel(value, text, index, null, labelOptions);
         },
 
         shouldRenderNote: function(value) {
             var range = this.range();
             return range.min <= value && value <= range.max;
+        }
+    });
+
+    var LogarithmicAxis = Axis.extend({
+        init: function(seriesMin, seriesMax, options) {
+            this.options = this._initOptions(seriesMin, seriesMax, options);
+            Axis.fn.init.call(this, options);
+        },
+
+        startValue: function() {
+            return this.options.min;
+        },
+
+        options: {
+            type: "log",
+            majorUnit: 10,
+            minorUnit: 1,
+            axisCrossingValue: 1,
+            vertical: true,
+            majorGridLines: {
+                visible: true,
+                width: 1,
+                color: BLACK
+            },
+            zIndex: 1
+        },
+
+        getSlot: function(a, b, limit) {
+            var axis = this,
+                options = axis.options,
+                reverse = options.reverse,
+                vertical = options.vertical,
+                valueAxis = vertical ? Y : X,
+                lineBox = axis.lineBox(),
+                lineStart = lineBox[valueAxis + (reverse ? 2 : 1)],
+                lineSize = vertical ? lineBox.height() : lineBox.width(),
+                dir = reverse ? -1 : 1,
+                base = options.majorUnit,
+                logMin = axis.logMin,
+                logMax = axis.logMax,
+                step = dir * (lineSize / (logMax - logMin)),
+                p1, p2,
+                slotBox = new Box2D(lineBox.x1, lineBox.y1, lineBox.x1, lineBox.y1);
+
+            if (!defined(a)) {
+                a = b || 1;
+            }
+
+            if (!defined(b)) {
+                b = a || 1;
+            }
+
+            if(a <= 0 || b <= 0) {
+                return;
+            }
+
+            if (limit) {
+                a = math.max(math.min(a, options.max), options.min);
+                b = math.max(math.min(b, options.max), options.min);
+            }
+
+            a = log(a, base);
+            b = log(b, base);
+
+            if (vertical) {
+                p1 = logMax - math.max(a, b);
+                p2 = logMax - math.min(a, b);
+            } else {
+                p1 = math.min(a, b) - logMin;
+                p2 = math.max(a, b) - logMin;
+            }
+
+            slotBox[valueAxis + 1] = lineStart + step * (reverse ? p2 : p1);
+            slotBox[valueAxis + 2] = lineStart + step * (reverse ? p1 : p2);
+
+            return slotBox;
+        },
+
+        getValue: function(point) {
+            var axis = this,
+                options = axis.options,
+                reverse = options.reverse,
+                vertical = options.vertical,
+                lineBox = axis.lineBox(),
+                base = options.majorUnit,
+                logMin = axis.logMin,
+                logMax = axis.logMax,
+                dir = vertical === reverse ? 1 : -1,
+                startEdge = dir === 1 ? 1 : 2,
+                lineSize = vertical ? lineBox.height() : lineBox.width(),
+                step = ((logMax - logMin) / lineSize),
+                valueAxis = vertical ? Y : X,
+                lineStart = lineBox[valueAxis + startEdge],
+                offset = dir * (point[valueAxis] - lineStart),
+                valueOffset = offset * step,
+                value;
+
+            if (offset < 0 || offset > lineSize) {
+                return null;
+            }
+
+            value = logMin + valueOffset;
+
+            return round(math.pow(base, value), DEFAULT_PRECISION);
+        },
+
+        range: function() {
+            var options = this.options;
+            return { min: options.min, max: options.max };
+        },
+
+        scaleRange: function(delta) {
+            var axis = this,
+                options = axis.options,
+                base = options.majorUnit,
+                offset = -delta;
+
+            return {
+                min: math.pow(base, axis.logMin - offset),
+                max: math.pow(base, axis.logMax + offset)
+            };
+        },
+
+        translateRange: function(delta) {
+            var axis = this,
+                options = axis.options,
+                base = options.majorUnit,
+                lineBox = axis.lineBox(),
+                vertical = options.vertical,
+                reverse = options.reverse,
+                size = vertical ? lineBox.height() : lineBox.width(),
+                logMin = axis.logMin,
+                logMax = axis.logMax,
+                scale = size / (axis.logMax - axis.logMin),
+                offset = round(delta / scale, DEFAULT_PRECISION);
+
+            if ((vertical || reverse) && !(vertical && reverse )) {
+                offset = -offset;
+            }
+
+            return {
+                min: math.pow(base, axis.logMin + offset),
+                max: math.pow(base, axis.logMax + offset)
+            };
+        },
+
+        labelsCount: function() {
+            var axis = this,
+                floorMax = math.floor(axis.logMax),
+                count = math.floor(floorMax - axis.logMin) + 1;
+
+            return count;
+        },
+
+        getMajorTickPositions: function() {
+            var axis = this,
+                ticks = [];
+
+            axis.traverseMajorTicksPositions(function(position) {
+                ticks.push(position);
+            }, {step: 1, skip: 0});
+            return ticks;
+        },
+
+        renderTicks: function(view) {
+            var axis = this,
+                ticks = [],
+                options = axis.options,
+                lineBox = axis.lineBox(),
+                mirror = options.labels.mirror,
+                majorTicks = options.majorTicks,
+                minorTicks = options.minorTicks,
+                tickLineOptions= {
+                    _alignLines: options._alignLines,
+                    vertical: options.vertical
+                },
+                start, end;
+
+            function render(tickPosition, tickOptions) {
+                tickLineOptions.tickX = mirror ? lineBox.x2 : lineBox.x2 - tickOptions.size;
+                tickLineOptions.tickY = mirror ? lineBox.y1 - tickOptions.size : lineBox.y1;
+                tickLineOptions.position = tickPosition;
+
+                ticks.push(createAxisTick(view, tickLineOptions, tickOptions));
+            }
+
+            if (majorTicks.visible) {
+                axis.traverseMajorTicksPositions(render, majorTicks);
+            }
+
+            if (minorTicks.visible) {
+                axis.traverseMinorTicksPositions(render, minorTicks);
+            }
+
+            return ticks;
+        },
+
+        renderGridLines: function(view, altAxis) {
+            var axis = this,
+                items = [],
+                options = axis.options,
+                axisLineVisible = altAxis.options.line.visible,//check
+                majorGridLines = options.majorGridLines,
+                minorGridLines = options.minorGridLines,
+                vertical = options.vertical,
+                lineBox = altAxis.lineBox(),
+                lineOptions = {
+                    lineStart: lineBox[vertical ? "x1" : "y1"],
+                    lineEnd: lineBox[vertical ? "x2" : "y2"],
+                    vertical: vertical,
+                    modelId: axis.plotArea.modelId
+                },
+                pos, majorTicks = [];
+
+            function render(tickPosition, gridLine) {
+                if (!inArray(tickPosition, majorTicks)) {
+                    lineOptions.position = tickPosition;
+                    items.push(createAxisGridLine(view, lineOptions, gridLine));
+
+                    majorTicks.push(tickPosition);
+                }
+            }
+
+            if (majorGridLines.visible) {
+                axis.traverseMajorTicksPositions(render, majorGridLines);
+            }
+
+            if (minorGridLines.visible) {
+                axis.traverseMinorTicksPositions(render, minorGridLines);
+            }
+
+            return items;
+        },
+
+        traverseMajorTicksPositions: function(callback, tickOptions) {
+            var axis = this,
+                lineOptions = axis._lineOptions(),
+                lineStart = lineOptions.lineStart,
+                step = lineOptions.step,
+                logMin = axis.logMin,
+                logMax = axis.logMax,
+                power,
+                position;
+
+            for (power = math.ceil(logMin) + tickOptions.skip; power <= logMax; power+= tickOptions.step) {
+                position = round(lineStart + step * (power - logMin), DEFAULT_PRECISION);
+                callback(position, tickOptions);
+            }
+        },
+
+        traverseMinorTicksPositions: function(callback, tickOptions) {
+            var axis = this,
+                options = axis.options,
+                lineOptions = axis._lineOptions(),
+                lineStart = lineOptions.lineStart,
+                lineStep = lineOptions.step,
+                base = options.majorUnit,
+                logMin = axis.logMin,
+                logMax = axis.logMax,
+                start = math.floor(logMin),
+                max = options.max,
+                min = options.min,
+                minorUnit = options.minorUnit,
+                power,
+                value,
+                position,
+                minorOptions;
+
+            for (power = start; power < logMax; power++) {
+                minorOptions = axis._minorIntervalOptions(power);
+                for(var idx = tickOptions.skip; idx < minorUnit; idx+= tickOptions.step) {
+                    value = minorOptions.value + idx * minorOptions.minorStep;
+                    if (value > max) {
+                        break;
+                    }
+                    if (value >= min) {
+                        position = round(lineStart + lineStep * (log(value, base) - logMin), DEFAULT_PRECISION);
+                        callback(position, tickOptions);
+                    }
+                }
+            }
+        },
+
+        createAxisLabel: function(index, labelOptions) {
+            var axis = this,
+                options = axis.options,
+                power = math.floor(axis.logMin + index),
+                value = Math.pow(options.majorUnit, power),
+                text = axis.axisLabelText(value, null, labelOptions);
+
+            return new AxisLabel(value, text, index, null, labelOptions);
+        },
+
+        shouldRenderNote: function(value) {
+            var range = this.range();
+            return range.min <= value && value <= range.max;
+        },
+
+        _throwNegativeValuesError: function() {
+            throw new Error("Non positive values cannot be used for a logarithmic axis");
+        },
+
+        _initOptions: function(seriesMin, seriesMax, options) {
+            var axis = this,
+                axisOptions = deepExtend({}, axis.options, {min: seriesMin, max: seriesMax}, options),
+                min = axisOptions.min,
+                max = axisOptions.max,
+                base = axisOptions.majorUnit,
+                logMaxRemainder;
+
+            if (axisOptions.axisCrossingValue <= 0) {
+                axis._throwNegativeValuesError();
+            }
+
+            if (!defined(options.max)) {
+               logMaxRemainder =  round(log(max, base), DEFAULT_PRECISION) % 1;
+               if (max <= 0) {
+                   max = base;
+               } else if (logMaxRemainder !== 0 && (logMaxRemainder < 0.3 || logMaxRemainder > 0.9)) {
+                   max = math.pow(base, log(max, base) + 0.2);
+               } else {
+                   max = math.pow(base, math.ceil(log(max, base)));
+               }
+            } else if (options.max <= 0) {
+                axis._throwNegativeValuesError();
+            }
+
+            if (!defined(options.min)) {
+               if (min <= 0) {
+                   min = max <= 1 ? math.pow(base, -2) : 1;
+               } else if (!options.narrowRange) {
+                   min = math.pow(base, math.floor(log(min, base)));
+               }
+            } else if (options.min <= 0) {
+                axis._throwNegativeValuesError();
+            }
+
+            axis.logMin = round(log(min, base), DEFAULT_PRECISION);
+            axis.logMax = round(log(max, base), DEFAULT_PRECISION);
+            axisOptions.max = max;
+            axisOptions.min = min;
+            axisOptions.minorUnit = options.minorUnit || round(base - 1, DEFAULT_PRECISION);
+
+            return axisOptions;
+        },
+
+        _minorIntervalOptions: function(power) {
+            var base = this.options.majorUnit,
+                value = math.pow(base, power),
+                nextValue = math.pow(base, power + 1),
+                difference = nextValue - value,
+                minorStep = difference / this.options.minorUnit;
+            return {
+                value: value,
+                minorStep: minorStep
+            };
+        },
+
+        _lineOptions: function() {
+            var axis = this,
+                options = axis.options,
+                reverse = options.reverse,
+                vertical = options.vertical,
+                valueAxis = vertical ? Y : X,
+                lineBox = axis.lineBox(),
+                dir = vertical === reverse ? 1 : -1,
+                startEdge = dir === 1 ? 1 : 2,
+                lineSize = vertical ? lineBox.height() : lineBox.width(),
+                step = dir * (lineSize / (axis.logMax - axis.logMin)),
+                lineStart = lineBox[valueAxis + startEdge];
+
+            return {
+                step: step,
+                lineStart: lineStart,
+                lineBox: lineBox
+            };
         }
     });
 
@@ -2512,11 +2934,9 @@ kendo_module({
 
         replace: function(model) {
             var view = this,
-                element = getElement(model.options.id);
+                element = getElement(model.id);
 
             if (element) {
-                view._freeIds(element);
-
                 element.parentNode.replaceChild(
                     view.renderElement(model.getViewElements(view)[0]),
                     element
@@ -3414,71 +3834,83 @@ kendo_module({
         }
     };
 
-    function measureText(text, style, rotation) {
-        var styleHash = getHash(style),
-            cacheKey = text + styleHash + rotation,
-            cachedResult = measureText.cache.get(cacheKey),
-            size = {
+    var TextMetrics = Class.extend({
+        init: function() {
+            this._cache = new LRUCache(1000);
+        },
+
+        measure: function(text, style, rotation) {
+            var styleHash = getHash(style),
+                cacheKey = text + styleHash + rotation,
+                cachedResult = this._cache.get(cacheKey);
+
+            if (cachedResult) {
+                return cachedResult;
+            }
+
+            var size = {
                 width: 0,
                 height: 0,
                 baseline: 0
             };
 
-        if (cachedResult) {
-            return cachedResult;
+            var measureBox = this._measureBox,
+                baselineMarker = this._baselineMarker.cloneNode(false);
+
+            for (var styleKey in style) {
+                measureBox.style[styleKey] = style[styleKey];
+            }
+            measureBox.innerHTML = text;
+            measureBox.appendChild(baselineMarker);
+            doc.body.appendChild(measureBox);
+
+            if ((text + "").length) {
+                size = {
+                    width: measureBox.offsetWidth - BASELINE_MARKER_SIZE,
+                    height: measureBox.offsetHeight,
+                    baseline: baselineMarker.offsetTop + BASELINE_MARKER_SIZE
+                };
+            }
+
+            if (rotation) {
+                var width = size.width,
+                    height = size.height,
+                    cx = width / 2,
+                    cy = height / 2,
+                    r1 = rotatePoint(0, 0, cx, cy, rotation),
+                    r2 = rotatePoint(width, 0, cx, cy, rotation),
+                    r3 = rotatePoint(width, height, cx, cy, rotation),
+                    r4 = rotatePoint(0, height, cx, cy, rotation);
+
+                size.normalWidth = width;
+                size.normalHeight = height;
+                size.width = math.max(r1.x, r2.x, r3.x, r4.x) - math.min(r1.x, r2.x, r3.x, r4.x);
+                size.height = math.max(r1.y, r2.y, r3.y, r4.y) - math.min(r1.y, r2.y, r3.y, r4.y);
+            }
+
+            this._cache.put(cacheKey, size);
+
+            measureBox.parentNode.removeChild(measureBox);
+
+            return size;
         }
+    });
 
-        var measureBox = measureText.measureBox,
-            baselineMarker = measureText.baselineMarker.cloneNode(false);
-
-        if (!measureBox || !measureBox.parentNode) {
-            measureBox = measureText.measureBox =
-                $("<div style='position: absolute; top: -4000px;" +
-                              "line-height: normal; visibility: hidden;' />")
-                .appendTo(doc.body)[0];
-        }
-
-        for (var styleKey in style) {
-            measureBox.style[styleKey] = style[styleKey];
-        }
-        measureBox.innerHTML = text;
-        measureBox.appendChild(baselineMarker);
-
-        if ((text + "").length) {
-            size = {
-                width: measureBox.offsetWidth - BASELINE_MARKER_SIZE,
-                height: measureBox.offsetHeight,
-                baseline: baselineMarker.offsetTop + BASELINE_MARKER_SIZE
-            };
-        }
-
-        if (rotation) {
-            var width = size.width,
-                height = size.height,
-                cx = width / 2,
-                cy = height / 2,
-                r1 = rotatePoint(0, 0, cx, cy, rotation),
-                r2 = rotatePoint(width, 0, cx, cy, rotation),
-                r3 = rotatePoint(width, height, cx, cy, rotation),
-                r4 = rotatePoint(0, height, cx, cy, rotation);
-
-            size.normalWidth = width;
-            size.normalHeight = height;
-            size.width = math.max(r1.x, r2.x, r3.x, r4.x) - math.min(r1.x, r2.x, r3.x, r4.x);
-            size.height = math.max(r1.y, r2.y, r3.y, r4.y) - math.min(r1.y, r2.y, r3.y, r4.y);
-        }
-
-        measureText.cache.put(cacheKey, size);
-
-        return size;
-    }
-
-    measureText.cache = new LRUCache(1000);
-    measureText.baselineMarker =
+    TextMetrics.fn._baselineMarker =
         $("<div class='" + CSS_PREFIX + "baseline-marker' " +
-            "style='display: inline-block; vertical-align: baseline;" +
-            "width: " + BASELINE_MARKER_SIZE + "px; height: " + BASELINE_MARKER_SIZE + "px;" +
-            "overflow: hidden;' />")[0];
+          "style='display: inline-block; vertical-align: baseline;" +
+          "width: " + BASELINE_MARKER_SIZE + "px; height: " + BASELINE_MARKER_SIZE + "px;" +
+          "overflow: hidden;' />")[0];
+
+    TextMetrics.fn._measureBox =
+        $("<div style='position: absolute; top: -4000px;" +
+                      "line-height: normal; visibility: hidden;' />")[0];
+
+    TextMetrics.current = new TextMetrics();
+
+    function measureText(text, style, rotation) {
+        return TextMetrics.current.measure(text, style, rotation);
+    }
 
     function autoMajorUnit(min, max) {
         var diff = round(max - min, DEFAULT_PRECISION - 1);
@@ -3625,6 +4057,10 @@ kendo_module({
     function round(value, precision) {
         var power = math.pow(10, precision || 0);
         return math.round(value * power) / power;
+    }
+
+    function log(y, x) {
+        return math.log(y) / math.log(x);
     }
 
     function remainderClose(value, divisor, ratio) {
@@ -4041,6 +4477,7 @@ kendo_module({
         FadeAnimation: FadeAnimation,
         FadeAnimationDecorator: FadeAnimationDecorator,
         IDPool: IDPool,
+        LogarithmicAxis: LogarithmicAxis,
         LRUCache: LRUCache,
         Matrix: Matrix,
         Note: Note,
@@ -4054,6 +4491,7 @@ kendo_module({
         Sector: Sector,
         ShapeElement: ShapeElement,
         Text: Text,
+        TextMetrics: TextMetrics,
         TextBox: TextBox,
         Title: Title,
         ViewBase: ViewBase,
@@ -4088,3 +4526,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -1,19 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "scheduler.monthview",
-    name: "Scheduler Month View",
-    category: "web",
-    description: "The Scheduler Month View",
-    depends: [ "scheduler.view" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.scheduler.view" ], f);
+})(function(){
 
 (function($){
     var kendo = window.kendo,
@@ -339,7 +334,7 @@ kendo_module({
             }
 
             for (var verticalGroupIdx = 0; verticalGroupIdx < verticalGroupCount; verticalGroupIdx++) {
-                html += this._createCalendar();
+                html += this._createCalendar(verticalGroupIdx);
             }
 
             html += "</tbody>";
@@ -347,25 +342,26 @@ kendo_module({
             this.content.find("table").html(html);
         },
 
-        _createCalendar: function() {
+        _createCalendar: function(verticalGroupIndex) {
             var start = this.startDate();
             var cellCount = NUMBER_OF_COLUMNS*NUMBER_OF_ROWS;
             var cellsPerRow = NUMBER_OF_COLUMNS;
             var weekStartDates = [start];
             var html = '';
             var horizontalGroupCount = 1;
+            var isVerticallyGrouped = this._isVerticallyGrouped();
 
             var resources = this.groupedResources;
 
             if (resources.length) {
-                if (!this._isVerticallyGrouped()) {
+                if (!isVerticallyGrouped) {
                     horizontalGroupCount = this._columnCountForLevel(resources.length - 1);
                 }
             }
 
             this._slotIndices = {};
 
-            for (var rowIdx = 0; rowIdx < cellCount / cellsPerRow; rowIdx++) {
+            for (var rowIdx = 0, length = cellCount / cellsPerRow; rowIdx < length; rowIdx++) {
                 html += "<tr>";
 
                 weekStartDates.push(start);
@@ -373,7 +369,7 @@ kendo_module({
                 var startIdx = rowIdx*cellsPerRow;
 
                 for (var groupIdx = 0; groupIdx < horizontalGroupCount; groupIdx++) {
-                    html += this._createRow(start, startIdx, cellsPerRow);
+                    html += this._createRow(start, startIdx, cellsPerRow, isVerticallyGrouped ? verticalGroupIndex : groupIdx);
                 }
 
                 start = kendo.date.addDays(start, cellsPerRow);
@@ -387,12 +383,17 @@ kendo_module({
             return html;
         },
 
-        _createRow: function(startDate, startIdx, cellsPerRow) {
-            var min = this._firstDayOfMonth;
-            var max = this._lastDayOfMonth;
-            var content = this.dayTemplate;
+        _createRow: function(startDate, startIdx, cellsPerRow, groupIndex) {
+            var that = this;
+            var min = that._firstDayOfMonth;
+            var max = that._lastDayOfMonth;
+            var content = that.dayTemplate;
             var classes = "";
             var html = "";
+
+            var resources = function() {
+                return that._resourceBySlot({ groupIndex: groupIndex });
+            };
 
             for (var cellIdx = 0; cellIdx < cellsPerRow; cellIdx++) {
                 classes = "";
@@ -412,10 +413,10 @@ kendo_module({
                 }
 
                 html += ">";
-                html += content({ date: startDate });
+                html += content({ date: startDate, resources: resources });
                 html += "</td>";
 
-                this._slotIndices[getDate(startDate).getTime()] = startIdx + cellIdx;
+                that._slotIndices[getDate(startDate).getTime()] = startIdx + cellIdx;
 
                 startDate = kendo.date.nextDay(startDate);
             }
@@ -488,16 +489,19 @@ kendo_module({
 
             return $(this.eventTemplate(event));
         },
+       _isInDateSlot: function(event) {
+            var groups = this.groups[0];
+            var slotStart = groups.firstSlot().start;
+            var slotEnd = groups.lastSlot().end - 1;
 
-        _isInDateSlot: function(event) {
-            var slotStart = this.startDate();
-            var slotEnd = new Date(this.endDate().getTime() + MS_PER_DAY - 1);
+            var startTime = kendo.date.toUtcTime(event.start);
+            var endTime = kendo.date.toUtcTime(event.end);
 
-            return (isInDateRange(event.start, slotStart, slotEnd) ||
-                isInDateRange(event.end, slotStart, slotEnd) ||
-                isInDateRange(slotStart, event.start, event.end) ||
-                isInDateRange(slotEnd, event.start, event.end)) &&
-                (!isInDateRange(event.end, slotStart, slotStart) || isInDateRange(event.end, event.start, event.start) || event.isAllDay );
+            return (isInDateRange(startTime, slotStart, slotEnd) ||
+                isInDateRange(endTime, slotStart, slotEnd) ||
+                isInDateRange(slotStart, startTime, endTime) ||
+                isInDateRange(slotEnd, startTime, endTime)) &&
+                (!isInDateRange(endTime, slotStart, slotStart) || isInDateRange(endTime, startTime, startTime) || event.isAllDay );
         },
 
         _slotIndex: function(date) {
@@ -594,7 +598,7 @@ kendo_module({
                         start: slotIndex,
                         end: slotIndex,
                         width: slot.clientWidth - 2,
-                        left: this._scrollbarOffset(slot.offsetLeft + 2),
+                        left: slot.offsetLeft + 2,
                         top: slot.offsetTop + slot.firstChildHeight + eventCount * eventHeight + 3 * eventCount
                     }));
 
@@ -604,7 +608,7 @@ kendo_module({
                 slotRange.addEvent({element: element, start: startIndex, end: endIndex, groupIndex: startSlot.groupIndex });
 
                 element[0].style.width = slotRange.innerWidth() - rightOffset + "px";
-                element[0].style.left = this._scrollbarOffset(startSlot.offsetLeft + 2) + "px";
+                element[0].style.left = startSlot.offsetLeft + 2 + "px";
                 element[0].style.height = eventHeight + "px";
 
                 group._continuousEvents.push({
@@ -642,8 +646,6 @@ kendo_module({
 
        _createResizeHint: function(range) {
             var left = range.startSlot().offsetLeft;
-
-            left = this._scrollbarOffset(left);
 
             var top = range.start.offsetTop;
 
@@ -750,13 +752,13 @@ kendo_module({
 
                         var clientHeight = cell.clientHeight;
 
-                        var firstChildHeight = cell.firstChild.offsetHeight + 3;
+                        var firstChildHeight = cell.children.length ? cell.children[0].offsetHeight + 3 : 0;
 
                         var start = kendo.date.toUtcTime(kendo.date.addDays(this.startDate(), cellCount));
 
                         cellCount ++;
 
-                        var eventCount = Math.floor((clientHeight - firstChildHeight) / (this.options.eventHeight + 3)) - 1;// add space for the more button
+                        var eventCount = Math.floor((clientHeight - firstChildHeight - this.options.moreButtonHeight) / (this.options.eventHeight + 3)) ;// add space for the more button
 
                         cell.setAttribute("role", "gridcell");
                         cell.setAttribute("aria-selected", false);
@@ -903,6 +905,7 @@ kendo_module({
             title: "Month",
             name: "month",
             eventHeight: 25,
+            moreButtonHeight: 13,
             editable: true,
             selectedDateFormat: "{0:y}",
             dayTemplate: DAY_TEMPLATE,
@@ -927,12 +930,16 @@ kendo_module({
     }
 
     function isInDateRange(value, min, max) {
-        var msMin = min.getTime(),
-            msMax = max.getTime(),
+        var msMin = min,
+            msMax = max,
             msValue;
 
-        msValue = value.getTime();
+        msValue = value;
 
         return msValue >= msMin && msValue <= msMax;
     }
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

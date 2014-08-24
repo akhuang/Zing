@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.canvas",
-    name: "Output: Canvas",
-    description: "Support for Canvas rendering and image export",
-    category: "dataviz",
-    depends: [ "dataviz.core" ]
-});
+(function(f, define){
+    define([ "./kendo.dataviz.core" ], f);
+})(function(){
 
 (function () {
 
@@ -104,15 +100,45 @@ kendo_module({
             var element = this,
                 sortedChildren = element.sortChildren(),
                 childrenCount = sortedChildren.length,
+                clipPath = element.clipPath,
                 i;
+
+            if (clipPath) {
+                context.save();
+                clipPath.render(context);
+            }
 
             for (i = 0; i < childrenCount; i++) {
                 sortedChildren[i].render(context);
             }
+
+            if (clipPath) {
+                context.restore();
+            }
+        },
+
+        applyDefinitions: function (element) {
+            if (element.options.clipPathId) {
+                element.clipPath = this.definitions[element.options.clipPathId];
+            }
+            return element;
         },
 
         createGroup: function(options) {
-            return new CanvasGroup(options);
+             return this.applyDefinitions(new CanvasGroup(options));
+        },
+
+        createClipPath: function(id, box) {
+            var view = this,
+                clipPath = view.definitions[id];
+
+            if (!clipPath) {
+                clipPath = new CanvasClipPath({id: id});
+                clipPath.children.push(view.createRect(box, {fill: "none"}));
+                view.definitions[id] = clipPath;
+            }
+
+            return clipPath;
         },
 
         createText: function(content, options) {
@@ -156,6 +182,20 @@ kendo_module({
 
         createPin: function(pin, options) {
             return new CanvasPin(pin, options);
+        }
+    });
+
+    var CanvasClipPath = ViewElement.extend({
+        render: function (context) {
+            var clipPath = this,
+                children = clipPath.children,
+                idx = 0, length = children.length;
+
+            context.beginPath();
+            for (; idx < length; idx++) {
+                children[idx].renderPoints(context);
+            }
+            context.clip();
         }
     });
 
@@ -595,6 +635,7 @@ kendo_module({
 
     deepExtend(dataviz, {
         CanvasCircle: CanvasCircle,
+        CanvasClipPath: CanvasClipPath,
         CanvasGroup: CanvasGroup,
         CanvasLine: CanvasLine,
         CanvasMultiLine: CanvasMultiLine,
@@ -605,3 +646,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

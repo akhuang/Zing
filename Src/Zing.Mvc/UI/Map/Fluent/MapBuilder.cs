@@ -57,38 +57,8 @@ namespace Kendo.Mvc.UI.Fluent
         }
         
         /// <summary>
-        /// The configuration of the map layers.
-		/// The layer type is determined by the value of the type field.
-        /// </summary>
-        /// <param name="configurator">The action that configures the layers.</param>
-        public MapBuilder Layers(Action<MapLayerFactory> configurator)
-        {
-            configurator(new MapLayerFactory(container.Layers, container.ViewContext, container.UrlGenerator));
-            return this;
-        }
-
-        /// <summary>
-        /// The configuration of the map markers.
-        /// </summary>
-        /// <param name="configurator">The action that configures the markers.</param>
-        public MapBuilder Markers(Action<MapMarkerFactory> configurator)
-        {
-            configurator(new MapMarkerFactory(container));
-            return this;
-        }
-        
-        /// <summary>
-        /// The default options for all markers.
-        /// </summary>
-        /// <param name="configurator">The action that configures the markerdefaults.</param>
-        public MapBuilder MarkerDefaults(Action<MapMarkerDefaultsSettingsBuilder> configurator)
-        {
-            configurator(new MapMarkerDefaultsSettingsBuilder(container.MarkerDefaults));
-            return this;
-        }
-        
-        /// <summary>
         /// The minimum zoom level.
+		/// Typical web maps use zoom levels from 0 (whole world) to 19 (sub-meter features).
         /// </summary>
         /// <param name="value">The value that configures the minzoom.</param>
         public MapBuilder MinZoom(double value)
@@ -100,6 +70,7 @@ namespace Kendo.Mvc.UI.Fluent
         
         /// <summary>
         /// The maximum zoom level.
+		/// Typical web maps use zoom levels from 0 (whole world) to 19 (sub-meter features).
         /// </summary>
         /// <param name="value">The value that configures the maxzoom.</param>
         public MapBuilder MaxZoom(double value)
@@ -116,6 +87,17 @@ namespace Kendo.Mvc.UI.Fluent
         public MapBuilder MinSize(double value)
         {
             container.MinSize = value;
+
+            return this;
+        }
+        
+        /// <summary>
+        /// Controls whether the user can pan the map.
+        /// </summary>
+        /// <param name="value">The value that configures the pannable.</param>
+        public MapBuilder Pannable(bool value)
+        {
+            container.Pannable = value;
 
             return this;
         }
@@ -142,10 +124,50 @@ namespace Kendo.Mvc.UI.Fluent
             return this;
         }
         
+        /// <summary>
+        /// Controls whether the map zoom level can be changed by the user.
+        /// </summary>
+        /// <param name="value">The value that configures the zoomable.</param>
+        public MapBuilder Zoomable(bool value)
+        {
+            container.Zoomable = value;
+
+            return this;
+        }
+        
         //<< Fields
 
-
+        /// <summary>
+        /// The configuration of the map layers.
+        /// The layer type is determined by the value of the type field.
+        /// </summary>
+        /// <param name="configurator">The action that configures the layers.</param>
+        public MapBuilder Layers(Action<MapLayerFactory> configurator)
+        {
+            configurator(new MapLayerFactory(container));
+            return this;
+        }
         
+        /// <summary>
+        /// The configuration of the map markers.
+        /// </summary>
+        /// <param name="configurator">The action that configures the markers.</param>
+        public MapBuilder Markers(Action<MapMarkerFactory> configurator)
+        {
+            configurator(new MapMarkerFactory(container));
+            return this;
+        }
+        
+        /// <summary>
+        /// The default options for all markers.
+        /// </summary>
+        /// <param name="configurator">The action that configures the markerdefaults.</param>
+        public MapBuilder MarkerDefaults(Action<MapMarkerDefaultsSettingsBuilder> configurator)
+        {
+            configurator(new MapMarkerDefaultsSettingsBuilder(container.MarkerDefaults));
+            return this;
+        }
+
         /// <summary>
         /// Configures the client-side events.
         /// </summary>
@@ -167,7 +189,6 @@ namespace Kendo.Mvc.UI.Fluent
 
             return this;
         }
-        
     }
 }
 

@@ -421,6 +421,21 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Creates a new <see cref="Sortable"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Sortable()
+        ///             .For("Container")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual SortableBuilder Sortable()
+        {
+            return new SortableBuilder(new Sortable(ViewContext, Initializer, ViewData));
+        }
+
+        /// <summary>
         /// Creates a new <see cref="Tooltip"/>.
         /// </summary>
         /// <example>
@@ -652,6 +667,21 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual NumericTextBoxBuilder<int> IntegerTextBox()
         {
             return NumericTextBox<int>().Format("n0").Decimals(0);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="MaskedTextBox"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MaskedTextBox()
+        ///             .Name("MaskedTextBox")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual MaskedTextBoxBuilder MaskedTextBox()
+        {
+            return new MaskedTextBoxBuilder(new MaskedTextBox(ViewContext, Initializer, ViewData));
         }
 
         /// <summary>
@@ -887,6 +917,21 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual ButtonBuilder Button()
         {
             return new ButtonBuilder(new Button(ViewContext, Initializer));
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Notification"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Notification()
+        ///             .Name("Notification1");
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual NotificationBuilder Notification()
+        {
+            return new NotificationBuilder(new Notification(ViewContext, Initializer));
         }
 
         /// <summary>
@@ -1201,6 +1246,21 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         //>> DataVizComponents 
+        /// <summary>
+        /// Creates a <see cref="Diagram"/>
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Diagram()
+        ///             .Name("Diagram")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public virtual DiagramBuilder Diagram()
+        {
+            return new DiagramBuilder(new Diagram(ViewContext, Initializer, UrlGenerator));
+        }
+        
         /// <summary>
         /// Creates a <see cref="Map"/>
         /// </summary>
@@ -1616,6 +1676,22 @@ namespace Kendo.Mvc.UI.Fluent
         public virtual NumericTextBoxBuilder<double> PercentTextBoxFor(Expression<Func<TModel, double>> expression)
         {
             return NumericTextBoxFor<double>(expression).Format("p");
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="MaskedTextBox"/>.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().MaskedTextBoxFor(m=>m.Property) %&gt;
+        /// </code>
+        /// </example>
+        public virtual MaskedTextBoxBuilder MaskedTextBoxFor(Expression<Func<TModel, Nullable<int>>> expression)
+        {
+            return MaskedTextBox()
+                    .Name(GetName(expression))
+                    .ModelMetadata(ModelMetadata.FromLambdaExpression(expression, HtmlHelper.ViewData))
+                    .Value(ModelMetadata.FromLambdaExpression(expression, HtmlHelper.ViewData).Model as string);
         }
 
         /// <summary>

@@ -25,10 +25,12 @@ namespace Kendo.Mvc.UI
         
         public string Attribution { get; set; }
         
+        public double? Opacity { get; set; }
+        
         public MapLayerDefaultsShapeStyleSettings Style
         {
             get;
-            private set;
+            set;
         }
         
         //<< Fields
@@ -42,6 +44,11 @@ namespace Kendo.Mvc.UI
                 json["attribution"] = Attribution;
             }
             
+            if (Opacity.HasValue)
+            {
+                json["opacity"] = Opacity;
+            }
+                
             var style = Style.ToJson();
             if (style.Any())
             {

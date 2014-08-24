@@ -31,17 +31,48 @@ namespace Kendo.Mvc.UI
 
         protected override void Serialize(IDictionary<string, object> json)
         {
-            if (Transport.Read.Url == null)
+            if (Transport.Read.Url == null & Type != DataSourceType.Custom)
             {
                 // If Url is not set assume the current url (used in server binding)
                 Transport.Read.Url = "";
             }
 
-            var transport = Transport.ToJson();
-
-            if (transport.Keys.Any())
+            if (Type != null)
             {
-                json["transport"] = transport;
+                if (Type == DataSourceType.Ajax || Type == DataSourceType.Server)
+                {
+                    json["type"] = "aspnetmvc-" + Type.ToString().ToLower();
+                }
+                else if (Type == DataSourceType.Custom)
+                {
+                    if (!string.IsNullOrEmpty(CustomType))
+                    {
+                        json["type"] = CustomType;
+                    }
+                }
+                else
+                {
+                    json["type"] = Type.ToString().ToLower();
+
+                    if (Type == DataSourceType.WebApi && Schema.Model.Id != null)
+                    {
+                        Transport.IdField = Schema.Model.Id.Name;
+                    }
+                }
+            }
+
+            if (CustomTransport != null)
+            {
+                json["transport"] = CustomTransport;
+            }
+            else
+            {
+                var transport = Transport.ToJson();
+
+                if (transport.Keys.Any())
+                {
+                    json["transport"] = transport;
+                }
             }
 
             if (PageSize > 0)
@@ -76,18 +107,6 @@ namespace Kendo.Mvc.UI
                 json["serverAggregates"] = ServerAggregates;
             }
 
-            if (Type != null)
-            {
-                if (Type == DataSourceType.Ajax || Type == DataSourceType.Server)
-                {
-                    json["type"] = "aspnetmvc-" + Type.ToString().ToLower();
-                }
-                else
-                {
-                    json["type"] = Type.ToString().ToLower();
-                }
-            }
-
             if (OrderBy.Any())
             {
                 json["sort"] = OrderBy.ToJson();
@@ -113,7 +132,11 @@ namespace Kendo.Mvc.UI
                 json.Merge(Events);
             }
 
-            json["schema"] = Schema.ToJson();
+            var schema = Schema.ToJson();
+            if (schema.Keys.Any())
+            {
+                json["schema"] = schema;
+            }
 
             if (Batch)
             {
@@ -125,21 +148,34 @@ namespace Kendo.Mvc.UI
                 json["autoSync"] = AutoSync;
             }
 
+            if (IsClientOperationMode && Type == DataSourceType.Custom && CustomType != "aspnetmvc-ajax")
+            {
+                RawData = Data;
+            }
+
             if (IsClientOperationMode && RawData != null)
             {
-                json["data"] = new Dictionary<string, object>()
-                {
-                    { Schema.Data,  SerializeDataSource(RawData) },
-                    { Schema.Total, Total }
-                };
+                SerializeData(json, RawData);
             }
-            else if (Type == DataSourceType.Ajax && !IsClientOperationMode && Data != null)
+            else if (IsClientBinding && !IsClientOperationMode && Data != null)
+            {
+                SerializeData(json, Data);
+            }
+        }
+
+        private void SerializeData(IDictionary<string, object> json, IEnumerable data)
+        {
+            if (string.IsNullOrEmpty(Schema.Data))
+            {
+                json["data"] = SerializeDataSource(data);
+            }
+            else
             {
                 json["data"] = new Dictionary<string, object>()
-                {
-                    { Schema.Data,  SerializeDataSource(Data) },
-                    { Schema.Total, Total }
-                };
+                    {
+                        { Schema.Data,  SerializeDataSource(data) },
+                        { Schema.Total, Total }
+                    };
             }
         }
 
@@ -165,7 +201,15 @@ namespace Kendo.Mvc.UI
         {
             get
             {
-                return Type == DataSourceType.Ajax && !(ServerPaging && ServerSorting && ServerGrouping && ServerFiltering && ServerAggregates);
+                return IsClientBinding && !(ServerPaging && ServerSorting && ServerGrouping && ServerFiltering && ServerAggregates);
+            }
+        }
+
+        public bool IsClientBinding
+        {
+            get
+            {
+                return Type == DataSourceType.Ajax || Type == DataSourceType.WebApi || Type == DataSourceType.Custom;
             }
         }
 
@@ -181,6 +225,12 @@ namespace Kendo.Mvc.UI
         }
 
         public DataSourceType? Type
+        {
+            get;
+            set;
+        }
+
+        public string CustomType
         {
             get;
             set;
@@ -250,6 +300,12 @@ namespace Kendo.Mvc.UI
         {
             get;
             private set;
+        }
+
+        public IDictionary<string, object> CustomTransport
+        {
+            get;
+            set;
         }
 
         public IEnumerable Data

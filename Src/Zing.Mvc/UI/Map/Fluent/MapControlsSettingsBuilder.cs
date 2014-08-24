@@ -20,18 +20,17 @@ namespace Kendo.Mvc.UI.Fluent
         //>> Fields
         
         /// <summary>
-        /// Enables or disables the built-in attribution control.
+        /// Configures or disables the built-in attribution control.
         /// </summary>
-        /// <param name="value">The value that configures the attribution.</param>
-        public MapControlsSettingsBuilder Attribution(bool value)
+        /// <param name="configurator">The action that configures the attribution.</param>
+        public MapControlsSettingsBuilder Attribution(Action<MapControlsAttributionSettingsBuilder> configurator)
         {
-            container.Attribution = value;
-
+            configurator(new MapControlsAttributionSettingsBuilder(container.Attribution));
             return this;
         }
         
         /// <summary>
-        /// Enables or disables the built-in navigator control (directional pad).
+        /// Configures or disables the built-in navigator control (directional pad).
         /// </summary>
         /// <param name="configurator">The action that configures the navigator.</param>
         public MapControlsSettingsBuilder Navigator(Action<MapControlsNavigatorSettingsBuilder> configurator)
@@ -41,7 +40,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
         
         /// <summary>
-        /// Enables or disables the built-in zoom control (+/- button).
+        /// Configures or disables the built-in zoom control (+/- button).
         /// </summary>
         /// <param name="configurator">The action that configures the zoom.</param>
         public MapControlsSettingsBuilder Zoom(Action<MapControlsZoomSettingsBuilder> configurator)
@@ -52,7 +51,47 @@ namespace Kendo.Mvc.UI.Fluent
         
         //<< Fields
 
-        
+        /// <summary>
+        /// Enables or disables the built-in attribution control.
+        /// </summary>
+        /// <param name="visible">A value indicating if the attribution control should be visible.</param>
+        public MapControlsSettingsBuilder Attribution(bool visible)
+        {
+            if (!visible)
+            {
+                container.Attribution = null;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Enables or disables the built-in navigator control.
+        /// </summary>
+        /// <param name="visible">A value indicating if the navigator control should be visible.</param>
+        public MapControlsSettingsBuilder Navigator(bool visible)
+        {
+            if (!visible)
+            {
+                container.Navigator = null;
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Enables or disables the built-in zoom control.
+        /// </summary>
+        /// <param name="visible">A value indicating if the zoom control should be visible.</param>
+        public MapControlsSettingsBuilder Zoom(bool visible)
+        {
+            if (!visible)
+            {
+                container.Zoom = null;
+            }
+
+            return this;
+        }
     }
 }
 

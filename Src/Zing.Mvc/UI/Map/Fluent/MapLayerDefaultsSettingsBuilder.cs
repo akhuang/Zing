@@ -20,6 +20,16 @@ namespace Kendo.Mvc.UI.Fluent
         //>> Fields
         
         /// <summary>
+        /// The default configuration for marker layers.
+        /// </summary>
+        /// <param name="configurator">The action that configures the marker.</param>
+        public MapLayerDefaultsSettingsBuilder Marker(Action<MapLayerDefaultsMarkerSettingsBuilder> configurator)
+        {
+            configurator(new MapLayerDefaultsMarkerSettingsBuilder(container.Marker));
+            return this;
+        }
+        
+        /// <summary>
         /// The default configuration for shape layers.
         /// </summary>
         /// <param name="configurator">The action that configures the shape.</param>
@@ -36,6 +46,16 @@ namespace Kendo.Mvc.UI.Fluent
         public MapLayerDefaultsSettingsBuilder Tile(Action<MapLayerDefaultsTileSettingsBuilder> configurator)
         {
             configurator(new MapLayerDefaultsTileSettingsBuilder(container.Tile));
+            return this;
+        }
+        
+        /// <summary>
+        /// The default configuration for Bing (tm) tile layers.
+        /// </summary>
+        /// <param name="configurator">The action that configures the bing.</param>
+        public MapLayerDefaultsSettingsBuilder Bing(Action<MapLayerDefaultsBingSettingsBuilder> configurator)
+        {
+            configurator(new MapLayerDefaultsBingSettingsBuilder(container.Bing));
             return this;
         }
         

@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "pager",
-    name: "Pager",
-    category: "framework",
-    depends: [ "data" ],
-    advanced: true
-});
+(function(f, define){
+    define([ "./kendo.data" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -30,12 +26,13 @@ kendo_module({
         DISABLED = "disabled",
         iconTemplate = kendo.template('<a href="\\#" title="#=text#" class="k-link k-pager-nav #= wrapClassName #"><span class="k-icon #= className #">#=text#</span></a>');
 
-    function button(template, idx, text, numeric) {
+    function button(template, idx, text, numeric, title) {
         return template( {
             idx: idx,
             text: text,
             ns: kendo.ns,
-            numeric: numeric
+            numeric: numeric,
+            title: title || ""
         });
     }
 
@@ -191,6 +188,10 @@ kendo_module({
 
             that.element.off(NS);
             that.dataSource.unbind(CHANGE, that._refreshHandler);
+            that._refreshHandler = null;
+
+            kendo.destroy(that.element);
+            that.element = that.list = null;
         },
 
         events: [
@@ -200,7 +201,7 @@ kendo_module({
         options: {
             name: "Pager",
             selectTemplate: '<li><span class="k-state-selected">#=text#</span></li>',
-            linkTemplate: '<li><a tabindex="-1" href="\\#" class="k-link" data-#=ns#page="#=idx#">#=text#</a></li>',
+            linkTemplate: '<li><a tabindex="-1" href="\\#" class="k-link" data-#=ns#page="#=idx#" #if (title !== "") {# title="#=title#" #}#>#=text#</a></li>',
             buttonCount: 10,
             autoBind: true,
             numeric: true,
@@ -219,7 +220,8 @@ kendo_module({
                 previous: "Go to the previous page",
                 next: "Go to the next page",
                 last: "Go to the last page",
-                refresh: "Refresh"
+                refresh: "Refresh",
+                morePages: "More pages"
             }
         },
 
@@ -264,7 +266,7 @@ kendo_module({
                 end = Math.min((start + buttonCount) - 1, totalPages);
 
                 if (start > 1) {
-                    html += button(linkTemplate, start - 1, "...", false);
+                    html += button(linkTemplate, start - 1, "...", false, options.messages.morePages);
                 }
 
                 for (idx = start; idx <= end; idx++) {
@@ -272,7 +274,7 @@ kendo_module({
                 }
 
                 if (end < totalPages) {
-                    html += button(linkTemplate, idx, "...", false);
+                    html += button(linkTemplate, idx, "...", false, options.messages.morePages);
                 }
 
                 if (html === "") {
@@ -391,3 +393,7 @@ kendo_module({
 
     ui.plugin(Pager);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

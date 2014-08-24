@@ -27,12 +27,13 @@ namespace Kendo.Mvc.UI.Fluent
         }
         
         /// <summary>
-        /// Fired when the map is reset, e.g. on initial load or during zoom.
+        /// Fired when a marker has been created and is about to be displayed.
+		/// Cancelling the event will prevent the marker from being shown.
         /// </summary>
-        /// <param name="handler">The name of the JavaScript function that will handle the reset event.</param>
-        public MapEventBuilder Reset(string handler)
+        /// <param name="handler">The name of the JavaScript function that will handle the markerCreated event.</param>
+        public MapEventBuilder MarkerCreated(string handler)
         {
-            Handler("reset", handler);
+            Handler("markerCreated", handler);
 
             return this;
         }
@@ -55,6 +56,18 @@ namespace Kendo.Mvc.UI.Fluent
         public MapEventBuilder PanEnd(string handler)
         {
             Handler("panEnd", handler);
+
+            return this;
+        }
+        
+        /// <summary>
+        /// Fired when the map is reset.
+		/// This typically occurs on initial load and after a zoom/center change.
+        /// </summary>
+        /// <param name="handler">The name of the JavaScript function that will handle the reset event.</param>
+        public MapEventBuilder Reset(string handler)
+        {
+            Handler("reset", handler);
 
             return this;
         }
@@ -105,6 +118,7 @@ namespace Kendo.Mvc.UI.Fluent
         
         /// <summary>
         /// Fired when the map zoom level is about to change.
+		/// Cancelling the event will prevent the user action.
         /// </summary>
         /// <param name="handler">The name of the JavaScript function that will handle the zoomStart event.</param>
         public MapEventBuilder ZoomStart(string handler)

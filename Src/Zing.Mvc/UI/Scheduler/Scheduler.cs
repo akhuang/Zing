@@ -474,19 +474,27 @@
                 }
             }
 
-            DataSource.Transport.StringifyDates = true;
+            if (DataSource.Type != DataSourceType.Custom || DataSource.CustomType == "aspnetmvc-ajax")
+            {
+                DataSource.Transport.StringifyDates = true;
+                if (DataSource.IsClientOperationMode)
+                {
+                    ProcessDataSource();
+                }
+            }
 
             Dictionary<string, object> dataSource = (Dictionary<string, object>)DataSource.ToJson();
-
-            //TODO: update logic
-            if (DataSource.Data != null)
-            {
-                dataSource["data"] = new { Data = DataSource.Data };
-            }
 
             options["dataSource"] = dataSource;
 
             return options;
+        }
+
+        private void ProcessDataSource()
+        {
+            DataSourceRequest request = new DataSourceRequest();
+
+            DataSource.Process(request, true);
         }
 
         protected override void WriteHtml(System.Web.UI.HtmlTextWriter writer)

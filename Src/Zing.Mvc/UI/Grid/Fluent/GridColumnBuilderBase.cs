@@ -228,6 +228,58 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
+        /// Makes the column static. By default all columns are not locked.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Grid(Model)
+        ///             .Name("Grid")
+        ///             .Columns(columns => columns.Bound(o => o.OrderID).Locked())
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public TColumnBuilder Locked()
+        {
+            return Locked(true);
+        }
+
+        /// <summary>
+        /// Makes the column static or not. By default all columns are not locked.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Grid(Model)
+        ///             .Name("Grid")
+        ///             .Columns(columns => columns.Bound(o => o.OrderID).Locked((bool)ViewData["locked"]))
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public TColumnBuilder Locked(bool value)
+        {
+            Column.Locked = value;
+
+            return this as TColumnBuilder;
+        }
+
+        /// <summary>
+        /// If set to false the column will remain in the side of the grid into which its own locked configuration placed it.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().Grid(Model)
+        ///             .Name("Grid")
+        ///             .Columns(columns => columns.Bound(o => o.OrderID).Lockable((bool)ViewData["lockable"]))
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public TColumnBuilder Lockable(bool value)
+        {
+            Column.Lockable = value;
+
+            return this as TColumnBuilder;
+        }
+
+        /// <summary>
         /// Makes the column hidden or not. By default all columns are not hidden. Hidden columns are rendered in the output HTML but are hidden.
         /// </summary>
         /// <example>
@@ -283,7 +335,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Sets the header template for the column.
+        /// Sets the header template for the column. If sorting is enabled, the template content wrapper must have a k-link CSS class.
         /// </summary>
         /// <param name="template">The action defining the template.</param>
         public TColumnBuilder HeaderTemplate(Action template)
@@ -293,7 +345,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Sets the header template for the column.
+        /// Sets the header template for the column.  If sorting is enabled, the template content wrapper must have a k-link CSS class.
         /// </summary>
         /// <param name="template">The string defining the template.</param>
         public TColumnBuilder HeaderTemplate(string template)
@@ -303,7 +355,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Sets the header template for the column.
+        /// Sets the header template for the column.  If sorting is enabled, the template content wrapper must have a k-link CSS class.
         /// </summary>
         /// <param name="template">The action defining the template.</param>
         public TColumnBuilder HeaderTemplate(Func<object, object> template)

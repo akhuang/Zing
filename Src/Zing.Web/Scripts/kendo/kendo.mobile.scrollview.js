@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.scrollview",
-    name: "ScrollView",
-    category: "mobile",
-    description: "The Kendo Mobile ScrollView widget is used to scroll content wider than the device screen.",
-    depends: [ "mobile.application" ]
-});
+(function(f, define){
+    define([ "./kendo.mobile.application" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -210,7 +206,7 @@ kendo_module({
     kendo.mobile.ui.ScrollViewElasticPane = ElasticPane;
 
     var ScrollViewContent = kendo.Observable.extend({
-        init: function(element, pane) {
+        init: function(element, pane, options) {
             var that = this;
 
             kendo.Observable.fn.init.call(this);
@@ -218,7 +214,9 @@ kendo_module({
             that.pane = pane;
             that._getPages();
             this.page = 0;
-            this.pageSize = 1;
+            this.pageSize = options.pageSize || 1;
+            this.contentHeight = options.contentHeight;
+            this.enablePager = options.enablePager;
         },
 
         scrollTo: function(page, instant) {
@@ -275,6 +273,20 @@ kendo_module({
                 width = size.width;
 
             this.pageElements.width(width);
+
+            if (this.contentHeight === "100%") {
+                var containerHeight = this.element.parent().height();
+
+                if(this.enablePager === true) {
+                    var pager = this.element.parent().find("ol.km-pages");
+                    if(pager.length) {
+                        containerHeight -= pager.outerHeight(true);
+                    }
+                }
+
+                this.element.css("height", containerHeight);
+                this.pageElements.css("height", containerHeight);
+            }
 
             // re-read pane dimension after the pageElements have been resized.
             pane.updateDimension();
@@ -405,6 +417,14 @@ kendo_module({
 
             else if (this.options.contentHeight === "100%") {
                 var containerHeight = this.element.parent().height();
+
+                if(this.options.enablePager === true) {
+                    var pager = this.element.parent().find("ol.km-pages");
+                    if(pager.length) {
+                        containerHeight -= pager.outerHeight(true);
+                    }
+                }
+
                 this.element.css("height", containerHeight);
                 pages[0].element.css("height", containerHeight);
                 pages[1].element.css("height", containerHeight);
@@ -442,6 +462,7 @@ kendo_module({
                 thresholdPassed = Math.abs(offset) >= width / 3,
                 ease = bounce ? kendo.effects.Transition.easeOutBack : kendo.effects.Transition. easeOutExpo,
                 isEndReached = that.page + 2 > that.buffer.total(),
+                nextPage,
                 delta = 0;
 
             if(swipeType === RIGHT_SWIPE) {
@@ -458,7 +479,12 @@ kendo_module({
                 }
             }
 
-            if(callback && callback()) {
+            nextPage = that.page;
+            if(delta) {
+                nextPage = (delta > 0) ? nextPage + 1 : nextPage - 1;
+            }
+
+            if(callback && callback({ currentPage: that.page, nextPage: nextPage })) {
                 delta = 0;
             }
 
@@ -645,7 +671,6 @@ kendo_module({
             that.inner = element.children().first();
             that.page = 0;
             that.inner.css("height", options.contentHeight);
-            that.container().bind("show", proxy(this, "viewShow")).bind("init", proxy(this, "viewInit"));
 
             that.pane = new ElasticPane(that.inner, {
                 duration: this.options.duration,
@@ -663,11 +688,14 @@ kendo_module({
 
             var empty = this.inner.children().length === 0;
 
-            that._content = empty ? new VirtualScrollViewContent(that.inner, that.pane, options) : new ScrollViewContent(that.inner, that.pane);
+            that._content = empty ? new VirtualScrollViewContent(that.inner, that.pane, options) : new ScrollViewContent(that.inner, that.pane, options);
             that._content.page = that.page;
 
             that._content.bind("reset", function() {
+                var content = that._content;
+
                 that._syncWithContent();
+                that.trigger(REFRESH, { pageCount: content.pageCount, page: content.page });
             });
 
             that._content.bind(ITEM_CHANGE, function(e) {
@@ -675,6 +703,15 @@ kendo_module({
             });
 
             that.setDataSource(options.dataSource);
+
+            var mobileContainer = that.container();
+
+            if(mobileContainer.nullObject) {
+                that.viewInit();
+                that.viewShow();
+            } else {
+                mobileContainer.bind("show", proxy(this, "viewShow")).bind("init", proxy(this, "viewInit"));
+            }
         },
 
         options: {
@@ -730,6 +767,22 @@ kendo_module({
         scrollTo: function(page, instant) {
             this._content.scrollTo(page, instant);
             this._syncWithContent();
+        },
+
+        prev: function() {
+            var that = this;
+
+            that._content.paneMoved(RIGHT_SWIPE, undefined, function(eventData) {
+                return that.trigger(CHANGING, eventData);
+            });
+        },
+
+        next: function() {
+            var that = this;
+
+            that._content.paneMoved(LEFT_SWIPE, undefined, function(eventData) {
+                return that.trigger(CHANGING, eventData);
+            });
         },
 
         setDataSource: function(dataSource) {
@@ -803,3 +856,7 @@ kendo_module({
     ui.plugin(ScrollView);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

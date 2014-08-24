@@ -1,30 +1,16 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "data",
-    name: "Data source",
-    category: "framework",
-    description: "Powerful component for using local and remote data.Fully supports CRUD, Sorting, Paging, Filtering, Grouping, and Aggregates.",
-    depends: [ "core" ],
-    features: [ {
-        id: "data-odata",
-        name: "OData",
-        description: "Support for accessing Open Data Protocol (OData) services.",
-        depends: [ "data.odata" ]
-    }, {
-        id: "data-XML",
-        name: "XML",
-        description: "Support for binding to XML.",
-        depends: [ "data.xml" ]
-    } ]
-});
+(function(f, define){
+    define([ "./kendo.core", "./kendo.data.odata", "./kendo.data.xml" ], f);
+})(function(){
 
+/*jshint eqnull: true, loopfunc: true, evil: true */
 (function($, undefined) {
     var extend = $.extend,
         proxy = $.proxy,
@@ -1364,14 +1350,29 @@ kendo_module({
 
     var functions = {
         sum: function(accumulator, item, accessor) {
-            return (accumulator || 0) + accessor.get(item);
+            var value = accessor.get(item);
+
+            if (!isNumber(accumulator)) {
+                accumulator = value;
+            } else if (isNumber(value)) {
+                accumulator += value;
+            }
+
+            return accumulator;
         },
         count: function(accumulator) {
             return (accumulator || 0) + 1;
         },
         average: function(accumulator, item, accessor, index, length) {
-            accumulator = (accumulator || 0) + accessor.get(item);
-            if(index == length - 1) {
+            var value = accessor.get(item);
+
+            if (!isNumber(accumulator)) {
+                accumulator = value;
+            } else if (isNumber(value)) {
+                accumulator += value;
+            }
+
+            if(index == length - 1 && isNumber(accumulator)) {
                 accumulator = accumulator / length;
             }
             return accumulator;
@@ -1379,9 +1380,11 @@ kendo_module({
         max: function(accumulator, item, accessor) {
             var value = accessor.get(item);
 
-            accumulator = accumulator || 0;
+            if (!isNumber(accumulator)) {
+                accumulator = value;
+            }
 
-            if(accumulator < value) {
+            if(accumulator < value && isNumber(value)) {
                 accumulator = value;
             }
             return accumulator;
@@ -1505,6 +1508,14 @@ kendo_module({
             };
 
             parameterMap = options.parameterMap;
+
+            if (isFunction(options.push)) {
+                that.push = options.push;
+            }
+
+            if (!that.push) {
+                that.push = identity;
+            }
 
             that.parameterMap = isFunction(parameterMap) ? parameterMap : function(options) {
                 var result = {};
@@ -1786,35 +1797,43 @@ kendo_module({
         }
     });
 
-    function mergeGroups(target, dest, start, count) {
+    function mergeGroups(target, dest, skip, take) {
         var group,
             idx = 0,
             items;
 
-        while (dest.length && count) {
+        while (dest.length && take) {
             group = dest[idx];
             items = group.items;
 
+            var length = items.length;
+
             if (target && target.field === group.field && target.value === group.value) {
                 if (target.hasSubgroups && target.items.length) {
-                    mergeGroups(target.items[target.items.length - 1], group.items, start, count);
+                    mergeGroups(target.items[target.items.length - 1], group.items, skip, take);
                 } else {
-                    items = items.slice(start, count);
-                    count -= items.length;
+                    items = items.slice(skip, skip + take);
                     target.items = target.items.concat(items);
                 }
                 dest.splice(idx--, 1);
+            } else if (group.hasSubgroups && items.length) {
+                mergeGroups(group, items, skip, take);
             } else {
-                items = items.slice(start, count);
-                count -= items.length;
+                items = items.slice(skip, skip + take);
                 group.items = items;
+
                 if (!group.items.length) {
                     dest.splice(idx--, 1);
-                    count -= start;
                 }
             }
 
-            start = 0;
+            if (items.length === 0) {
+                skip -= length;
+            } else {
+                skip = 0;
+                take -= items.length;
+            }
+
             if (++idx >= dest.length) {
                 break;
             }
@@ -2014,7 +2033,7 @@ kendo_module({
             that._pristineData = [];
             that._ranges = [];
             that._view = [];
-            that._pristine = [];
+            that._pristineTotal = 0;
             that._destroyed = [];
             that._pageSize = options.pageSize;
             that._page = options.page  || (options.pageSize ? 1 : undefined);
@@ -2028,13 +2047,21 @@ kendo_module({
 
             that.transport = Transport.create(options, data);
 
+            if (isFunction(that.transport.push)) {
+                that.transport.push({
+                    pushCreate: proxy(that._pushCreate, that),
+                    pushUpdate: proxy(that._pushUpdate, that),
+                    pushDestroy: proxy(that._pushDestroy, that)
+                });
+            }
+
             that.reader = new kendo.data.readers[options.schema.type || "json" ](options.schema);
 
             model = that.reader.model || {};
 
             that._data = that._observe(that._data);
 
-            that.bind([ERROR, CHANGE, REQUESTSTART, SYNC, REQUESTEND, PROGRESS], options);
+            that.bind(["push", ERROR, CHANGE, REQUESTSTART, SYNC, REQUESTEND, PROGRESS], options);
         },
 
         options: {
@@ -2054,6 +2081,28 @@ kendo_module({
             var group = this.group() || [];
 
             return this.options.serverGrouping && group.length;
+        },
+
+        _pushCreate: function(result) {
+            this._push(result, "pushCreate");
+        },
+
+        _pushUpdate: function(result) {
+            this._push(result, "pushUpdate");
+        },
+
+        _pushDestroy: function(result) {
+            this._push(result, "pushDestroy");
+        },
+
+        _push: function(result, operation) {
+            var data = this._readData(result);
+
+            if (!data) {
+                data = result;
+            }
+
+            this[operation](data);
         },
 
         _flatData: function(data) {
@@ -2102,10 +2151,13 @@ kendo_module({
             if (value !== undefined) {
                 that._data = this._observe(value);
 
+                that._pristineData = value.slice(0);
+
                 that._ranges = [];
                 that._addRange(that._data);
 
                 that._total = that._data.length;
+                that._pristineTotal = that._total;
 
                 that._process(that._data);
             } else {
@@ -2148,6 +2200,113 @@ kendo_module({
             return model;
         },
 
+        pushCreate: function(items) {
+            if (!isArray(items)) {
+                items = [items];
+            }
+
+            var pushed = [];
+
+            for (var idx = 0; idx < items.length; idx ++) {
+                var item = items[idx];
+
+                var result = this.add(item);
+
+                pushed.push(result);
+
+                var pristine = result.toJSON();
+
+                if (this._isServerGrouped()) {
+                    pristine = wrapInEmptyGroup(this.group(), pristine);
+                }
+
+                this._pristineData.push(pristine);
+            }
+
+            if (pushed.length) {
+                this.trigger("push", {
+                    type: "create",
+                    items: pushed
+                });
+            }
+        },
+
+        pushUpdate: function(items) {
+            if (!isArray(items)) {
+                items = [items];
+            }
+
+            var pushed = [];
+
+            for (var idx = 0; idx < items.length; idx ++) {
+                var item = items[idx];
+                var model = this._createNewModel(item);
+
+                var target = this.get(model.id);
+
+                if (target) {
+                    pushed.push(target);
+
+                    target.accept(item);
+
+                    target.trigger("change");
+
+                    this._updatePristineForModel(target, item);
+                } else {
+                    this.pushCreate(item);
+                }
+            }
+
+            if (pushed.length) {
+                this.trigger("push", {
+                    type: "update",
+                    items: pushed
+                });
+            }
+        },
+
+        pushDestroy: function(items) {
+            if (!isArray(items)) {
+                items = [items];
+            }
+
+            var pushed = [];
+            var autoSync = this.options.autoSync;
+            this.options.autoSync = false;
+            try {
+                for (var idx = 0; idx < items.length; idx ++) {
+                    var item = items[idx];
+                    var model = this._createNewModel(item);
+                    var found = false;
+
+                    this._eachItem(this._data, function(items){
+                        for (var idx = 0; idx < items.length; idx++) {
+                            if (items[idx].id === model.id) {
+                                pushed.push(items[idx]);
+                                items.splice(idx, 1);
+                                found = true;
+                                break;
+                            }
+                        }
+                    });
+
+                    if (found) {
+                        this._removePristineForModel(model);
+                        this._destroyed.pop();
+                    }
+                }
+            } finally {
+                this.options.autoSync = autoSync;
+            }
+
+            if (pushed.length) {
+                this.trigger("push", {
+                    type: "destroy",
+                    items: pushed
+                });
+            }
+        },
+
         remove: function(model) {
             var result,
                 that = this,
@@ -2162,6 +2321,11 @@ kendo_module({
                     return true;
                 }
             });
+
+            this._removeModelFromRanges(model);
+
+            this._updateRangesLength();
+
             return model;
         },
 
@@ -2214,7 +2378,7 @@ kendo_module({
                 that._destroyed = [];
                 that._data = that._observe(that._pristineData);
                 if (that.options.serverPaging) {
-                    that._total = that.reader.total(that._pristine);
+                    that._total = that._pristineTotal;
                 }
                 that._change();
             }
@@ -2259,7 +2423,7 @@ kendo_module({
 
                 response = that.reader.data(response);
 
-                if (!$.isArray(response)) {
+                if (!isArray(response)) {
                     response = [response];
                 }
             } else {
@@ -2436,9 +2600,8 @@ kendo_module({
                 return;
             }
 
-            that._pristine = isPlainObject(data) ? $.extend(true, {}, data) : data.slice ? data.slice(0) : data;
-
             that._total = that.reader.total(data);
+            that._pristineTotal = that._total;
 
             if (that._aggregate && options.serverAggregates) {
                 that._aggregateResult = that.reader.aggregates(data);
@@ -2593,13 +2756,15 @@ kendo_module({
             if (that.options.autoSync && (action === "add" || action === "remove" || action === "itemchange")) {
                 that.sync();
             } else {
-                var total = parseInt(that._total || that.reader.total(that._pristine), 10);
+                var total = parseInt(that._total || that._pristineTotal, 10);
                 if (action === "add") {
                     total += e.items.length;
                 } else if (action === "remove") {
                     total -= e.items.length;
                 } else if (action !== "itemchange" && action !== "sync" && !that.options.serverPaging) {
-                    total = that.reader.total(that._pristine);
+                    total = that._pristineTotal;
+                } else if (action === "sync") {
+                    total = that._pristineTotal = parseInt(that._total, 10);
                 }
 
                 that._total = total;
@@ -3025,7 +3190,7 @@ kendo_module({
             return [];
         },
 
-        _mergeGroups: function(data, range, startIndex, endIndex) {
+        _mergeGroups: function(data, range, skip, take) {
             if (this._isServerGrouped()) {
                 var temp = range.toJSON(),
                     prevGroup;
@@ -3034,11 +3199,11 @@ kendo_module({
                     prevGroup = data[data.length - 1];
                 }
 
-                mergeGroups(prevGroup, temp, startIndex, endIndex);
+                mergeGroups(prevGroup, temp, skip, take);
 
                 return data.concat(temp);
             }
-            return data.concat(range.slice(startIndex, endIndex));
+            return data.concat(range.slice(skip, take));
         },
 
         skip: function() {
@@ -3134,9 +3299,9 @@ kendo_module({
 
         _rangeExists: function(start, end) {
             var that = this,
-            ranges = that._ranges,
-            idx,
-            length;
+                ranges = that._ranges,
+                idx,
+                length;
 
             for (idx = 0, length = ranges.length; idx < length; idx++) {
                 if (ranges[idx].start <= start && ranges[idx].end >= end) {
@@ -3144,6 +3309,42 @@ kendo_module({
                 }
             }
             return false;
+        },
+
+        _removeModelFromRanges: function(model) {
+            var result,
+                found,
+                range;
+
+            for (var idx = 0, length = this._ranges.length; idx < length; idx++) {
+                range = this._ranges[idx];
+
+                this._eachItem(range.data, function(items) {
+                    result = removeModel(items, model);
+                    if (result) {
+                        found = true;
+                    }
+                });
+
+                if (found) {
+                    break;
+                }
+            }
+        },
+
+        _updateRangesLength: function() {
+            var startOffset = 0,
+                range,
+                rangeLength;
+
+            for (var idx = 0, length = this._ranges.length; idx < length; idx++) {
+                range = this._ranges[idx];
+                range.start = range.start - startOffset;
+
+                rangeLength = this._flatData(range.data).length;
+                startOffset = range.end - rangeLength;
+                range.end = range.start + rangeLength;
+            }
         }
     });
 
@@ -3176,17 +3377,19 @@ kendo_module({
     };
 
     DataSource.create = function(options) {
-        options = options && options.push ? { data: options } : options;
+        if (isArray(options) || options instanceof ObservableArray) {
+           options = { data: options };
+        }
 
         var dataSource = options || {},
-        data = dataSource.data,
-        fields = dataSource.fields,
-        table = dataSource.table,
-        select = dataSource.select,
-        idx,
-        length,
-        model = {},
-        field;
+            data = dataSource.data,
+            fields = dataSource.fields,
+            table = dataSource.table,
+            select = dataSource.select,
+            idx,
+            length,
+            model = {},
+            field;
 
         if (!data && fields && !dataSource.transport) {
             if (table) {
@@ -3210,6 +3413,8 @@ kendo_module({
         }
 
         dataSource.data = data;
+        table = null;
+        dataSource.table = null;
 
         return dataSource instanceof DataSource ? dataSource : new DataSource(dataSource);
     };
@@ -3402,27 +3607,33 @@ kendo_module({
             this[fieldName || "items"] = this.children.data();
         },
 
+        _childrenLoaded: function() {
+            this._loaded = true;
+
+            this._updateChildrenField();
+        },
+
         load: function() {
-            var that = this,
-                options = {};
+            var options = {};
+            var method = "_query";
+            var children;
 
-            if (that.hasChildren) {
-                that._initChildren();
+            if (this.hasChildren) {
+                this._initChildren();
 
-                options[that.idField || "id"] = that.id;
+                children = this.children;
 
-                if (!that._loaded) {
-                    that.children._data = undefined;
+                options[this.idField || "id"] = this.id;
+
+                if (!this._loaded) {
+                    children._data = undefined;
+                    method = "read";
                 }
 
-                that.children.one(CHANGE, function() {
-                            that._loaded = true;
-
-                            that._updateChildrenField();
-                        })
-                        ._query(options);
+                children.one(CHANGE, proxy(this._childrenLoaded, this));
+                children[method](options);
             } else {
-                that.loaded(true);
+                this.loaded(true);
             }
         },
 
@@ -3933,3 +4144,7 @@ kendo_module({
         BatchBuffer: BatchBuffer
     });
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

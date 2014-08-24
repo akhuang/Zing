@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.drawer",
-    name: "Drawer",
-    category: "mobile",
-    description: "The Kendo Mobile Drawer widget provides slide to reveal global application toolbox",
-    depends: [ "mobile.application" ]
-});
+(function(f, define){
+    define([ "./kendo.mobile.application" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -26,7 +22,8 @@ kendo_module({
         BEFORE_SHOW = "beforeShow",
         INIT = "init",
         SHOW = "show",
-        HIDE = "hide";
+        HIDE = "hide",
+        NULL_VIEW = { enable: $.noop };
 
     var Drawer = ui.View.extend({
         init: function(element, options) {
@@ -39,17 +36,37 @@ kendo_module({
             this._scroller();
             this._model();
 
-            this.pane = this.element.closest(roleSelector("pane")).data("kendoMobilePane");
+            var pane = this.element.closest(roleSelector("pane")).data("kendoMobilePane"),
+                userEvents;
+
+            if (pane) {
+                this.pane = pane;
+                this.pane.bind("viewShow", function(e) {
+                    drawer._viewShow(e);
+                });
+
+                this.pane.bind("sameViewRequested", function() {
+                    drawer.hide();
+                });
+
+                userEvents = this.userEvents = new kendo.UserEvents(pane.element, {
+                    filter: roleSelector("view splitview"),
+                    allowSelection: true
+                });
+
+            } else {
+                this.currentView = NULL_VIEW;
+                var container = $(this.options.container);
+
+                if (!container) {
+                    throw new Error("The drawer needs a container configuration option set.");
+                }
+
+                userEvents = this.userEvents = new kendo.UserEvents(container, { allowSelection: true });
+                this._attachTransition(container);
+            }
 
             var drawer = this;
-
-            this.pane.bind("viewShow", function(e) {
-                drawer._viewShow(e);
-            });
-
-            this.pane.bind("sameViewRequested", function() {
-                drawer.hide();
-            });
 
             var hide = function(e) {
                 if (drawer.visible) {
@@ -58,12 +75,8 @@ kendo_module({
                 }
             };
 
-            var userEvents = this.userEvents = new kendo.UserEvents(this.pane.element, {
-                filter: roleSelector("view splitview"),
-                allowSelection: true
-            });
-
             if (this.options.swipeToOpen && SWIPE_TO_OPEN) {
+                userEvents.bind("press", function(e) { drawer.transition.cancel(); });
                 userEvents.bind("start", function(e) { drawer._start(e); });
                 userEvents.bind("move", function(e) { drawer._update(e); });
                 userEvents.bind("end", function(e) { drawer._end(e); });
@@ -85,7 +98,8 @@ kendo_module({
             position: "left",
             views: [],
             swipeToOpen: true,
-            title: ""
+            title: "",
+            container: null
         },
 
         events: [
@@ -102,13 +116,12 @@ kendo_module({
         },
 
         hide: function() {
-            if (this._transitioning) {
+            if (!this.currentView) {
                 return;
             }
 
             this.currentView.enable();
 
-            this.visible = false;
             Drawer.current = null;
             this._moveViewTo(0);
             this.trigger(HIDE, { view: this });
@@ -133,9 +146,14 @@ kendo_module({
                 return true;
             }
 
-            var views = this.options.views,
-                view = this.pane.view(),
-                visibleOnCurrentView = !views[0] || this._viewsInclude(view.id.replace('#', '')) || this._viewsInclude(view.element.attr("id"));
+            var view,
+                visibleOnCurrentView = true,
+                views = this.options.views;
+
+            if (this.pane && views.length) {
+                view = this.pane.view();
+                visibleOnCurrentView = this._viewsInclude(view.id.replace('#', '')) || this._viewsInclude(view.element.attr("id"));
+            }
 
             if (this.trigger(BEFORE_SHOW, { view: this }) || !visibleOnCurrentView) {
                 return false;
@@ -153,10 +171,6 @@ kendo_module({
         },
 
         _show: function() {
-            if (this._transitioning) {
-                return;
-            }
-
             this.currentView.enable(false);
 
             this.visible = true;
@@ -183,16 +197,10 @@ kendo_module({
 
         _moveViewTo: function(offset) {
             this.userEvents.cancel();
-            this._transitioning = true;
             this.transition.moveTo({ location: offset, duration: 400, ease: Transition.easeOutExpo });
         },
 
         _viewShow: function(e) {
-            var that = this,
-                movable = this.movable,
-                currentOffset = movable && movable.x,
-                element;
-
             if (this.currentView) {
                 this.currentView.enable();
             }
@@ -203,8 +211,19 @@ kendo_module({
             }
 
             this.currentView = e.view;
+            this._attachTransition(e.view.element);
+        },
 
-            element = e.view.element;
+        _attachTransition: function(element) {
+            var that = this,
+                movable = this.movable,
+                currentOffset = movable && movable.x;
+
+
+            if (this.transition) {
+                this.transition.cancel();
+                this.movable.moveAxis("x", 0);
+            }
 
             movable = this.movable = new kendo.ui.Movable(element);
 
@@ -212,17 +231,19 @@ kendo_module({
                 axis: AXIS,
                 movable: this.movable,
                 onEnd: function() {
-                    that._transitioning = false;
                     if (movable[AXIS] === 0) {
                         element[0].style.cssText = "";
                         that.element.hide();
+                        that.visible = false;
                     }
                 }
             });
 
             if (currentOffset) {
-                this.movable.moveAxis(AXIS, currentOffset);
-                this.hide();
+                kendo.animationFrame(function() {
+                    that.movable.moveAxis(AXIS, currentOffset);
+                    that.hide();
+                });
             }
         },
 
@@ -289,3 +310,7 @@ kendo_module({
 
     ui.plugin(Drawer);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

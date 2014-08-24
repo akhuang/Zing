@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.switch",
-    name: "Switch",
-    category: "mobile",
-    description: "The mobile Switch widget is used to display two exclusive choices.",
-    depends: [ "mobile.application" ]
-});
+(function(f, define){
+    define([ "./kendo.mobile.application" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -33,17 +29,30 @@ kendo_module({
         return Math.max(minLimit, Math.min(maxLimit, value));
     }
 
+    var SWITCH_MARKUP = '<span class="km-switch km-widget">\
+        <span class="km-switch-wrapper"><span class="km-switch-background"></span></span> \
+        <span class="km-switch-container"><span class="km-switch-handle" > \
+            <span class="km-switch-label-on">{0}</span> \
+            <span class="km-switch-label-off">{1}</span> \
+        </span> \
+    </span>';
+
     var Switch = Widget.extend({
         init: function(element, options) {
             var that = this, checked;
 
             Widget.fn.init.call(that, element, options);
 
-            that._wrapper();
+            options = that.options;
+
+            that.wrapper = $(kendo.format(SWITCH_MARKUP, options.onLabel, options.offLabel));
+            that.handle = that.wrapper.find(".km-switch-handle");
+            that.background = that.wrapper.find(".km-switch-background");
+            that.wrapper.insertBefore(that.element).prepend(that.element);
+
             that._drag();
-            that._background();
+
             that.origin = parseInt(that.background.css(MARGINLEFT), 10);
-            that._handle();
 
             that.constrain = 0;
             that.snapPoint = 0;
@@ -68,13 +77,13 @@ kendo_module({
         },
 
         refresh: function() {
-            var that = this;
+            var that = this,
+                handleWidth = that.handle.outerWidth(true);
 
             that.width = that.wrapper.width();
-            that.handleWidth = that.handle.outerWidth(true);
 
-            that.constrain = that.width - that.handleWidth;
-            that.snapPoint = that.width / 2 - that.handleWidth / 2;
+            that.constrain  = that.width - handleWidth;
+            that.snapPoint = that.constrain / 2;
 
             if (typeof that.origin != "number") {
                 that.origin = parseInt(that.background.css(MARGINLEFT), 10);
@@ -145,6 +154,7 @@ kendo_module({
         _resize: function() {
             this.refresh();
         },
+
         _move: function(e) {
             var that = this;
             e.preventDefault();
@@ -214,40 +224,6 @@ kendo_module({
                 });
         },
 
-        _background: function() {
-            var that = this,
-                background;
-
-            background = $("<span class='km-switch-wrapper'><span class='km-switch-background'></span></span>")
-                            .appendTo(that.wrapper)
-                            .children(".km-switch-background");
-
-            that.background = background;
-        },
-
-        _handle: function() {
-            var that = this,
-                options = that.options;
-
-            that.handle = $("<span class='km-switch-container'><span class='km-switch-handle' /></span>")
-                            .appendTo(that.wrapper)
-                            .children(".km-switch-handle");
-
-            that.handle.append('<span class="km-switch-label-on">' + options.onLabel + '</span><span class="km-switch-label-off">' + options.offLabel + '</span>');
-        },
-
-        _wrapper: function() {
-            var that = this,
-                element = that.element,
-                wrapper = element.parent("span.km-switch");
-
-            if (!wrapper[0]) {
-                wrapper = element.wrap('<span class="km-switch"/>').parent();
-            }
-
-            that.wrapper = wrapper.addClass("km-widget");
-        },
-
         _drag: function() {
             var that = this;
 
@@ -266,3 +242,7 @@ kendo_module({
 
     ui.plugin(Switch);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

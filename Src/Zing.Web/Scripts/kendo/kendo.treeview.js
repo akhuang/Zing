@@ -1,19 +1,16 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "treeview",
-    name: "TreeView",
-    category: "web",
-    description: "The TreeView widget displays hierarchical data in a traditional tree structure,with support for interactive drag-and-drop operations.",
-    depends: [ "data", "draganddrop" ]
-});
+(function(f, define){
+    define([ "./kendo.data", "./kendo.draganddrop" ], f);
+})(function(){
 
+/*jshint eqnull: true */
 (function($, undefined){
     var kendo = window.kendo,
         ui = kendo.ui,
@@ -32,6 +29,7 @@ kendo_module({
         CHANGE = "change",
         ERROR = "error",
         CHECKED = "checked",
+        INDETERMINATE = "indeterminate",
         COLLAPSE = "collapse",
         DRAGSTART = "dragstart",
         DRAG = "drag",
@@ -279,10 +277,10 @@ kendo_module({
         _checkboxClick: function(e) {
             var checkbox = $(e.target);
 
-            if (checkbox.data("indeterminate")) {
+            if (checkbox.data(INDETERMINATE)) {
                 checkbox
-                    .data("indeterminate", false)
-                    .prop("indeterminate", false)
+                    .data(INDETERMINATE, false)
+                    .prop(INDETERMINATE, false)
                     .prop(CHECKED, true);
 
                 this._checkboxChange(e);
@@ -497,11 +495,11 @@ kendo_module({
                     "</li>"
                 ),
                 loading: templateNoWith(
-                    "<div class='k-icon k-loading' /> Loading..."
+                    "<div class='k-icon k-loading' /> #: data.messages.loading #"
                 ),
                 retry: templateNoWith(
-                    "Request failed. " +
-                    "<button class='k-button k-request-retry'>Retry</button>"
+                    "#: data.messages.requestFailed # " +
+                    "<button class='k-button k-request-retry'>#: data.messages.retry #</button>"
                 )
             };
         },
@@ -599,6 +597,11 @@ kendo_module({
                 }, collapse: {
                     duration: 100
                 }
+            },
+            messages: {
+                loading: "Loading...",
+                requestFailed: "Request failed.",
+                retry: "Retry"
             },
             dragAndDrop: false,
             checkboxes: false,
@@ -713,9 +716,9 @@ kendo_module({
                 all = !siblings[0].indeterminate;
             }
 
-            checkboxes(node)
-                .data("indeterminate", !all)
-                .prop("indeterminate", !all)
+            return checkboxes(node)
+                .data(INDETERMINATE, !all)
+                .prop(INDETERMINATE, !all)
                 .prop(CHECKED, all && siblings[0].checked);
         },
 
@@ -723,14 +726,20 @@ kendo_module({
             // top-down update of inital indeterminate state for all nodes
             node = node || this.wrapper;
 
-            var subnodes = subGroup(node).children(), i;
+            var subnodes = subGroup(node).children();
+            var i;
+            var checkbox;
 
             if (subnodes.length) {
                 for (i = 0; i < subnodes.length; i++) {
                     this.updateIndeterminate(subnodes.eq(i));
                 }
 
-                this._setIndeterminate(node);
+                checkbox = this._setIndeterminate(node);
+
+                if (checkbox && checkbox.prop(CHECKED)) {
+                    this.dataItem(node).checked = true;
+                }
             }
         },
 
@@ -747,7 +756,7 @@ kendo_module({
                 this._setIndeterminate(parentNode);
                 checkbox = parentNode.children("div").find(".k-checkbox :checkbox");
 
-                if (checkbox.prop("indeterminate") === false) {
+                if (checkbox.prop(INDETERMINATE) === false) {
                     this.dataItem(parentNode).set(CHECKED, checkbox.prop(CHECKED));
                 } else {
                     this.dataItem(parentNode).checked = false;
@@ -981,8 +990,8 @@ kendo_module({
                 }
             } else if (key == keys.SPACEBAR && checkbox.length) {
                 checkbox.prop(CHECKED, !checkbox.prop(CHECKED))
-                    .data("indeterminate", false)
-                    .prop("indeterminate", false);
+                    .data(INDETERMINATE, false)
+                    .prop(INDETERMINATE, false);
 
                 that._checkboxChange({ target: checkbox });
 
@@ -1237,8 +1246,8 @@ kendo_module({
             function setCheckedState(root, state) {
                 root.find(".k-checkbox :checkbox")
                     .prop(CHECKED, state)
-                    .data("indeterminate", false)
-                    .prop("indeterminate", false);
+                    .data(INDETERMINATE, false)
+                    .prop(INDETERMINATE, false);
             }
 
             if (field == "selected") {
@@ -1328,7 +1337,7 @@ kendo_module({
 
             this._insertNode(items, index, parentNode, function(item, group) {
                 // insert node into DOM
-                if (index == children.length) {
+                if (index >= children.length) {
                     item.appendTo(group);
                 } else {
                     item.insertBefore(children.eq(index));
@@ -1353,6 +1362,10 @@ kendo_module({
                 i;
 
             if (e.field) {
+                if (!items[0].level) {
+                    return;
+                }
+
                 return that._updateNode(e.field, items);
             }
 
@@ -1380,16 +1393,30 @@ kendo_module({
                     } else {
                         this._appendItems(e.index, items, parentNode);
 
-                        this._bubbleIndeterminate(subGroup(parentNode).children().last());
+                        if (loadOnDemand && checkChildren) {
+                            this._bubbleIndeterminate(subGroup(parentNode).children().last());
+                        }
                     }
                 } else {
-                    that.root = that.wrapper.html(that._renderGroup({
-                        items: items,
-                        group: {
-                            firstLevel: true,
-                            expanded: true
-                        }
-                    })).children("ul");
+
+                    var groupHtml = that._renderGroup({
+                            items: items,
+                            group: {
+                                firstLevel: true,
+                                expanded: true
+                            }
+                        });
+
+                    if (that.root.length) {
+                        var group = $(groupHtml);
+
+                        that.root
+                            .attr("class", group.attr("class"))
+                            .attr("role", group.attr("role"))
+                            .html(group.html());
+                    } else {
+                        that.root = that.wrapper.html(groupHtml).children("ul");
+                    }
                 }
             }
 
@@ -1405,8 +1432,8 @@ kendo_module({
         },
 
         _error: function(e) {
-            var that = this,
-                node = e.node && that.findByUid(e.node.uid);
+            var node = e.node && this.findByUid(e.node.uid);
+            var retryHtml = this.templates.retry({ messages: this.options.messages });
 
             if (node) {
                 this._progress(node, false);
@@ -1415,7 +1442,7 @@ kendo_module({
                 e.node.loaded(false);
             } else {
                 this._progress(false);
-                this.element.html(this.templates.retry);
+                this.element.html(retryHtml);
             }
         },
 
@@ -1612,12 +1639,13 @@ kendo_module({
 
         _progress: function(node, showProgress) {
             var element = this.element;
+            var loadingText = this.templates.loading({ messages: this.options.messages });
 
             if (arguments.length == 1) {
                 showProgress = node;
 
                 if (showProgress) {
-                    element.html(this.templates.loading);
+                    element.html(loadingText);
                 } else {
                     element.empty();
                 }
@@ -1677,8 +1705,7 @@ kendo_module({
             var dataItem = node, dataSource, uid;
 
             if (node instanceof window.jQuery || isDomElement(node)) {
-                dataSource = this._objectOrSelf(node).dataSource,
-
+                dataSource = this._objectOrSelf(node).dataSource;
                 uid = $(node).attr(kendo.attr("uid"));
                 dataItem = dataSource.getByUid(uid);
 
@@ -1700,9 +1727,9 @@ kendo_module({
                 model = model.toJSON();
             }
 
-            var parentNode = !data._dataSource && data.parent();
+            var parentNode = data.parent();
 
-            if (parentNode) {
+            if (parentNode && parentNode._initChildren) {
                 parentNode.hasChildren = true;
                 parentNode._initChildren();
             }
@@ -2096,3 +2123,7 @@ kendo_module({
 
     ui.plugin(TreeView);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

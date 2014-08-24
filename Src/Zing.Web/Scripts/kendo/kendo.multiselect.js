@@ -1,24 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "multiselect",
-    name: "MultiSelect",
-    category: "web",
-    description: "The MultiSelect widget allows the selection from pre-defined values.",
-    depends: [ "list" ],
-    features: [ {
-        id: "mobile-scroller",
-        name: "Mobile scroller",
-        description: "Support for kinetic scrolling in mobile device",
-        depends: [ "mobile.scroller" ]
-    } ]
-});
+(function(f, define){
+    define([ "./kendo.list", "./kendo.mobile.scroller" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -232,12 +222,14 @@ kendo_module({
                     .removeClass(STATEDISABLED)
                     .on(HOVEREVENTS, that._toggleHover)
                     .on("mousedown" + ns, function(e) {
-                        var deleteButton = e.target.className.indexOf("k-delete") !== -1;
+                        var notInput = e.target.nodeName.toLowerCase() !== "input";
 
-                        e.preventDefault();
+                        if (notInput) {
+                            e.preventDefault();
+                        }
 
-                        if (!deleteButton) {
-                            if (that.input[0] !== activeElement()) {
+                        if (e.target.className.indexOf("k-delete") === -1) {
+                            if (that.input[0] !== activeElement() && notInput) {
                                 that.input.focus();
                             }
 
@@ -504,7 +496,7 @@ kendo_module({
             }
 
             that._old = that._initialValues = value;
-            that._setInitialValues = !!value[0];
+            that._setInitialValues = value[0] !== undefined;
         },
 
         _mapValues: function(values) {
@@ -708,7 +700,7 @@ kendo_module({
                  .val(show ? that.options.placeholder : "");
 
             if (input[0] === active) {
-                List.selectText(input[0], 0, 0);
+                kendo.caret(input[0], 0, 0);
             }
 
             that._scale();
@@ -983,6 +975,8 @@ kendo_module({
 
             computedStyles.position = "absolute";
             computedStyles.visibility = "hidden";
+            computedStyles.top = -3333;
+            computedStyles.left = -3333;
 
             this._span = $("<span/>").css(computedStyles).appendTo(this.wrapper);
         },
@@ -1066,3 +1060,7 @@ kendo_module({
     ui.plugin(MultiSelect);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

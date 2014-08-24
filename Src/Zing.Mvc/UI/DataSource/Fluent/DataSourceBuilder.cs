@@ -40,5 +40,36 @@ namespace Kendo.Mvc.UI.Fluent
 
             return new ServerDataSourceBuilder<TModel>(dataSource, viewContext, urlGenerator);
         }
+
+#if !MVC3
+        /// <summary>
+        /// Use it to configure WebApi binding.
+        /// </summary>
+        public AjaxDataSourceBuilder<TModel> WebApi()
+        {
+            dataSource.Type = DataSourceType.WebApi;
+
+            return new AjaxDataSourceBuilder<TModel>(dataSource, viewContext, urlGenerator);
+        }
+#endif
+        /// <summary>
+        /// Use it to configure Custom binding.
+        /// </summary>
+        public CustomDataSourceBuilder<TModel> Custom()
+        {
+            dataSource.Type = DataSourceType.Custom;
+
+            return new CustomDataSourceBuilder<TModel>(dataSource, viewContext, urlGenerator);
+        }
+
+        /// <summary>
+        /// Use it to configure SignalR binding.
+        /// </summary>
+        public SignalRDataSourceBuilder<TModel> SignalR()
+        {
+            dataSource.Type = DataSourceType.Custom;
+
+            return new SignalRDataSourceBuilder<TModel>(dataSource);
+        }
     }
 }

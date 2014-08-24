@@ -900,7 +900,15 @@ namespace Kendo.Mvc.UI
 
                 var builder = htmlBuilderFactory.CreateBuilder(Scrollable.Enabled);
 
-                ProcessDataSource();
+                if (DataSource.Type != DataSourceType.Custom || DataSource.CustomType == "aspnetmvc-ajax")
+                {
+                    ProcessDataSource();
+                }
+
+                if (DataSource.Schema.Model.Id != null)
+                {
+                    DataKeys.Add(DataSource.Schema.Model.Id);
+                }
 
                 var renderingData = CreateRenderingData();
 
@@ -1045,11 +1053,6 @@ namespace Kendo.Mvc.UI
             var request = (DataSourceRequest)binder.BindModel(controller.ControllerContext, bindingContext);
 
             DataSource.Process(request, !EnableCustomBinding);
-
-            if (DataSource.Schema.Model.Id != null)
-            {
-                DataKeys.Add(DataSource.Schema.Model.Id);
-            }
         }
 
         private GridRenderingData CreateRenderingData()
@@ -1242,7 +1245,7 @@ namespace Kendo.Mvc.UI
         {
             get
             {
-                return DataSource.Type == DataSourceType.Ajax;                
+                return DataSource.Type == DataSourceType.Ajax || DataSource.Type == DataSourceType.WebApi || DataSource.Type == DataSourceType.Custom;
             }
         }
         
@@ -1265,6 +1268,11 @@ namespace Kendo.Mvc.UI
                 }
             }
 
+            if (Columns.Any(c => c.Locked) && !IsClientBinding)
+            {
+                throw new NotSupportedException(Exceptions.CannotUseLockedColumnsAndServerBinding);
+            }
+
             if (IsClientBinding)
             {
                 if (Columns.OfType<IGridTemplateColumn<T>>().Where(c => c.Template != null && string.IsNullOrEmpty(c.ClientTemplate)).Any())
@@ -1275,6 +1283,19 @@ namespace Kendo.Mvc.UI
                 if (DetailTemplate != null && DetailTemplate.HasValue() && string.IsNullOrEmpty(ClientDetailTemplateId))
                 {
                     throw new NotSupportedException(Exceptions.CannotUseTemplatesInAjaxOrWebService);
+                }
+
+                if (Columns.Any(c => c.Locked)) 
+                { 
+                    if (DetailTemplate != null && DetailTemplate.HasValue() || ClientDetailTemplateId.HasValue())
+                    {
+                        throw new NotSupportedException(Exceptions.CannotUseDetailTemplateAndLockedColumns);
+                    }
+
+                    if (ClientRowTemplate.HasValue() || RowTemplate != null && RowTemplate.HasValue())
+                    {
+                        throw new NotSupportedException(Exceptions.CannotUseRowTemplateAndLockedColumns);
+                    }
                 }
 
                 if (Columns.OfType<IGridActionColumn>().Any(c => c.Commands.OfType<GridCustomActionCommand<T>>().Any(command => command.HasValue())))
@@ -1290,27 +1311,30 @@ namespace Kendo.Mvc.UI
 
             if (Editable.Enabled)
             {
-                if (HasCommandOfType<GridEditActionCommand>())
+                if (DataSource.Type != DataSourceType.Custom)
                 {
-                    if (!DataSource.Transport.Update.HasValue())
+                    if (HasCommandOfType<GridEditActionCommand>())
                     {
-                        throw new NotSupportedException(Exceptions.EditCommandRequiresUpdate);
+                        if (!DataSource.Transport.Update.HasValue())
+                        {
+                            throw new NotSupportedException(Exceptions.EditCommandRequiresUpdate);
+                        }
                     }
-                }
 
-                if (HasCommandOfType<GridDestroyActionCommand>())
-                {
-                    if (!DataSource.Transport.Destroy.HasValue() && Editable.Mode != GridEditMode.InCell)
+                    if (HasCommandOfType<GridDestroyActionCommand>())
                     {
-                        throw new NotSupportedException(Exceptions.DeleteCommandRequiresDelete);
+                        if (!DataSource.Transport.Destroy.HasValue() && Editable.Mode != GridEditMode.InCell)
+                        {
+                            throw new NotSupportedException(Exceptions.DeleteCommandRequiresDelete);
+                        }
                     }
-                }
 
-                if (HasCommandOfType<GridToolBarCreateCommand<T>>())
-                {
-                    if (!DataSource.Transport.Create.HasValue() && Editable.Mode != GridEditMode.InCell)
+                    if (HasCommandOfType<GridToolBarCreateCommand<T>>())
                     {
-                        throw new NotSupportedException(Exceptions.InsertCommandRequiresInsert);
+                        if (!DataSource.Transport.Create.HasValue() && Editable.Mode != GridEditMode.InCell)
+                        {
+                            throw new NotSupportedException(Exceptions.InsertCommandRequiresInsert);
+                        }
                     }
                 }
 
@@ -1321,9 +1345,12 @@ namespace Kendo.Mvc.UI
                         throw new NotSupportedException(Exceptions.BatchUpdatesRequireInCellMode);
                     }
 
-                    if (!DataSource.Transport.Update.HasValue())
+                    if (DataSource.Type != DataSourceType.Custom)
                     {
-                        throw new NotSupportedException(Exceptions.BatchUpdatesRequireUpdate);
+                        if (!DataSource.Transport.Update.HasValue())
+                        {
+                            throw new NotSupportedException(Exceptions.BatchUpdatesRequireUpdate);
+                        }
                     }
                 }                
 

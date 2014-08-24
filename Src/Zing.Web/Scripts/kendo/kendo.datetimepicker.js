@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "datetimepicker",
-    name: "DateTimePicker",
-    category: "web",
-    description: "The DateTimePicker allows the end user to select a value from a calendar or a time drop-down list.",
-    depends: [ "datepicker", "timepicker" ]
-});
+(function(f, define){
+    define([ "./kendo.datepicker", "./kendo.timepicker" ], f);
+})(function(){
 
 (function($, undefined) {
 
@@ -64,6 +60,9 @@ kendo_module({
 
             element = that.element;
             options = that.options;
+
+            options.min = parse(element.attr("min")) || parse(options.min);
+            options.max = parse(element.attr("max")) || parse(options.max);
 
             normalize(options);
 
@@ -129,20 +128,23 @@ kendo_module({
         CLOSE,
         CHANGE
     ],
+
         setOptions: function(options) {
             var that = this,
+                value = that._value,
                 dateViewOptions = that.dateView.options,
                 timeViewOptions = that.timeView.options,
                 min, max, currentValue;
 
             Widget.fn.setOptions.call(that, options);
-            normalize(that.options);
-
 
             options = that.options;
 
-            min = options.min;
-            max = options.max;
+            options.min = min = parse(options.min);
+            options.max = max = parse(options.max);
+
+            normalize(options);
+
             currentValue = options.value || that._value || that.dateView._current;
 
             if (min && !isEqualDatePart(min, currentValue)) {
@@ -153,23 +155,18 @@ kendo_module({
                 max = new DATE(MAX);
             }
 
-            extend(dateViewOptions, options, {
-                change: dateViewOptions.change,
-                close: dateViewOptions.close,
-                open: dateViewOptions.open
-            });
+            that.dateView.setOptions(options);
 
-            extend(timeViewOptions, options, {
+            that.timeView.setOptions(extend({}, options, {
                 format: options.timeFormat,
-                active: timeViewOptions.active,
-                change: timeViewOptions.change,
-                close: timeViewOptions.close,
-                open: timeViewOptions.open,
                 min: min,
                 max: max
-            });
+            }));
 
-            that.timeView.ul[0].innerHTML = "";
+            if (value) {
+                that.element.val(kendo.toString(value, options.format, options.culture));
+                that._updateARIA(value);
+            }
         },
 
         _editable: function(options) {
@@ -253,7 +250,6 @@ kendo_module({
             var that = this;
 
             Widget.fn.destroy.call(that);
-
             that.dateView.destroy();
             that.timeView.destroy();
 
@@ -336,11 +332,13 @@ kendo_module({
         },
 
         _option: function(option, value) {
-            var that = this,
-                options = that.options,
-                timeView = that.timeView,
-                timeViewOptions = timeView.options,
-                current = that._value || that._old;
+            var that = this;
+            var options = that.options;
+            var timeView = that.timeView;
+            var timeViewOptions = timeView.options;
+            var current = that._value || that._old;
+            var minDateEqual;
+            var maxDateEqual;
 
             if (value === undefined) {
                 return options[option];
@@ -352,19 +350,35 @@ kendo_module({
                 return;
             }
 
-            options[option] = new DATE(+value);
+            if (options.min.getTime() === options.max.getTime()) {
+                timeViewOptions.dates = [];
+            }
+
+            options[option] = new DATE(value.getTime());
             that.dateView[option](value);
 
             that._midnight = getMilliseconds(options.min) + getMilliseconds(options.max) === 0;
 
-            if (current && isEqualDatePart(value, current)) {
-                if (that._midnight && option == "max") {
-                    timeViewOptions[option] = MAX;
-                    timeView.dataBind([MAX]);
-                    return;
+            if (current) {
+                minDateEqual = isEqualDatePart(options.min, current);
+                maxDateEqual = isEqualDatePart(options.max, current);
+            }
+
+            if (minDateEqual || maxDateEqual) {
+                timeViewOptions[option] = value;
+
+                if (minDateEqual && !maxDateEqual) {
+                    timeViewOptions.max = lastTimeOption(options.interval);
                 }
 
-                timeViewOptions[option] = value;
+                if (maxDateEqual) {
+                    if (that._midnight) {
+                        timeView.dataBind([MAX]);
+                        return;
+                    } else if (!minDateEqual) {
+                        timeViewOptions.min = MIN;
+                    }
+                }
             } else {
                 timeViewOptions.max = MAX;
                 timeViewOptions.min = MIN;
@@ -482,7 +496,7 @@ kendo_module({
                 options = that.options,
                 id = element.attr("id"),
                 dateView, timeView,
-                div, ul,
+                div, ul, msMin,
                 date;
 
             that.dateView = dateView = new kendo.DateView(extend({}, options, {
@@ -540,6 +554,7 @@ kendo_module({
             }));
             div = dateView.div;
 
+            msMin = options.min.getTime();
             that.timeView = timeView = new TimeView({
                 id: id,
                 value: options.value,
@@ -551,6 +566,7 @@ kendo_module({
                 interval: options.interval,
                 min: new DATE(MIN),
                 max: new DATE(MAX),
+                dates: msMin === options.max.getTime() ? [new Date(msMin)] : [],
                 parseFormats: options.parseFormats,
                 change: function(value, trigger) {
                     value = timeView._parse(value);
@@ -673,15 +689,18 @@ kendo_module({
         },
 
         _updateARIA: function(date) {
+            var cell;
             var that = this;
             var calendar = that.dateView.calendar;
-            var cell = calendar._cell;
 
-            cell.attr("aria-label", that._ariaTemplate({ current: date || calendar.current() }));
+            that.element.removeAttr(ARIA_ACTIVEDESCENDANT);
 
-            that.element
-                .removeAttr(ARIA_ACTIVEDESCENDANT)
-                .attr(ARIA_ACTIVEDESCENDANT, cell.attr("id"));
+            if (calendar) {
+                cell = calendar._cell;
+                cell.attr("aria-label", that._ariaTemplate({ current: date || calendar.current() }));
+
+                that.element.attr(ARIA_ACTIVEDESCENDANT, cell.attr("id"));
+            }
         }
     });
 
@@ -710,3 +729,7 @@ kendo_module({
     ui.plugin(DateTimePicker);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

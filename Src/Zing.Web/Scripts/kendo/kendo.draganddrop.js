@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "draganddrop",
-    name: "Drag & drop",
-    category: "framework",
-    description: "Drag & drop functionality for any DOM element.",
-    depends: [ "core", "userevents" ]
-});
+(function(f, define){
+    define([ "./kendo.core", "./kendo.userevents" ], f);
+})(function(){
 
 (function ($, undefined) {
     var kendo = window.kendo,
@@ -29,9 +25,7 @@ kendo_module({
         dropTargets = {},
         dropAreas = {},
         lastDropTarget,
-        OS = support.mobileOS,
-        invalidZeroEvents = OS && OS.android,
-        mobileChrome = (invalidZeroEvents && OS.browser == "chrome"),
+        elementUnderCursor = kendo.elementUnderCursor,
         KEYUP = "keyup",
         CHANGE = "change",
 
@@ -52,14 +46,6 @@ kendo_module({
             return $.contains(parent, child) || parent == child;
         } catch (e) {
             return false;
-        }
-    }
-
-    function elementUnderCursor(e) {
-        if (mobileChrome) {
-            return document.elementFromPoint(e.x.screen, e.y.screen);
-        } else {
-            return document.elementFromPoint(e.x.client, e.y.client);
         }
     }
 
@@ -650,6 +636,8 @@ kendo_module({
             cursorOffset: null,
             axis: null,
             container: null,
+            filter: null,
+            ignore: null,
             holdToDrag: false,
             dropped: false
         },
@@ -691,10 +679,12 @@ kendo_module({
         _start: function(e) {
             var that = this,
                 options = that.options,
+                ignoreSelector = options.ignore,
+                ignore = ignoreSelector && $(e.touch.initialTouch).is(ignoreSelector),
                 container = options.container,
                 hint = options.hint;
 
-            if (options.holdToDrag && !that._activated) {
+            if (ignore || (options.holdToDrag && !that._activated)) {
                 that.userEvents.cancel();
                 return;
             }
@@ -864,6 +854,8 @@ kendo_module({
             that._afterEnd();
 
             that.userEvents.destroy();
+
+            that.currentTarget = null;
         },
 
         _afterEnd: function() {
@@ -893,3 +885,7 @@ kendo_module({
     });
 
  })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -1,19 +1,16 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "data.xml",
-    name: "XML",
-    category: "framework",
-    depends: [ "core" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.core" ], f);
+})(function(){
 
+/*jshint  eqnull: true, boss: true */
 (function($, undefined) {
     var kendo = window.kendo,
         isArray = $.isArray,
@@ -36,6 +33,8 @@ kendo_module({
 
             if (model) {
                 if (isPlainObject(model)) {
+                    var base = options.modelBase || kendo.data.Model;
+
                     if (model.fields) {
                         each(model.fields, function(field, value) {
                             if (isPlainObject(value) && value.field) {
@@ -46,6 +45,7 @@ kendo_module({
                             model.fields[field] = value;
                         });
                     }
+
                     var id = model.id;
                     if (id) {
                         var idField = {};
@@ -54,7 +54,7 @@ kendo_module({
                         model.fields = extend(idField, model.fields);
                         model.id = that.xpathToMember(id);
                     }
-                    model = kendo.data.Model.define(model);
+                    model = base.define(model);
                 }
 
                 that.model = model;
@@ -258,3 +258,7 @@ kendo_module({
         }
     });
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

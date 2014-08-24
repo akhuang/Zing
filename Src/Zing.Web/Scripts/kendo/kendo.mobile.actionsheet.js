@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.actionsheet",
-    name: "ActionSheet",
-    category: "mobile",
-    description: "The mobile ActionSheet widget displays a set of choices related to a task the user initiates.",
-    depends: [ "mobile.popover", "mobile.shim" ]
-});
+(function(f, define){
+    define([ "./kendo.mobile.popover", "./kendo.mobile.shim" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -32,12 +28,23 @@ kendo_module({
     var ActionSheet = Widget.extend({
         init: function(element, options) {
             var that = this,
-                os = support.mobileOS,
-                type = options.type,
-                tablet = (type && type == "tablet") || (!type && os && os.tablet),
-                ShimClass = tablet ? Popup : Shim;
+                ShimClass,
+                tablet,
+                type,
+                os = support.mobileOS;
 
             Widget.fn.init.call(that, element, options);
+
+            options = that.options;
+            type = options.type;
+
+            if (type === "auto") {
+                tablet = os && os.tablet;
+            } else {
+                tablet = type === "tablet";
+            }
+
+            ShimClass = tablet ? Popup : Shim;
 
             element = that.element;
 
@@ -71,6 +78,7 @@ kendo_module({
         options: {
             name: "ActionSheet",
             cancel: "Cancel",
+            type: "auto",
             popup: { height: "auto" }
         },
 
@@ -128,3 +136,7 @@ kendo_module({
 
     ui.plugin(ActionSheet);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

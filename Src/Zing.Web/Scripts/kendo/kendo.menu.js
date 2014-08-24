@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "menu",
-    name: "Menu",
-    category: "web",
-    description: "The Menu widget displays hierarchical data as a multi-level menu.",
-    depends: [ "popup" ]
-});
+(function(f, define){
+    define([ "./kendo.popup" ], f);
+})(function(){
 
 (function ($, undefined) {
     var kendo = window.kendo,
@@ -54,6 +50,7 @@ kendo_module({
         FOCUSEDSTATE = "k-state-focused",
         DISABLEDSTATE = "k-state-disabled",
         groupSelector = ".k-group",
+        popupSelector = groupSelector + ",.k-animation-container",
         allItemsSelector = ":not(.k-list) > .k-item",
         disabledSelector = ".k-item.k-state-disabled",
         itemSelector = ".k-item:not(.k-state-disabled)",
@@ -236,10 +233,10 @@ kendo_module({
     function updateArrow (item) {
         item = $(item);
 
-        item.find("> .k-link > [class*=k-i-arrow]").remove();
+        item.find("> .k-link > [class*=k-i-arrow]:not(.k-sprite)").remove();
 
         item.filter(":has(.k-group)")
-            .children(".k-link:not(:has([class*=k-i-arrow]))")
+            .children(".k-link:not(:has([class*=k-i-arrow]:not(.k-sprite)))")
             .each(function () {
                 var item = $(this),
                     parent = item.parent().parent();
@@ -365,6 +362,8 @@ kendo_module({
             if (that._documentClickHandler) {
                 $(document).unbind("click", that._documentClickHandler);
             }
+
+            kendo.destroy(that.element);
         },
 
         enable: function (element, enable) {
@@ -459,7 +458,12 @@ kendo_module({
                             }
                         }));
             } else {
-                items = $(item);
+                if (typeof item == "string" && item[0] != "<") {
+                    items = that.element.find(item);
+                } else {
+                    items = $(item);
+                }
+
                 groups = items.find("> ul")
                                 .addClass("k-group")
                                 .attr("role", "menu");
@@ -479,7 +483,7 @@ kendo_module({
 
             var that = this,
                 parent = element.parentsUntil(that.element, allItemsSelector),
-                group = element.parent("ul");
+                group = element.parent("ul:not(.k-menu)");
 
             element.remove();
 
@@ -540,7 +544,16 @@ kendo_module({
                     if (ul[0] && that.trigger(OPEN, { item: li[0] }) === false) {
 
                         if (!ul.find(".k-group")[0] && ul.children(".k-item").length > 1) {
-                            setTimeout(function(){ul.css({maxHeight: $(window).height(), overflow: "auto"});}); // timeout required by IE7
+                            var windowHeight = $(window).height(),
+                                setScrolling = function(){
+                                    ul.css({maxHeight: windowHeight - (ul.outerHeight() - ul.height()) - kendo.getShadows(ul).bottom, overflow: "auto"});
+                                };
+
+                            if (kendo.support.browser.msie && kendo.support.browser.version <= 7) {
+                                setTimeout(setScrolling, 0); // timeout required by IE7
+                            } else {
+                                setScrolling();
+                            }
                         } else {
                             ul.css({maxHeight: "", overflow: ""});
                         }
@@ -600,7 +613,7 @@ kendo_module({
             return that;
         },
 
-        close: function (items) {
+        close: function (items, dontClearClose) {
             var that = this,
                 element = that.element;
 
@@ -612,6 +625,10 @@ kendo_module({
 
             items.each(function () {
                 var li = $(this);
+
+                if (!dontClearClose && that._isRootItem(li)) {
+                    that.clicked = false;
+                }
 
                 clearTimeout(li.data(TIMER));
 
@@ -718,7 +735,7 @@ kendo_module({
 
             if (that.options.openOnClick && that.clicked || mobile) {
                 element.siblings().each(proxy(function (_, sibling) {
-                    that.close(sibling);
+                    that.close(sibling, true);
                 }, that));
             }
         },
@@ -751,7 +768,7 @@ kendo_module({
                 href = link.attr("href"), childGroup, childGroupVisible,
                 isLink = (!!href && href !== $("<a href='#' />").attr("href"));
 
-            if (element.children(templateSelector)[0]) {
+            if (!options.openOnClick && element.children(templateSelector)[0]) {
                 return;
             }
 
@@ -766,7 +783,7 @@ kendo_module({
 
             e.handled = true;
 
-            childGroup = element.children(groupSelector + ",.k-animation-container");
+            childGroup = element.children(popupSelector);
             childGroupVisible = childGroup.is(":visible");
 
             if (options.closeOnClick && !isLink && (!childGroup.length || (options.openOnClick && childGroupVisible))) {
@@ -905,9 +922,6 @@ kendo_module({
 
             if (item.length && nextItem.length) {
                 item.removeClass(FOCUSEDSTATE);
-                if (item[0].id === id) {
-                    item.removeAttr("id");
-                }
             }
 
             if (nextItem.length) {
@@ -920,6 +934,7 @@ kendo_module({
 
                 if (id) {
                     that.element.removeAttr("aria-activedescendant");
+                    $("#" + id).removeAttr("id");
                     nextItem.attr("id", id);
                     that.element.attr("aria-activedescendant", id);
                 }
@@ -1123,3 +1138,7 @@ kendo_module({
     kendo.ui.plugin(Menu);
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

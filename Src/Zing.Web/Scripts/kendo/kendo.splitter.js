@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "splitter",
-    name: "Splitter",
-    category: "web",
-    description: "The Splitter widget provides an easy way to create a dynamic layout of resizable and collapsible panes.",
-    depends: [ "resizable" ]
-});
+(function(f, define){
+    define([ "./kendo.resizable" ], f);
+})(function(){
 
 (function ($, undefined) {
     var kendo = window.kendo,
@@ -330,7 +326,7 @@ kendo_module({
                 nextCollapsible = nextPane.collapsible,
                 nextCollapsed = nextPane.collapsed;
 
-            splitbar.addClass("k-splitbar k-state-default k-secondary k-splitbar-" + orientation)
+            splitbar.addClass("k-splitbar k-state-default k-splitbar-" + orientation)
                     .attr("role", "separator")
                     .attr("aria-expanded", !(prevCollapsed || nextCollapsed))
                     .removeClass("k-splitbar-" + orientation + "-hover")
@@ -505,7 +501,7 @@ kendo_module({
 
                 that._removeSplitBars();
 
-                that.resize();
+                that.resize(true);
             }
 
             return paneElement;
@@ -525,7 +521,7 @@ kendo_module({
             config = config || {};
 
             var that = this,
-                idx = referencePane.index(".k-pane"),
+                idx = that.wrapper.children(".k-pane").index(referencePane),
                 paneElement = $("<div />").insertBefore($(referencePane));
 
             return that._addPane(config, idx, paneElement);
@@ -536,7 +532,7 @@ kendo_module({
             config = config || {};
 
             var that = this,
-                idx = referencePane.index(".k-pane"),
+                idx = that.wrapper.children(".k-pane").index(referencePane),
                 paneElement = $("<div />").insertAfter($(referencePane));
 
             return that._addPane(config, idx + 1, paneElement);
@@ -550,14 +546,14 @@ kendo_module({
             if (pane.length) {
                 kendo.destroy(pane);
                 pane.each(function(idx, element){
-                    that.options.panes.splice($(element).index(".k-pane"), 1);
+                    that.options.panes.splice(that.wrapper.children(".k-pane").index(element), 1);
                     $(element).remove();
                 });
 
                 that._removeSplitBars();
 
                 if (that.options.panes.length) {
-                    that.resize();
+                    that.resize(true);
                 }
             }
 
@@ -715,3 +711,7 @@ kendo_module({
     };
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

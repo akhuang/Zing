@@ -1,19 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "imagebrowser",
-    name: "ImageBrowser",
-    category: "web",
-    description: "",
-    hidden: true,
-    depends: [ "listview", "dropdownlist", "upload" ]
-});
+(function(f, define){
+    define([ "./kendo.listview", "./kendo.dropdownlist", "./kendo.upload" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -201,7 +196,7 @@ kendo_module({
 
             Widget.fn.init.call(that, element, options);
 
-            that.element.addClass("k-imagebrowser k-secondary");
+            that.element.addClass("k-imagebrowser");
 
             that.element
                 .on(CLICK + NS, ".k-toolbar button:not(.k-state-disabled):has(.k-delete)", proxy(that._deleteClick, that))
@@ -633,6 +628,10 @@ kendo_module({
         _dblClick: function(e) {
             var that = this,
                 li = $(e.currentTarget);
+
+            if (li.hasClass("k-edit-item")) {
+                that._directoryBlur();
+            }
 
             if (li.filter("[" + kendo.attr("type") + "=d]").length) {
                 var folder = that.dataSource.getByUid(li.attr(kendo.attr("uid")));
@@ -1160,3 +1159,7 @@ kendo_module({
     kendo.ui.plugin(Breadcrumbs);
     kendo.ui.plugin(SearchBox);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

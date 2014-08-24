@@ -39,7 +39,7 @@ namespace Zing.Web.Controllers
         {
             return View();
         }
-         
+
         public ActionResult Index()
         {
             Logger.Debug("Index");
@@ -109,14 +109,14 @@ namespace Zing.Web.Controllers
 
         public ActionResult Customers_Read([DataSourceRequest]DataSourceRequest request)
         {
-            return Json(GetCustomers().ToDataSourceResult(request));
+            return Json(GetCustomers().ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
         private static IEnumerable<UserViewModel> GetCustomers()
         {
             IEnumerable<UserViewModel> list = new List<UserViewModel>() { 
                 new UserViewModel()
                 {
-                    UserName="p",Email="p@p.com",NormalizedUserName="phoenix"
+                    UserName="p",Email="p@p.com",NormalizedUserName="Customers_Readphoenix"
                 },
                 new UserViewModel(){UserName="p1",Email="p1@p.com",NormalizedUserName="phoenix1" }
                 };

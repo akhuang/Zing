@@ -274,6 +274,10 @@ namespace Kendo.Mvc.UI.Fluent
                         {
                             item.HtmlAttributes[key] = node.HtmlAttributes[key];
                         }
+                        foreach (var key in node.LinkHtmlAttributes.Keys)
+                        {
+                            item.LinkHtmlAttributes[key] = node.LinkHtmlAttributes[key];
+                        }
                     })
                     .Children(item => item.Items)
                 )
@@ -604,9 +608,9 @@ namespace Kendo.Mvc.UI.Fluent
         ///  %&gt;
         /// </code>
         /// </example>
-        public TreeViewBuilder DataSource(Action<HierarchicalDataSourceBuilder> configurator)
+        public TreeViewBuilder DataSource(Action<HierarchicalDataSourceBuilder<object>> configurator)
         {
-            configurator(new HierarchicalDataSourceBuilder(Component.DataSource, this.Component.ViewContext, this.Component.UrlGenerator));
+            configurator(new HierarchicalDataSourceBuilder<object>(Component.DataSource, this.Component.ViewContext, this.Component.UrlGenerator));
 
             return this;
         }

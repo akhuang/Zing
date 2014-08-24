@@ -1,19 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.themes",
-    name: "Themes",
-    description: "Built-in themes for the DataViz widgets",
-    category: "dataviz",
-    depends: [ "dataviz.core" ],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.dataviz.core" ], f);
+})(function(){
 
 (function () {
 
@@ -55,12 +50,6 @@ kendo_module({
                 vericalLine: {
                     width: 2
                 },
-                stepLine: {
-                    width: 2
-                },
-                vericalStepLine: {
-                    width: 2
-                },
                 scatterLine: {
                     width: 1
                 },
@@ -70,34 +59,21 @@ kendo_module({
                         visible: false,
                         size: 6
                     },
+                    highlight: {
+                        markers: {
+                            border: {
+                                color: "#fff",
+                                opacity: 1,
+                                width: 1
+                            }
+                        }
+                    },
                     line: {
                         opacity: 1,
                         width: 0
                     }
                 },
                 verticalArea: {
-                    opacity: 0.4,
-                    markers: {
-                        visible: false,
-                        size: 6
-                    },
-                    line: {
-                        opacity: 1,
-                        width: 0
-                    }
-                },
-                stepArea: {
-                    opacity: 0.4,
-                    markers: {
-                        visible: false,
-                        size: 6
-                    },
-                    line: {
-                        opacity: 1,
-                        width: 0
-                    }
-                },
-                verticalStepArea: {
                     opacity: 0.4,
                     markers: {
                         visible: false,
@@ -310,12 +286,57 @@ kendo_module({
         }
     };
 
+    var diagramBaseTheme = {
+        shapeDefaults: {
+            hover: {
+                opacity: 0.2
+            },
+            stroke: {
+                width: 0
+            }
+        },
+        editable: {
+            resize: {
+                handles: {
+                    width: 7,
+                    height: 7
+                }
+            },
+            rotate: {
+                thumb: {
+                    width: 14
+                }
+            },
+            handles: {
+                type: "rectangle",
+            },
+            select: {
+                stroke: {
+                    width: 1,
+                    dashType: "dot"
+                }
+            }
+        },
+        connectionDefaults: {
+            stroke: {
+                width: 2
+            },
+            select: {
+                handles: {
+                    width: 8,
+                    height: 8
+                }
+            }
+        }
+    };
+
     var themes = ui.themes,
         registerTheme = ui.registerTheme = function(themeName, options) {
             var result = {};
             // Apply base theme
             result.chart = deepExtend({}, chartBaseTheme, options.chart);
             result.gauge = deepExtend({}, gaugeBaseTheme, options.gauge);
+            result.diagram = deepExtend({}, diagramBaseTheme, options.diagram);
 
             // Copy the line/area chart settings for their vertical counterparts
             var defaults = result.chart.seriesDefaults;
@@ -459,7 +480,6 @@ kendo_module({
             },
             scale: {
                 rangePlaceholderColor: "#1d1d1d",
-
                 labels: {
                     color: WHITE
                 },
@@ -471,6 +491,71 @@ kendo_module({
                 },
                 line: {
                     color: WHITE
+                }
+            }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#0066cc",
+                connectorDefaults: {
+                    background: WHITE,
+                    stroke: {
+                        color: "#384049"
+                    },
+                    hover: {
+                        background: "#3d3d3d",
+                        stroke: {
+                            color: "#efefef"
+                        }
+                    }
+                },
+                content: {
+                    color: WHITE
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: "#3d3d3d",
+                        stroke: {
+                            color: WHITE
+                        },
+                        hover: {
+                            background: WHITE,
+                            stroke: {
+                                color: WHITE
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: WHITE
+                        },
+                        background: WHITE
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: WHITE
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: WHITE
+                },
+                content: {
+                    color: WHITE
+                },
+                select: {
+                    handles: {
+                        background: "#3d3d3d",
+                        stroke: {
+                            color: "#efefef"
+                        }
+                    }
                 }
             }
         }
@@ -578,6 +663,71 @@ kendo_module({
                 },
                 line: {
                     color: "#293135"
+                }
+            }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#7ec6e3",
+                connectorDefaults: {
+                    background: "#003f59",
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#003f59"
+                        }
+                    }
+                },
+                content: {
+                    color: "#293135"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#003f59"
+                        },
+                        hover: {
+                            background: "#003f59",
+                            stroke: {
+                                color: "#003f59"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#003f59"
+                        },
+                        background: "#003f59"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#003f59"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#003f59"
+                },
+                content: {
+                    color: "#293135"
+                },
+                select: {
+                    handles: {
+                        background: "#3d3d3d",
+                        stroke: {
+                            color: "#efefef"
+                        }
+                    }
                 }
             }
         }
@@ -731,6 +881,71 @@ kendo_module({
                     color: "#ffffff"
                 }
             }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#a7018f",
+                connectorDefaults: {
+                    background: WHITE,
+                    stroke: {
+                        color: "#2c232b"
+                    },
+                    hover: {
+                        background: "#2c232b",
+                        stroke: {
+                            color: WHITE
+                        }
+                    }
+                },
+                content: {
+                    color: WHITE
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: "#2c232b",
+                        stroke: {
+                            color: WHITE
+                        },
+                        hover: {
+                            background: WHITE,
+                            stroke: {
+                                color: WHITE
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: WHITE
+                        },
+                        background: WHITE
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: WHITE
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: WHITE
+                },
+                content: {
+                    color: WHITE
+                },
+                select: {
+                    handles: {
+                        background: "#2c232b",
+                        stroke: {
+                            color: WHITE
+                        }
+                    }
+                }
+            }
         }
     });
 
@@ -836,6 +1051,71 @@ kendo_module({
                 },
                 line: {
                     color: "#2e2e2e"
+                }
+            }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#e15613",
+                connectorDefaults: {
+                    background: "#282828",
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#282828"
+                        }
+                    }
+                },
+                content: {
+                    color: "#2e2e2e"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#282828"
+                        },
+                        hover: {
+                            background: "#282828",
+                            stroke: {
+                                color: "#282828"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#282828"
+                        },
+                        background: "#282828"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#a7018f"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#282828"
+                },
+                content: {
+                    color: "#2e2e2e"
+                },
+                select: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#282828"
+                        }
+                    }
                 }
             }
         }
@@ -970,6 +1250,71 @@ kendo_module({
                     color: "#515967"
                 }
             }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#1c82c2",
+                connectorDefaults: {
+                    background: "#515967",
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#282828"
+                        }
+                    }
+                },
+                content: {
+                    color: "#515967"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#515967"
+                        },
+                        hover: {
+                            background: "#515967",
+                            stroke: {
+                                color: "#515967"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#515967"
+                        },
+                        background: "#515967"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#515967"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#515967"
+                },
+                content: {
+                    color: "#515967"
+                },
+                select: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#515967"
+                        }
+                    }
+                }
+            }
         }
     });
 
@@ -1079,6 +1424,71 @@ kendo_module({
                 },
                 line: {
                     color: "#777"
+                }
+            }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#8ebc00",
+                connectorDefaults: {
+                    background: BLACK,
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: BLACK
+                        }
+                    }
+                },
+                content: {
+                    color: "#777"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#787878"
+                        },
+                        hover: {
+                            background: "#787878",
+                            stroke: {
+                                color: "#787878"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#787878"
+                        },
+                        background: "#787878"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#515967"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#787878"
+                },
+                content: {
+                    color: "#777"
+                },
+                select: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#787878"
+                        }
+                    }
                 }
             }
         }
@@ -1211,6 +1621,71 @@ kendo_module({
                 },
                 line: {
                     color: "#cecece"
+                }
+            }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#00aba9",
+                connectorDefaults: {
+                    background: WHITE,
+                    stroke: {
+                        color: "#0e0e0e"
+                    },
+                    hover: {
+                        background: "#0e0e0e",
+                        stroke: {
+                            color: WHITE
+                        }
+                    }
+                },
+                content: {
+                    color: WHITE
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: "#0e0e0e",
+                        stroke: {
+                            color: "#787878"
+                        },
+                        hover: {
+                            background: "#787878",
+                            stroke: {
+                                color: "#787878"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: WHITE
+                        },
+                        background: WHITE
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#787878"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: WHITE
+                },
+                content: {
+                    color: WHITE
+                },
+                select: {
+                    handles: {
+                        background: "#0e0e0e",
+                        stroke: {
+                            color: WHITE
+                        }
+                    }
                 }
             }
         }
@@ -1373,6 +1848,71 @@ kendo_module({
                     color: "#8c909e"
                 }
             }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#f3ae03",
+                connectorDefaults: {
+                    background: WHITE,
+                    stroke: {
+                        color: "#414550"
+                    },
+                    hover: {
+                        background: "#414550",
+                        stroke: {
+                            color: WHITE
+                        }
+                    }
+                },
+                content: {
+                    color: WHITE
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: "#414550",
+                        stroke: {
+                            color: WHITE
+                        },
+                        hover: {
+                            background: WHITE,
+                            stroke: {
+                                color: WHITE
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: WHITE
+                        },
+                        background: WHITE
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: WHITE
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: WHITE
+                },
+                content: {
+                    color: WHITE
+                },
+                select: {
+                    handles: {
+                        background: "#414550",
+                        stroke: {
+                            color: WHITE
+                        }
+                    }
+                }
+            }
         }
     });
     registerTheme("uniform", {
@@ -1532,6 +2072,71 @@ kendo_module({
                     color: "#9e9e9e"
                 }
             }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#d1d1d1",
+                connectorDefaults: {
+                    background: "#686868",
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#686868"
+                        }
+                    }
+                },
+                content: {
+                    color: "#686868"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#686868"
+                        },
+                        hover: {
+                            background: "#686868",
+                            stroke: {
+                                color: "#686868"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#686868"
+                        },
+                        background: "#686868"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#686868"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#686868"
+                },
+                content: {
+                    color: "#686868"
+                },
+                select: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#686868"
+                        }
+                    }
+                }
+            }
         }
     });
 
@@ -1557,7 +2162,7 @@ kendo_module({
                 labels: {
                     color: "#333333"
                 },
-				overlay: {
+                overlay: {
                     gradient: "none"
                 },
                 errorBars: {
@@ -1694,6 +2299,74 @@ kendo_module({
                     color: "#cccccc"
                 }
             }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#428bca",
+                connectorDefaults: {
+                    background: "#333333",
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#333333"
+                        }
+                    }
+                },
+                content: {
+                    color: "#333333"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#333333"
+                        },
+                        hover: {
+                            background: "#333333",
+                            stroke: {
+                                color: "#333333"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#333333"
+                        },
+                        background: "#333333"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#333333"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#c4c4c4"
+                },
+                content: {
+                    color: "#333333"
+                },
+                select: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#333333"
+                        }
+                    },
+                    stroke: {
+                        color: "#333333"
+                    }
+                }
+            }
         }
     });
 
@@ -1808,8 +2481,79 @@ kendo_module({
                     color: "#4c5356"
                 }
             }
+        },
+        diagram: {
+            shapeDefaults: {
+                background: "#10c4b2",
+                connectorDefaults: {
+                    background: "#363940",
+                    stroke: {
+                        color: WHITE
+                    },
+                    hover: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#363940"
+                        }
+                    }
+                },
+                content: {
+                    color: "#4c5356"
+                }
+            },
+            editable: {
+                resize: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#363940"
+                        },
+                        hover: {
+                            background: "#363940",
+                            stroke: {
+                                color: "#363940"
+                            }
+                        }
+                    }
+                },
+                rotate: {
+                    thumb: {
+                        stroke: {
+                            color: "#363940"
+                        },
+                        background: "#363940"
+                    }
+                },
+                select: {
+                    stroke: {
+                        color: "#363940"
+                    }
+                }
+            },
+            connectionDefaults: {
+                stroke: {
+                    color: "#cdcdcd"
+                },
+                content: {
+                    color: "#4c5356"
+                },
+                select: {
+                    handles: {
+                        background: WHITE,
+                        stroke: {
+                            color: "#363940"
+                        }
+                    },
+                    stroke: {
+                        color: "#363940"
+                    }
+                }
+            }
         }
-	});
+    });
 
 })(window.kendo.jQuery);
 
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -34,7 +34,7 @@ using System.Web.Mvc;
         /// Configures of the subdomains.
         /// </summary>
         /// <param name="subdomains">The subdomains</param>
-        public MapLayerBuilder Subdomains(string[] subdomains)
+        public MapLayerBuilder Subdomains(params string[] subdomains)
         {
             container.Subdomains = subdomains;
 
@@ -42,6 +42,17 @@ using System.Web.Mvc;
         }
 
         //>> Fields
+        
+        /// <summary>
+        /// The attribution for the layer. Accepts valid HTML.
+        /// </summary>
+        /// <param name="value">The value that configures the attribution.</param>
+        public MapLayerBuilder Attribution(string value)
+        {
+            container.Attribution = value;
+
+            return this;
+        }
         
         /// <summary>
         /// If set to false the layer will not bind to the data source during initialization. In this case data binding will occur when the change event of the
@@ -56,12 +67,49 @@ using System.Web.Mvc;
         }
         
         /// <summary>
-        /// The attribution for the layer. Accepts valid HTML.
+        /// Specifies the extent of the region covered by this layer.
+		/// The layer will be hidden when the specified area is out of view.Accepts a four-element array that specifies the extent covered by this layer:
+		/// North-West lat, longitude, South-East latitude, longitude.If not specified, the layer is always visible.
         /// </summary>
-        /// <param name="value">The value that configures the attribution.</param>
-        public MapLayerBuilder Attribution(string value)
+        /// <param name="value">The value that configures the extent.</param>
+        public MapLayerBuilder Extent(params double[] value)
         {
-            container.Attribution = value;
+            container.Extent = value;
+
+            return this;
+        }
+        
+        /// <summary>
+        /// The API key for the layer. Currently supported only for Bing (tm) tile layers.
+        /// </summary>
+        /// <param name="value">The value that configures the key.</param>
+        public MapLayerBuilder Key(string value)
+        {
+            container.Key = value;
+
+            return this;
+        }
+        
+        /// <summary>
+        /// The data item field which contains the marker location.
+		/// The field should be an array with two numbers - latitude and longitude.Requires the dataSource option to be set.
+        /// </summary>
+        /// <param name="value">The value that configures the locationfield.</param>
+        public MapLayerBuilder LocationField(string value)
+        {
+            container.LocationField = value;
+
+            return this;
+        }
+        
+        /// <summary>
+        /// The data item field which contains the marker title.
+		/// Requires the dataSource option to be set.
+        /// </summary>
+        /// <param name="value">The value that configures the titlefield.</param>
+        public MapLayerBuilder TitleField(string value)
+        {
+            container.TitleField = value;
 
             return this;
         }
@@ -109,7 +157,39 @@ using System.Web.Mvc;
             return this;
         }
         
+        /// <summary>
+        /// The marker shape. Supported shapes are "pin" and "pinTarget".
+        /// </summary>
+        /// <param name="value">The value that configures the shape.</param>
+        public MapLayerBuilder Shape(MapMarkersShape value)
+        {
+            container.Shape = value;
+
+            return this;
+        }
+        
         //<< Fields
+
+        /// <summary>
+        /// The marker shape name. The "pin" and "pinTarget" shapes are predefined.
+        /// </summary>
+        /// <param name="value">The name of the shape.</param>
+        public MapLayerBuilder Shape(string name)
+        {
+            container.ShapeName = name;
+
+            return this;
+        }
+
+        /// <summary>
+        /// The tooltip options for this marker.
+        /// </summary>
+        /// <param name="configurator">The action that configures the tooltip.</param>
+        public MapLayerBuilder Tooltip(Action<MapMarkerTooltipBuilder> configurator)
+        {
+            configurator(new MapMarkerTooltipBuilder(container.Tooltip));
+            return this;
+        }
     }
 }
 

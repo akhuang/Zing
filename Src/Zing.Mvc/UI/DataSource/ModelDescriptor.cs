@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Web.Mvc;
     using Extensions;
+    using Infrastructure;
 
     public class ModelDescriptor : JsonObject
     {
@@ -17,6 +18,23 @@
 
         public IList<ModelFieldDescriptor> Fields { get; private set; }
         public IDataKey Id { get; set; }
+        public DataSource ChildrenDataSource
+        {
+            get;
+            set;
+        }
+
+        public string ChildrenMember
+        {
+            get;
+            set;
+        }
+
+        public string HasChildrenMember
+        {
+            get;
+            set;
+        }
 
         public ModelFieldDescriptor AddDescriptor(string member)
         {
@@ -40,25 +58,56 @@
                 json["id"] = Id.Name;
             }
 
-            var fields = new Dictionary<string, object>();
-            json["fields"] = fields;            
+            FluentDictionary.For(json)
+                   .Add("hasChildren", HasChildrenMember, HasChildrenMember.HasValue);
 
-            Fields.Each(prop =>             
+            if (ChildrenDataSource != null)
             {
-                var field = new Dictionary<string, object>();
-                fields[prop.Member] = field;
+                json["children"] = ChildrenDataSource.ToJson();
+            }
+            else if (ChildrenMember.HasValue())
+            {
+                json["children"] = ChildrenMember;
+            }
 
-                if (!prop.IsEditable)
+            if (Fields.Count > 0)
+            {
+                var fields = new Dictionary<string, object>();
+                json["fields"] = fields;
+
+                Fields.Each(prop =>
                 {
-                    field["editable"] = false;
-                }
+                    var field = new Dictionary<string, object>();
+                    fields[prop.Member] = field;
 
-                field["type"] = prop.MemberType.ToJavaScriptType().ToLowerInvariant();
+                    if (!prop.IsEditable)
+                    {
+                        field["editable"] = false;
+                    }
 
-                if (prop.MemberType.IsNullableType() || prop.DefaultValue != null) {
-                    field["defaultValue"] = prop.DefaultValue;
-                }
-            });
+                    field["type"] = prop.MemberType.ToJavaScriptType().ToLowerInvariant();
+
+                    if (prop.MemberType.IsNullableType() || prop.DefaultValue != null)
+                    {
+                        field["defaultValue"] = prop.DefaultValue;
+                    }
+
+                    if (!string.IsNullOrEmpty(prop.From))
+                    {
+                        field["from"] = prop.From;
+                    }
+
+                    if (prop.IsNullable)
+                    {
+                        field["nullable"] = prop.IsNullable;
+                    }
+
+                    if (prop.Parse.HasValue())
+                    {
+                        field["parse"] = prop.Parse;
+                    }
+                });
+            }
         }
 
         private IList<ModelFieldDescriptor> Translate(ModelMetadata metadata)

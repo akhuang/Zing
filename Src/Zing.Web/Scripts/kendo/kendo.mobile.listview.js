@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "mobile.listview",
-    name: "ListView",
-    category: "mobile",
-    description: "The Kendo Mobile ListView widget is used to display flat or grouped list of items.",
-    depends: [ "data", "mobile.application", "userevents" ]
-});
+(function(f, define){
+    define([ "./kendo.data", "./kendo.mobile.application", "./kendo.userevents" ], f);
+})(function(){
 
 (function($, undefined) {
     var kendo = window.kendo,
@@ -391,10 +387,8 @@ kendo_module({
                     item.update(this.content(this.offset));
                     items.unshift(item);
 
-                    kendo.queueAnimation(function() {
-                        item.above(firstItem);
-                        list._resize();
-                    });
+                    item.above(firstItem);
+                    list._resize();
                }
             } else { // scrolling down
                 if (
@@ -413,10 +407,8 @@ kendo_module({
                         item.update(this.content(this.offset + this.itemCount));
                         list.offset ++;
 
-                        kendo.queueAnimation(function() {
-                            item.below(lastItem);
-                            list._resize();
-                        });
+                        item.below(lastItem);
+                        list._resize();
                     }
                 }
             }
@@ -878,10 +870,9 @@ kendo_module({
                 tap: function(e) {
                     listView._click(e);
                 },
-                // prevent the navigation when scrolled in this case
-                // in THEORY this should not break anything in the other mode, too - but let's not take any chances
+                // prevent the navigation when native scrolling is present
                 end: function(e) {
-                    if (kendo.mobile.application.options.useNativeScrolling) {
+                    if (kendo.mobile.appLevelNativeScrolling() || listView.viewHasNativeScrolling()) {
                         e.preventDefault();
                     }
                 }
@@ -1044,7 +1035,9 @@ kendo_module({
         },
 
         replace: function(dataItems) {
+            this.options.type = "flat";
             this.element.empty();
+            this._style();
             return this.insertAt(dataItems, 0);
         },
 
@@ -1233,3 +1226,7 @@ kendo_module({
 
     ui.plugin(ListView);
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

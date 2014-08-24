@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.stockchart",
-    name: "StockChart",
-    category: "dataviz",
-    description: "StockChart widget and associated financial series.",
-    depends: [ "dataviz.chart" ]
-});
+(function(f, define){
+    define([ "./kendo.dataviz.chart" ], f);
+})(function(){
 
 (function ($, undefined) {
     // Imports ================================================================
@@ -164,10 +160,9 @@ kendo_module({
 
         _resize: function() {
             var t = this.options.transitions;
+
             this.options.transitions = false;
-
-            Chart.fn._redraw.call(this);
-
+            this._fullRedraw();
             this.options.transitions = t;
         },
 
@@ -178,14 +173,21 @@ kendo_module({
             if (navigator && navigator.dataSource) {
                 navigator.redrawSlaves();
             } else {
-                if (!navigator) {
-                    navigator = chart._navigator = new Navigator(chart);
-                }
-
-                navigator.filterAxes();
-                Chart.fn._redraw.call(chart);
-                navigator.redraw();
+                chart._fullRedraw();
             }
+        },
+
+        _fullRedraw: function() {
+            var chart = this,
+                navigator = chart._navigator;
+
+            if (!navigator) {
+                navigator = chart._navigator = new Navigator(chart);
+            }
+
+            navigator.filterAxes();
+            Chart.fn._redraw.call(chart);
+            navigator.redraw();
         },
 
         _onDataChanged: function() {
@@ -666,6 +668,7 @@ kendo_module({
             pane: NAVIGATOR_PANE,
             roundToBaseUnit: !justifyAxis,
             justified: justifyAxis,
+            _collapse: false,
             tooltip: { visible: false },
             labels: { step: 1 },
             autoBind: !naviOptions.dataSource,
@@ -678,29 +681,28 @@ kendo_module({
                 years: [1]
             },
             _overlap: false
-        }, naviOptions.categoryAxis);
+        });
+        var user = naviOptions.categoryAxis;
 
         categoryAxes.push(
             deepExtend({}, base, {
+                    maxDateGroups: 200
+                }, user, {
                 name: NAVIGATOR_AXIS,
                 baseUnit: "fit",
-                // TODO: Width based
-                maxDateGroups: 200,
                 baseUnitStep: "auto",
                 labels: { visible: false },
                 majorTicks: { visible: false }
-            }), deepExtend({}, base, {
+            }), deepExtend({}, base, user, {
                 name: NAVIGATOR_AXIS + "_labels",
-                // TODO: Width based
                 maxDateGroups: 20,
                 baseUnitStep: "auto",
                 autoBaseUnitSteps: {
                     minutes: []
                 },
                 majorTicks: { visible: true }
-            }), deepExtend({}, base, {
+            }), deepExtend({}, base, user, {
                 name: NAVIGATOR_AXIS + "_ticks",
-                // TODO: Width based
                 maxDateGroups: 200,
                 majorTicks: {
                     visible: true,
@@ -870,3 +872,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

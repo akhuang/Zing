@@ -1,18 +1,14 @@
 /*
-* Kendo UI Complete v2013.3.1127 (http://kendoui.com)
-* Copyright 2013 Telerik AD. All rights reserved.
+* Kendo UI Complete v2014.1.318 (http://kendoui.com)
+* Copyright 2014 Telerik AD. All rights reserved.
 *
 * Kendo UI Complete commercial licenses may be obtained at
-* https://www.kendoui.com/purchase/license-agreement/kendo-ui-complete-commercial.aspx
+* http://www.telerik.com/purchase/license-agreement/kendo-ui-complete
 * If you do not own a commercial license, this file shall be governed by the trial license terms.
 */
-kendo_module({
-    id: "dataviz.chart.funnel",
-    name: "Funnel Chart",
-    category: "dataviz",
-    depends: ["dataviz.chart"],
-    hidden: true
-});
+(function(f, define){
+    define([ "./kendo.dataviz.chart" ], f);
+})(function(){
 
 (function ($, undefined) {
 
@@ -359,8 +355,8 @@ kendo_module({
                     var nextSegment = segments[i+1],
                         nextPercentage = (nextSegment ? nextSegment.percentage : percentage);
 
-                    points = segments[i].points = [],
-                    height = (options.dynamicHeight)? (totalHeight * percentage): (totalHeight / count),
+                    points = segments[i].points = [];
+                    height = (options.dynamicHeight)? (totalHeight * percentage): (totalHeight / count);
                     offset = (width - lastUpperSide* (nextPercentage / percentage))/2;
                     offset = limitValue(offset, 0, width);
 
@@ -380,9 +376,9 @@ kendo_module({
                     finalNarrow = (topMostWidth - neckRatio)/2;
 
                 for (i = 0; i < count; i++) {
-                    points = segments[i].points = [],
-                    percentage = segments[i].percentage,
-                    offset = (options.dynamicHeight)? (finalNarrow * percentage): (finalNarrow / count),
+                    points = segments[i].points = [];
+                    percentage = segments[i].percentage;
+                    offset = (options.dynamicHeight)? (finalNarrow * percentage): (finalNarrow / count);
                     height = (options.dynamicHeight)? (totalHeight * percentage): (totalHeight / count);
 
                     points.push(Point2D(box.x1+previousOffset, box.y1 + previousHeight));
@@ -407,7 +403,7 @@ kendo_module({
             ChartElement.fn.init.call(segment, options);
 
             segment.value = value;
-            segment.options.id = uniqueId();
+            segment.id = uniqueId();
             segment.options.index = segmentOptions.index;
             segment.enableDiscovery();
         },
@@ -439,13 +435,13 @@ kendo_module({
 
             elements.push(
                 view.createPolyline(segment.points, true, {
-                    id: options.id,
+                    id: segment.id,
                     fill: options.color,
                     fillOpacity:options.opacity,
                     stroke: border.color,
                     strokeOpacity: border.opacity,
                     strokeWidth: border.width,
-                    data: { modelId: options.modelId }
+                    data: { modelId: segment.modelId }
                 })
             );
 
@@ -467,7 +463,7 @@ kendo_module({
                 strokeOpacity: border.opacity,
                 strokeWidth: border.width,
                 fillOpacity:hlOptions.opacity,
-                data: { modelId: options.modelId }
+                data: { modelId: this.modelId }
             });
             var element = view.createPolyline(this.points,true,calcOptions);
             return element;
@@ -500,3 +496,7 @@ kendo_module({
     });
 
 })(window.kendo.jQuery);
+
+return window.kendo;
+
+}, typeof define == 'function' && define.amd ? define : function(_, f){ f(); });

@@ -161,7 +161,7 @@ namespace Kendo.Mvc.UI.Fluent
         }
 
         /// <summary>
-        /// Define the text of the default empty item. If the value is an object, then the widget will use it directly.
+        /// Define the text of the default empty item.
         /// </summary>
         /// <example>
         /// <code lang="CS">
@@ -172,6 +172,29 @@ namespace Kendo.Mvc.UI.Fluent
         /// </code>
         /// </example>
         public DropDownListBuilder OptionLabel(string optionLabel)
+        {
+            Component.OptionLabel = optionLabel;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Define the object of the default empty item.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().DropDownList()
+        ///             .Name("DropDownList")
+        ///             .DataTextField("Text")
+        ///             .DataValueField("Value")
+        ///             .OptionLabel(new {
+        ///                Text = "Text1",
+        ///                Value = "Value1"
+        ///             })
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public DropDownListBuilder OptionLabel(object optionLabel)
         {
             Component.OptionLabel = optionLabel;
 
@@ -249,6 +272,42 @@ namespace Kendo.Mvc.UI.Fluent
         public DropDownListBuilder Text(string text)
         {
             Component.Text = text;
+
+            return this;
+        }
+
+        /// <summary>
+        /// ValueTemplate to be used to render the selected value.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().DropDownList()
+        ///             .Name("DropDownList")
+        ///             .ValueTemplate("#= data #")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public DropDownListBuilder ValueTemplate(string valueTemplate)
+        {
+            Component.ValueTemplate = valueTemplate;
+
+            return this;
+        }
+
+        /// <summary>
+        /// ValueTemplateId to be used to render the selected value.
+        /// </summary>
+        /// <example>
+        /// <code lang="CS">
+        ///  &lt;%= Html.Kendo().DropDownList()
+        ///             .Name("DropDownList")
+        ///             .ValueTemplateId("widgetValueTemplateId")
+        /// %&gt;
+        /// </code>
+        /// </example>
+        public DropDownListBuilder ValueTemplateId(string valueTemplateId)
+        {
+            Component.ValueTemplateId = valueTemplateId;
 
             return this;
         }

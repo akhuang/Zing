@@ -23,6 +23,7 @@
             DefaultDataItem = CreateDefaultItem;
 
             Resize = true;
+            Move = true;
         }
 
         public string Template { get; set; }
@@ -34,6 +35,8 @@
         public bool Resize { get; set; }
 
         public bool DisplayDeleteConfirmation { get; set; }
+
+        public bool Move { get; set; }
 
         public string TemplateName
         {
@@ -77,6 +80,11 @@
             if (!Resize)
             {
                 json["resize"] = false;
+            }
+
+            if (!Move)
+            {
+                json["move"] = false;
             }
         }
 
@@ -125,5 +133,6 @@
         {          
             return Activator.CreateInstance<T>();
         }
+
     }
 }
