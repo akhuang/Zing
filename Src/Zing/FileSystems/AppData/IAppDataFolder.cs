@@ -30,7 +30,7 @@ namespace Zing.FileSystems.AppData
 
         void CreateDirectory(string path);
         bool DirectoryExists(string path);
-
+        IVolatileToken WhenPathChanges(string path);
         string MapPath(string path);
         string GetVirtualPath(string path);
     }

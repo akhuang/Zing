@@ -12,13 +12,20 @@ using Zing.Mvc.Routes;
 using Zing.Security;
 using Autofac.Integration.Mvc;
 using System.Web.Mvc;
+using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.AutofacUtil.DynamicProxy2;
+using Zing.Events;
+using System.Web.Hosting;
+using System.IO;
+using Autofac.Configuration;
+using Zing.Environment.AutofacUtil;
 
 namespace Zing.Environment.ShellBuilder
 {
 
     public interface IShellContainerFactory
     {
-        ILifetimeScope CreateContainer(ShellSettings settings);
+        ILifetimeScope CreateContainer(ShellSettings settings, ShellBlueprint blueprint);
     }
 
     public class ShellContainerFactory : IShellContainerFactory
@@ -32,112 +39,104 @@ namespace Zing.Environment.ShellBuilder
             _shellContainerRegistrations = shellContainerRegistrations;
         }
 
-        public ILifetimeScope CreateContainer(ShellSettings settings)
+        public ILifetimeScope CreateContainer(ShellSettings settings, ShellBlueprint blueprint)
         {
-            //DependencyResolver.Current.
             var intermediateScope = _lifetimeScope.BeginLifetimeScope(
                 builder =>
                 {
-                    //foreach (var item in blueprint.Dependencies.Where(t => typeof(IModule).IsAssignableFrom(t.Type)))
-                    //{
-                    //    var registration = RegisterType(builder, item)
-                    //        .Keyed<IModule>(item.Type)
-                    //        .InstancePerDependency();
+                    foreach (var item in blueprint.Dependencies.Where(t => typeof(IModule).IsAssignableFrom(t.Type)))
+                    {
+                        var registration = RegisterType(builder, item)
+                            .Keyed<IModule>(item.Type)
+                            .InstancePerDependency();
 
-                    //    foreach (var parameter in item.Parameters)
-                    //    {
-                    //        registration = registration
-                    //            .WithParameter(parameter.Name, parameter.Value)
-                    //            .WithProperty(parameter.Name, parameter.Value);
-                    //    }
-                    //}
-                    //var registration = builder.RegisterModule(new MvcModule());
-                    //.WithProperty("Feature", item.Feature)
-                    //.WithMetadata("Feature", item.Feature);
-
+                        foreach (var parameter in item.Parameters)
+                        {
+                            registration = registration
+                                .WithParameter(parameter.Name, parameter.Value)
+                                .WithProperty(parameter.Name, parameter.Value);
+                        }
+                    }
                 });
 
             return intermediateScope.BeginLifetimeScope(
                 "shell",
                 builder =>
                 {
-                    //var dynamicProxyContext = new DynamicProxyContext();
+                    var dynamicProxyContext = new DynamicProxyContext();
 
-                    //builder.Register(ctx => dynamicProxyContext);
+                    builder.Register(ctx => dynamicProxyContext);
                     builder.Register(ctx => settings);
-                    builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
+                    builder.Register(ctx => blueprint.Descriptor);
+                    builder.Register(ctx => blueprint);
 
-                    //builder.Register(ctx => blueprint.Descriptor);
-                    //builder.Register(ctx => blueprint);
+                    var moduleIndex = intermediateScope.Resolve<IIndex<Type, IModule>>();
+                    foreach (var item in blueprint.Dependencies.Where(t => typeof(IModule).IsAssignableFrom(t.Type)))
+                    {
+                        builder.RegisterModule(moduleIndex[item.Type]);
+                    }
 
-                    //var moduleIndex = intermediateScope.Resolve<IIndex<Type, IModule>>();
-                    //foreach (var item in blueprint.Dependencies.Where(t => typeof(IModule).IsAssignableFrom(t.Type)))
-                    //{
-                    //    builder.RegisterModule(moduleIndex[item.Type]);
-                    //}
+                    foreach (var item in blueprint.Dependencies.Where(t => typeof(IDependency).IsAssignableFrom(t.Type)))
+                    {
+                        var registration = RegisterType(builder, item)
+                            .EnableDynamicProxy(dynamicProxyContext)
+                            .InstancePerLifetimeScope();
 
-                    builder.RegisterModule(new MvcModule());
+                        foreach (var interfaceType in item.Type.GetInterfaces()
+                            .Where(itf => typeof(IDependency).IsAssignableFrom(itf)
+                                      && !typeof(IEventHandler).IsAssignableFrom(itf)))
+                        {
+                            registration = registration.As(interfaceType);
+                            if (typeof(ISingletonDependency).IsAssignableFrom(interfaceType))
+                            {
+                                registration = registration.InstancePerMatchingLifetimeScope("shell");
+                            }
+                            else if (typeof(IUnitOfWorkDependency).IsAssignableFrom(interfaceType))
+                            {
+                                registration = registration.InstancePerMatchingLifetimeScope("work");
+                            }
+                            else if (typeof(ITransientDependency).IsAssignableFrom(interfaceType))
+                            {
+                                registration = registration.InstancePerDependency();
+                            }
+                        }
+
+                        if (typeof(IEventHandler).IsAssignableFrom(item.Type))
+                        {
+                            var interfaces = item.Type.GetInterfaces();
+                            foreach (var interfaceType in interfaces)
+                            {
+
+                                // register named instance for each interface, for efficient filtering inside event bus
+                                // IEventHandler derived classes only
+                                if (interfaceType.GetInterface(typeof(IEventHandler).Name) != null)
+                                {
+                                    registration = registration.Named<IEventHandler>(interfaceType.Name);
+                                }
+                            }
+                        }
+
+                        foreach (var parameter in item.Parameters)
+                        {
+                            registration = registration
+                                .WithParameter(parameter.Name, parameter.Value)
+                                .WithProperty(parameter.Name, parameter.Value);
+                        }
+                    }
 
 
-
-                    //builder.RegisterType<RoutePublisher>().As<IRoutePublisher>();
-
-                    //foreach (var item in blueprint.Dependencies.Where(t => typeof(IDependency).IsAssignableFrom(t.Type)))
-                    //{
-                    //    var registration = RegisterType(builder, item)
-                    //        .EnableDynamicProxy(dynamicProxyContext)
-                    //        .InstancePerLifetimeScope();
-
-                    //    foreach (var interfaceType in item.Type.GetInterfaces()
-                    //        .Where(itf => typeof(IDependency).IsAssignableFrom(itf)
-                    //                  && !typeof(IEventHandler).IsAssignableFrom(itf)))
-                    //    {
-                    //        registration = registration.As(interfaceType);
-                    //        if (typeof(ISingletonDependency).IsAssignableFrom(interfaceType))
-                    //        {
-                    //            registration = registration.InstancePerMatchingLifetimeScope("shell");
-                    //        }
-                    //        else if (typeof(IUnitOfWorkDependency).IsAssignableFrom(interfaceType))
-                    //        {
-                    //            registration = registration.InstancePerMatchingLifetimeScope("work");
-                    //        }
-                    //        else if (typeof(ITransientDependency).IsAssignableFrom(interfaceType))
-                    //        {
-                    //            registration = registration.InstancePerDependency();
-                    //        }
-                    //    }
-
-                    //    if (typeof(IEventHandler).IsAssignableFrom(item.Type))
-                    //    {
-                    //        registration = registration.As(typeof(IEventHandler));
-                    //    }
-
-                    //    foreach (var parameter in item.Parameters)
-                    //    {
-                    //        registration = registration
-                    //            .WithParameter(parameter.Name, parameter.Value)
-                    //            .WithProperty(parameter.Name, parameter.Value);
-                    //    }
-                    //}
 
                     //foreach (var item in blueprint.Controllers)
                     //{
-                    //    var serviceKeyName = (item.AreaName + "/" + item.ControllerName).ToLowerInvariant();
-                    //    var serviceKeyType = item.Type;
-                    //    RegisterType(builder, item)
-                    //        .EnableDynamicProxy(dynamicProxyContext)
-                    //        .Keyed<IController>(serviceKeyName)
-                    //        .Keyed<IController>(serviceKeyType)
-                    //        .WithMetadata("ControllerType", item.Type)
-                    //        .InstancePerDependency()
-                    //        .OnActivating(e =>
-                    //        {
-                    //            // necessary to inject custom filters dynamically
-                    //            // see FilterResolvingActionInvoker
-                    //            var controller = e.Instance as Controller;
-                    //            if (controller != null)
-                    //                controller.ActionInvoker = (IActionInvoker)e.Context.ResolveService(new TypedService(typeof(IActionInvoker)));
-                    //        });
+                    //var serviceKeyName = (item.AreaName + "/" + item.ControllerName).ToLowerInvariant();
+                    //var serviceKeyType = item.Type;
+                    //RegisterType(builder, item)
+                    //    .EnableDynamicProxy(dynamicProxyContext)
+                    //    .Keyed<IController>(serviceKeyName)
+                    //    .Keyed<IController>(serviceKeyType)
+                    //    .WithMetadata("ControllerType", item.Type)
+                    //    .InstancePerDependency()
+                    //    ;
                     //}
 
                     //foreach (var item in blueprint.HttpControllers)
@@ -155,21 +154,21 @@ namespace Zing.Environment.ShellBuilder
                     // Register code-only registrations specific to a shell
                     _shellContainerRegistrations.Registrations(builder);
 
-                    //var optionalShellConfig = HostingEnvironment.MapPath("~/Config/Sites.config");
-                    //if (File.Exists(optionalShellConfig))
-                    //    builder.RegisterModule(new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, optionalShellConfig));
+                    var optionalShellConfig = HostingEnvironment.MapPath("~/Config/Sites.config");
+                    if (File.Exists(optionalShellConfig))
+                        builder.RegisterModule(new ConfigurationSettingsReader(ConfigurationSettingsReaderConstants.DefaultSectionName, optionalShellConfig));
 
-                    //var optionalShellByNameConfig = HostingEnvironment.MapPath("~/Config/Sites." + settings.Name + ".config");
-                    //if (File.Exists(optionalShellByNameConfig))
-                    //    builder.RegisterModule(new ConfigurationSettingsReader(ConfigurationSettingsReader.DefaultSectionName, optionalShellByNameConfig));
+                    var optionalShellByNameConfig = HostingEnvironment.MapPath("~/Config/Sites." + settings.Name + ".config");
+                    if (File.Exists(optionalShellByNameConfig))
+                        builder.RegisterModule(new ConfigurationSettingsReader(ConfigurationSettingsReaderConstants.DefaultSectionName, optionalShellByNameConfig));
                 });
         }
 
-        //private IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType(ContainerBuilder builder, ShellBlueprintItem item)
-        //{
-        //    return builder.RegisterType(item.Type)
-        //        .WithProperty("Feature", item.Feature)
-        //        .WithMetadata("Feature", item.Feature);
-        //}
+        private IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType(ContainerBuilder builder, ShellBlueprintItem item)
+        {
+            return builder.RegisterType(item.Type)
+                .WithProperty("Feature", item.Feature)
+                .WithMetadata("Feature", item.Feature);
+        }
     }
 }

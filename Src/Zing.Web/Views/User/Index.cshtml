@@ -13,22 +13,20 @@
                 </div>
             </text>);
         })
-                                                    .Columns(columns =>
-                                                    {
-                                                        columns.Bound(c => c.UserName).Width(140);
-                                                        columns.Bound(c => c.NormalizedUserName).Width(190);
-                                                        columns.Bound(c => c.Email);
-                                                    })
+                                                                            .Columns(columns =>
+                                                                            {
+                                                                                columns.Bound(c => c.UserName).Width(140);
+                                                                                columns.Bound(c => c.NormalizedUserName).Width(190);
+                                                                                columns.Bound(c => c.Email);
+                                                                            })
 
-                                                                                .HtmlAttributes(new { style = "height: 100%;" })
-                                                                                .Scrollable()
-                                                                                .Sortable()
-                                                                                .Pageable(pageable => pageable
-                                                                                    .Refresh(true)
-                                                                                    .PageSizes(true).ButtonCount(5))
-                                                                                    .DataSource(dataSource => dataSource.Ajax().Read(read => read.Action("Customers_Read", "User")))
+                                                                                                        .HtmlAttributes(new { style = "height: 100%;" })
+                                                                                                        .Scrollable()
+                                                                                                        .Sortable()
+                                                                                                        .Pageable(pageable => pageable
+                                                                                                            .Refresh(true)
+                                                                                                            .PageSizes(true).ButtonCount(5))
+                                                                                                            .DataSource(dataSource => dataSource.Ajax().Read(read => read.Action("Customers_Read", "User")))
 
     )
 </div>
-
- 

@@ -1,0 +1,8 @@
+﻿Name: CoreModule
+AntiForgery: enabled
+Author: Zing
+Website: http://fy24h.com
+Version: 1.8
+OrchardVersion: 1.8
+Description: module desc
+Category: Core

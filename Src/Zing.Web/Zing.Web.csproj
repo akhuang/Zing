@@ -632,10 +632,6 @@
     <Content Include="Views\Default1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Zing.Module\Zing.Modules.csproj">
-      <Project>{01c2efec-a52c-486f-9ae2-f1f2bf64ecc3}</Project>
-      <Name>Zing.Modules</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Zing.Mvc\Zing.Mvc.csproj">
       <Project>{a54062c0-0d41-4357-81b5-e972d6e4f029}</Project>
       <Name>Zing.Mvc</Name>
@@ -648,9 +644,15 @@
       <Project>{9B0546FF-2871-4E97-8448-BB3AD038F0FA}</Project>
       <Name>Zing.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="Modules\Zing.Module\Zing.Modules.csproj">
+      <Project>{01c2efec-a52c-486f-9ae2-f1f2bf64ecc3}</Project>
+      <Name>Zing.Modules</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\log4net.config" />
+    <Content Include="Config\log4net.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\Sample.Host.config" />
     <Content Include="Config\Sample.HostComponents.config" />
   </ItemGroup>

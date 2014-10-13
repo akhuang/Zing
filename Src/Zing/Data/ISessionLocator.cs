@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Zing.Data
 {
-    public interface ISessionLocator
+    public interface ISessionLocator : IDependency
     {
         ISession For(Type entityType);
     }

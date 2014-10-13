@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Zing.Environment.Configuration;
+using Zing.Environment.Extensions;
 using Zing.Environment.ShellBuilder;
 using Zing.Logging;
 
@@ -14,18 +15,18 @@ namespace Zing.Environment
         private readonly IShellContextFactory _shellContextFactory;
         private readonly IRunningShellTable _runningShellTable;
         private readonly object _syncLock = new object();
-
+        private readonly IExtensionLoaderCoordinator _extensionLoaderCoordinator;
         private IEnumerable<ShellContext> _shellContexts;
 
         public DefaultZingHost(IShellSettingsManager shellSettingsManager,
            IShellContextFactory shellContextFactory,
-                  IRunningShellTable runningShellTable)
+                  IRunningShellTable runningShellTable, IExtensionLoaderCoordinator extensionLoaderCoordinator)
         {
             _shellSettingsManager = shellSettingsManager;
             _shellContextFactory = shellContextFactory;
             _runningShellTable = runningShellTable;
             //_processingEngine = processingEngine;
-            //_extensionLoaderCoordinator = extensionLoaderCoordinator;
+            _extensionLoaderCoordinator = extensionLoaderCoordinator;
             //_extensionMonitoringCoordinator = extensionMonitoringCoordinator;
             //_cacheManager = cacheManager;
             //_hostLocalRestart = hostLocalRestart;
@@ -51,6 +52,7 @@ namespace Zing.Environment
                 {
                     if (_shellContexts == null)
                     {
+                        SetupExtensions();
                         CreateAndActivateShells();
                     }
                 }
@@ -58,7 +60,10 @@ namespace Zing.Environment
 
             return _shellContexts;
         }
-
+        private void SetupExtensions()
+        {
+            _extensionLoaderCoordinator.SetupExtensions();
+        }
         private void CreateAndActivateShells()
         {
             Logger.Information("Start creation of shells");

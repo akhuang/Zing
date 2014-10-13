@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Tenants>
+  <Default>5|Zing.Framework;Zing.Module;|</Default>
+</Tenants>

@@ -1613,6 +1613,7 @@
   <ItemGroup>
     <None Include="Kendo.snk">
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Messages.bg-BG.resx">

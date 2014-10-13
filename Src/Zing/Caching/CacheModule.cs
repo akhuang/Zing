@@ -8,6 +8,11 @@ namespace Zing.Caching {
             builder.RegisterType<DefaultCacheManager>()
                 .As<ICacheManager>()
                 .InstancePerDependency();
+
+
+            builder.RegisterType<DefaultCacheHolder>().As<ICacheHolder>().SingleInstance();
+            builder.RegisterType<DefaultCacheContextAccessor>().As<ICacheContextAccessor>().SingleInstance();
+            builder.RegisterType<DefaultParallelCacheContext>().As<IParallelCacheContext>().SingleInstance();
         }
 
         protected override void AttachToComponentRegistration(Autofac.Core.IComponentRegistry componentRegistry, Autofac.Core.IComponentRegistration registration) {

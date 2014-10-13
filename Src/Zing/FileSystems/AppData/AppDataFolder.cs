@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Zing.Caching;
 using Zing.Logging;
 using Zing.Validation;
 
@@ -100,7 +101,12 @@ namespace Zing.FileSystems.AppData
         {
             return PathValidation.ValidatePath(RootFolder, Path.Combine(RootFolder, Path.Combine(paths)).Replace('/', Path.DirectorySeparatorChar));
         }
-
+        public IVolatileToken WhenPathChanges(string path)
+        {
+            //var virtualPath = GetVirtualPath(path);
+            //return _virtualPathMonitor.WhenPathChanges(virtualPath);
+            return null;
+        }
         /// <summary>
         /// Combine a set of virtual paths into a virtual path relative to "~/App_Data"
         /// </summary>

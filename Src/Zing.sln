@@ -1,19 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2010
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Web", "Zing.Web\Zing.Web.csproj", "{8C5FA83F-059F-4BD7-A813-46FF93A04C23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Framework", "Zing\Zing.Framework.csproj", "{9B0546FF-2871-4E97-8448-BB3AD038F0FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.WarmupStarter", "Zing.WarmupStarter\Zing.WarmupStarter.csproj", "{1BA83997-B709-4442-81CE-055AD26FF4A7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{298F0236-E462-4B9C-9A7C-7A85D54F5BCB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C22113AE-588E-4C49-B0F7-28BC4280CDC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Framework.Tests", "Zing.Framework.Tests\Zing.Framework.Tests.csproj", "{7829FD76-7809-4A2E-BB18-A2CEC362D56F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Modules", "Zing.Module\Zing.Modules.csproj", "{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{371BF279-519D-43FA-8B45-293D5FF25C22}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,6 +23,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Mvc", "Zing.Mvc\Zing.Mvc.csproj", "{A54062C0-0D41-4357-81B5-E972D6E4F029}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Core", "Zing.Core\Zing.Core.csproj", "{E269A286-CFB0-40ED-8161-4BAF4546EAE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{F67127D0-1ED5-41E8-9620-3AEC455360D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zing.Modules", "Zing.Web\Modules\Zing.Module\Zing.Modules.csproj", "{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +50,6 @@ Global
 		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7829FD76-7809-4A2E-BB18-A2CEC362D56F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A54062C0-0D41-4357-81B5-E972D6E4F029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A54062C0-0D41-4357-81B5-E972D6E4F029}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54062C0-0D41-4357-81B5-E972D6E4F029}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,12 +58,16 @@ Global
 		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E269A286-CFB0-40ED-8161-4BAF4546EAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3} = {298F0236-E462-4B9C-9A7C-7A85D54F5BCB}
 		{7829FD76-7809-4A2E-BB18-A2CEC362D56F} = {C22113AE-588E-4C49-B0F7-28BC4280CDC8}
+		{01C2EFEC-A52C-486F-9AE2-F1F2BF64ECC3} = {F67127D0-1ED5-41E8-9620-3AEC455360D5}
 	EndGlobalSection
 EndGlobal

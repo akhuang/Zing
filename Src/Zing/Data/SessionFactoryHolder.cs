@@ -7,7 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Zing.Data.Providers;
+using Zing.Environment.Configuration;
+using Zing.Environment.ShellBuilder.Models;
+using Zing.FileSystems.AppData;
 using Zing.Logging;
+using Zing.Utility.Extensions;
 
 namespace Zing.Data
 {
@@ -15,16 +20,29 @@ namespace Zing.Data
     {
         ISessionFactory GetSessionFactory();
         Configuration GetConfiguration();
-        //SessionFactoryParameters GetSessionFactoryParameters();
+        SessionFactoryParameters GetSessionFactoryParameters();
     }
     public class SessionFactoryHolder : ISessionFactoryHolder
     {
         public ILogger Logger { get; set; }
         private ISessionFactory _sessionFactory;
         private Configuration _configuration;
+        private readonly ShellSettings _shellSettings;
+        private readonly ShellBlueprint _shellBlueprint;
+        private readonly IAppDataFolder _appDataFolder;
+        private readonly ISessionConfigurationCache _sessionConfigurationCache;
+        private readonly IDatabaseCacheConfiguration _cacheConfiguration;
+        private readonly IDataServicesProviderFactory _dataServicesProviderFactory;
 
-        public SessionFactoryHolder()
+        public SessionFactoryHolder(ShellSettings shellSetting, ShellBlueprint shellBluePrint, IAppDataFolder appDataFolder,
+            ISessionConfigurationCache sessionConfigurationCache, IDataServicesProviderFactory dataServicesProviderFactory, IDatabaseCacheConfiguration cacheConfiguration)
         {
+            _shellSettings = shellSetting;
+            _shellBlueprint = shellBluePrint;
+            _appDataFolder = appDataFolder;
+            _sessionConfigurationCache = sessionConfigurationCache;
+            _dataServicesProviderFactory = dataServicesProviderFactory;
+            _cacheConfiguration = cacheConfiguration;
             Logger = NullLogger.Instance;
         }
 
@@ -55,7 +73,7 @@ namespace Zing.Data
             {
                 if (_configuration == null)
                 {
-                    //_configuration = BuildConfiguration();
+                    _configuration = BuildConfiguration();
                 }
             }
             return _configuration;
@@ -68,55 +86,72 @@ namespace Zing.Data
             //if (!_hostEnvironment.IsFullTrust)
             //    NHibernate.Cfg.Environment.UseReflectionOptimizer = false;
 
-            //Configuration config = GetConfiguration();
-            //var result = config.BuildSessionFactory();
+            Configuration config = GetConfiguration();
+            var result = config.BuildSessionFactory();
 
-            var result = Fluently.Configure()
-              .Database(MsSqlConfiguration.MsSql2008.ConnectionString(c => c.FromConnectionStringWithKey("DefaultConnection")))
-              .Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load("Zing.Modules")))
-              .BuildSessionFactory();
+            //var result = Fluently.Configure()
+            //  .Database(MsSqlConfiguration.MsSql2008.ConnectionString(c => c.FromConnectionStringWithKey("DefaultConnection")))
+            //  .Mappings(m => m.FluentMappings.AddFromAssembly(Assembly.Load("Zing.Modules")))
+            //  .BuildSessionFactory();
 
             Logger.Debug("Done building session factory");
             return result;
         }
 
-        //private Configuration BuildConfiguration()
-        //{
-        //    Logger.Debug("Building configuration");
-        //    var parameters = GetSessionFactoryParameters();
+        private Configuration BuildConfiguration()
+        {
+            Logger.Debug("Building configuration");
+            var parameters = GetSessionFactoryParameters();
 
-        //    var config = _sessionConfigurationCache.GetConfiguration(() =>
-        //        _dataServicesProviderFactory
-        //            .CreateProvider(parameters)
-        //            .BuildConfiguration(parameters)
-        //        //.Cache(c => _cacheConfiguration.Configure(c))
-        //    );
+            var config = _sessionConfigurationCache.GetConfiguration(() =>
+                _dataServicesProviderFactory
+                    .CreateProvider(parameters)
+                    .BuildConfiguration(parameters)
+                .Cache(c => _cacheConfiguration.Configure(c))
+            );
 
-        //    #region NH specific optimization
-        //    // cannot be done in fluent config
-        //    // the IsSelectable = false prevents unused ContentPartRecord proxies from being created 
-        //    // for each ContentItemRecord or ContentItemVersionRecord.
-        //    // done for perf reasons - has no other side-effect
+            #region NH specific optimization
+            // cannot be done in fluent config
+            // the IsSelectable = false prevents unused ContentPartRecord proxies from being created 
+            // for each ContentItemRecord or ContentItemVersionRecord.
+            // done for perf reasons - has no other side-effect
 
-        //    foreach (var persistentClass in config.ClassMappings)
-        //    {
-        //        if (persistentClass.EntityName.StartsWith("Orchard.ContentManagement.Records."))
-        //        {
-        //            foreach (var property in persistentClass.PropertyIterator)
-        //            {
-        //                if (property.Name.EndsWith("Record") && !property.IsBasicPropertyAccessor)
-        //                {
-        //                    property.IsSelectable = false;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    #endregion
+            foreach (var persistentClass in config.ClassMappings)
+            {
+                if (persistentClass.EntityName.StartsWith("Orchard.ContentManagement.Records."))
+                {
+                    foreach (var property in persistentClass.PropertyIterator)
+                    {
+                        if (property.Name.EndsWith("Record") && !property.IsBasicPropertyAccessor)
+                        {
+                            property.IsSelectable = false;
+                        }
+                    }
+                }
+            }
+            #endregion
 
-        //    parameters.Configurers.Invoke(c => c.Finished(config), Logger);
+            parameters.Configurers.Invoke(c => c.Finished(config), Logger);
 
-        //    Logger.Debug("Done Building configuration");
-        //    return config;
-        //}
+            Logger.Debug("Done Building configuration");
+            return config;
+        }
+
+        public SessionFactoryParameters GetSessionFactoryParameters()
+        {
+            var shellPath = _appDataFolder.Combine("Sites", _shellSettings.Name);
+            _appDataFolder.CreateDirectory(shellPath);
+
+            var shellFolder = _appDataFolder.MapPath(shellPath);
+
+            return new SessionFactoryParameters
+            {
+                //Configurers = _configurers(),
+                Provider = _shellSettings.DataProvider,
+                DataFolder = shellFolder,
+                ConnectionString = _shellSettings.DataConnectionString,
+                RecordDescriptors = _shellBlueprint.Records,
+            };
+        }
     }
 }
