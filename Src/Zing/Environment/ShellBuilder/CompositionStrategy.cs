@@ -210,7 +210,8 @@ namespace Zing.Environment.ShellBuilder
             {
                 Type = type,
                 Feature = feature,
-                TableName = dataTablePrefix + extensionName + '_' + type.Name,
+                //TableName = dataTablePrefix + extensionName + '_' + type.Name,
+                TableName = type.Name
             };
         }
     }
