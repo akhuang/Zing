@@ -27,7 +27,7 @@ namespace Zing.Modules.Users.Models
 
         public virtual UserStatus RegistrationStatus { get; set; }
         public virtual UserStatus EmailStatus { get; set; }
-        public virtual string EmailChallengeToken { get; set; }
+        //public virtual string EmailChallengeToken { get; set; }
 
         public virtual int Id
         {
@@ -36,25 +36,25 @@ namespace Zing.Modules.Users.Models
         }
     }
 
-    public class UserEntityMap : ClassMap<UserEntity>
-    {
-        public UserEntityMap()
-        {
-            Id(x => x.Id);
+    //public class UserEntityMap : ClassMap<UserEntity>
+    //{
+    //    public UserEntityMap()
+    //    {
+    //        Id(x => x.Id);
 
-            Map(x => x.UserName);
-            Map(x => x.Password);
-            Map(x => x.NormalizedUserName);
-            Map(x => x.PasswordFormat);
-            Map(x => x.HashAlgorithm);
-            Map(x => x.PasswordSalt);
-            Map(x => x.RegistrationStatus);
-            Map(x => x.EmailStatus);
+    //        Map(x => x.UserName);
+    //        Map(x => x.Password);
+    //        Map(x => x.NormalizedUserName);
+    //        Map(x => x.PasswordFormat);
+    //        Map(x => x.HashAlgorithm);
+    //        Map(x => x.PasswordSalt);
+    //        Map(x => x.RegistrationStatus);
+    //        Map(x => x.EmailStatus);
 
-            Map(x => x.Email).Update();
+    //        Map(x => x.Email).Update();
 
 
-            Table("Users");
-        }
-    }
+    //        Table("Users");
+    //    }
+    //}
 }

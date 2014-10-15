@@ -48,8 +48,7 @@ namespace Zing.Web.Controllers
                 new SelectListItem(){ Text="ddd",Value="2" },
                 new SelectListItem(){ Text="cc",Value="1" }
             };
-
-            IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
+             
             ////Pager pager = new Pager(1, 10);
             //membershipService.Fetch(null, null, pager.GetStartIndex(), 10);
 
@@ -58,8 +57,7 @@ namespace Zing.Web.Controllers
 
         [HttpPost]
         public ActionResult Index(UserViewModel userInfo)
-        {
-            IMembershipServiceInModule membershipService = DependencyResolver.Current.GetService<IMembershipServiceInModule>();
+        { 
             //CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.Password, userInfo.Email);
             //membershipService.CreateUser(userParas);
 

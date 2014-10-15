@@ -94,20 +94,20 @@ namespace Zing.Data.Providers
             return AutoMap.Source(new TypeSource(recordDescriptors))
                 // Ensure that namespaces of types are never auto-imported, so that 
                 // identical type names from different namespaces can be mapped without ambiguity
-                //.Conventions.Setup(x => x.Add(AutoImport.Never()))
+                .Conventions.Setup(x => x.Add(AutoImport.Never()))
 
                 //此处覆写Table("name"); 本来为统一处理表名（如增加前缀等），现由各个模块自己配置表名
                 //.Conventions.Add(new RecordTableNameConvention(recordDescriptors))
                 .Conventions.Add(new CacheConventions(recordDescriptors))
-                //.Alterations(alt =>
-                //{
-                //    foreach (var recordAssembly in recordDescriptors.Select(x => x.Type.Assembly).Distinct())
-                //    {
-                //        alt.Add(new AutoMappingOverrideAlteration(recordAssembly));
-                //    }
-                //    alt.AddFromAssemblyOf<DataModule>();
-                //    //alt.Add(new ContentItemAlteration(recordDescriptors));
-                //})
+                .Alterations(alt =>
+                {
+                    foreach (var recordAssembly in recordDescriptors.Select(x => x.Type.Assembly).Distinct())
+                    {
+                        alt.Add(new AutoMappingOverrideAlteration(recordAssembly));
+                    }
+                    alt.AddFromAssemblyOf<DataModule>();
+                    //alt.Add(new ContentItemAlteration(recordDescriptors));
+                })
                 .Conventions.AddFromAssemblyOf<DataModule>();
         }
 

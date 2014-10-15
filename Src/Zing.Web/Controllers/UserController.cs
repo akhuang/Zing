@@ -11,6 +11,7 @@ namespace Zing.Web.Controllers
 {
     public class UserController : Controller
     {
+        public UserController(I)
         //
         // GET: /User/
 
