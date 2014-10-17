@@ -254,7 +254,7 @@
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\InternalAuthorize.cs" />
     <Compile Include="Security\SecurityFilter.cs" />
-    <Compile Include="ServiceBase.cs" />
+    <Compile Include="Data\ServiceBase.cs" />
     <Compile Include="Data\SessionFactoryHolder.cs" />
     <Compile Include="Data\SessionLocator.cs" />
     <Compile Include="Environment\Configuration\IShellSettingsManager.cs" />
@@ -289,7 +289,7 @@
     <Compile Include="FileSystems\AppData\IAppDataFolder.cs" />
     <Compile Include="FileSystems\AppData\IAppDataFolderRoot.cs" />
     <Compile Include="IDependency.cs" />
-    <Compile Include="IService.cs" />
+    <Compile Include="Data\IService.cs" />
     <Compile Include="IWorkContextAccessor.cs" />
     <Compile Include="Logging\CastleLogger.cs" />
     <Compile Include="Logging\CastleLoggerFactory.cs" />

@@ -119,6 +119,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Zing.Web\Modules\Zing.Module\Zing.Modules.csproj">
+      <Project>{01c2efec-a52c-486f-9ae2-f1f2bf64ecc3}</Project>
+      <Name>Zing.Modules</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Zing\Zing.Framework.csproj">
       <Project>{9b0546ff-2871-4e97-8448-bb3ad038f0fa}</Project>
       <Name>Zing.Framework</Name>

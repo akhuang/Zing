@@ -71,6 +71,14 @@ namespace Zing.Framework.Tests
 
             Assert.IsNotNull(model);
         }
+        [Test]
+        public void TestGetAll()
+        {
+            var membershipService = _container.Resolve<IMembershipServiceInModule>();
+            var list = membershipService.Fetch(null);
+
+            Assert.IsNotNull(list);
+        }
 
         [Test]
         public void TestFetchAll()

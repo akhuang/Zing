@@ -8,6 +8,6 @@ using Zing.Modules.Users.Models;
 namespace Zing.Modules.Users.Services
 {
     public interface IMembershipServiceInModule : IService<UserEntity>, IMembershipService
-    {
+    { 
     }
 }

@@ -50,10 +50,6 @@ namespace Zing
         {
             return _rep.Get(id);
         }
-        public T Get()
-        {
-            return _rep.Get();
-        }
         public T Get(Expression<Func<T, bool>> predicate)
         {
             return _rep.Get(predicate);
@@ -94,5 +90,11 @@ namespace Zing
         }
 
         #endregion
+
+
+        public IEnumerable<T> Fetch()
+        {
+            return Fetch(null);
+        }
     }
 }

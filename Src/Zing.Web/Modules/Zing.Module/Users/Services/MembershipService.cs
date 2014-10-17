@@ -42,7 +42,7 @@ namespace Zing.Modules.Users.Services
 
         public IEnumerable<UserEntity> Get()
         {
-            var userList = base.Fetch(x => x.Email == "hf.com");
+            var userList = base.Fetch(null);
             return userList;
         }
 
