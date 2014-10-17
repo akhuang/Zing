@@ -66,7 +66,7 @@ namespace Zing.Web.Controllers
                     Member = p.Name
                 }).ToList()
             });
-            return View();
+            return View(listRecordEntry);
         }
     }
 }

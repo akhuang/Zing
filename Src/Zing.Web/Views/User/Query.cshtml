@@ -1,5 +1,25 @@
 ﻿@{
     ViewBag.Title = "Query";
 }
+@using Zing.Modules.Data
 
-<h2>Query</h2>
+@model IEnumerable<RecordEntry>
+
+@{
+    IEnumerable<SelectListItem> fieldList = Model.FirstOrDefault().Members.Select(x => new SelectListItem() { Text = x.Member, Value = x.Member });
+
+    IEnumerable<SelectListItem> operatorList = new List<SelectListItem>(){
+         new SelectListItem(){ Text = "equal",Value="equal"},
+         new SelectListItem(){ Text = "containes",Value="containes"}
+     };
+}
+
+@using (Html.BeginForm("", "", FormMethod.Post))
+{
+    @Html.DropDownList("RecordField", fieldList)
+
+    @Html.DropDownList("FieldOperator", operatorList)
+    <input type="text" id="txtValue" name="txtValue" />
+
+    <input type="submit" id="btnSubmit" />
+}
