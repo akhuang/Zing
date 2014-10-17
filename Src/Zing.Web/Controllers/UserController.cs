@@ -10,15 +10,20 @@ using Zing.Framework.Security;
 using Zing.Modules.Users.Services;
 using Zing.Modules.Users.Models;
 using AutoMapper;
+using Zing.Data;
+using Zing.Modules.Data;
+using System.Reflection;
 
 namespace Zing.Web.Controllers
 {
     public class UserController : Controller
     {
         private readonly IMembershipServiceInModule _membershipSer;
-        public UserController(IMembershipServiceInModule membershipService)
+        private readonly ISessionFactoryHolder _sessionFactoryHolder;
+        public UserController(IMembershipServiceInModule membershipService, ISessionFactoryHolder sessionFactoryHolder)
         {
             _membershipSer = membershipService;
+            _sessionFactoryHolder = sessionFactoryHolder;
         }
 
         public ActionResult Index()
@@ -47,6 +52,21 @@ namespace Zing.Web.Controllers
             });
 
             return listV;
+        }
+
+        public ActionResult Query()
+        {
+            var recordRescriptors = _sessionFactoryHolder.GetSessionFactoryParameters().RecordDescriptors;
+
+            IEnumerable<RecordEntry> listRecordEntry = recordRescriptors.Select(x => new RecordEntry()
+            {
+                FullName = x.Type.FullName,
+                Members = x.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => new MemberEntry()
+                {
+                    Member = p.Name
+                }).ToList()
+            });
+            return View();
         }
     }
 }
