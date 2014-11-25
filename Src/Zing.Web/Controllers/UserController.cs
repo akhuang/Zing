@@ -36,13 +36,6 @@ namespace Zing.Web.Controllers
         }
         private IEnumerable<UserViewModel> GetCustomers()
         {
-            //IEnumerable<UserViewModel> list = new List<UserViewModel>() { 
-            //    new UserViewModel()
-            //    {
-            //        UserName="p",Email="p@p.com",NormalizedUserName="phoenix"
-            //    },
-            //    new UserViewModel(){UserName="p1",Email="p1@p.com",NormalizedUserName="phoenix1" }
-            //    };
             IEnumerable<UserEntity> list = _membershipSer.Fetch(null);
 
             IList<UserViewModel> listV = new List<UserViewModel>();
@@ -67,6 +60,12 @@ namespace Zing.Web.Controllers
                 }).ToList()
             });
             return View(listRecordEntry);
+        }
+
+        [HttpPost]
+        public JsonResult Query()
+        {
+            return Json(new { });
         }
     }
 }
