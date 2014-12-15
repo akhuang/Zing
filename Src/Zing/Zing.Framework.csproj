@@ -251,6 +251,7 @@
     <Compile Include="Mvc\ActionFilter\AutoMapFilter.cs" />
     <Compile Include="Mvc\Extensions\ControllerExtensions.cs" />
     <Compile Include="Mvc\ZingControllerFactory.cs" />
+    <Compile Include="Query\IHqlExpressionFactory.cs" />
     <Compile Include="Security\FormsAuthenticationService.cs" />
     <Compile Include="Security\InternalAuthorize.cs" />
     <Compile Include="Security\SecurityFilter.cs" />
