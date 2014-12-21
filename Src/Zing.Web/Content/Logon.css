@@ -480,12 +480,7 @@ i {
     .input-group .input-group-addon {
         padding: 3px 5px;
     }
-
-.qtip-default {
-    background-color: #ee0101;
-    border: 2px solid #ddd;
-}
-
+ 
 .ui-tooltip-red {
     color: white;
 }

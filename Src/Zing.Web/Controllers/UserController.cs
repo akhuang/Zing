@@ -62,10 +62,10 @@ namespace Zing.Web.Controllers
             return View(listRecordEntry);
         }
 
-        [HttpPost]
-        public JsonResult Query()
-        {
-            return Json(new { });
-        }
+        //[HttpPost]
+        //public JsonResult Query()
+        //{
+        //    return Json(new { });
+        //}
     }
 }
