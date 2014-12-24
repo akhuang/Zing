@@ -129,7 +129,9 @@
     <Compile Include="Users\Services\MembershipService.cs" />
     <Compile Include="Users\UsersModule.cs" />
     <Compile Include="Users\ViewModels\UserViewModel.cs" />
+    <Compile Include="ViewFilter\DefaultFilterFormater.cs" />
     <Compile Include="ViewFilter\IFilterCoordinator.cs" />
+    <Compile Include="ViewFilter\IFilterEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

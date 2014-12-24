@@ -405,7 +405,7 @@
     });
 
     $(function () {
-        $jQval.unobtrusive.parse(document); 
+        $jQval.unobtrusive.parse(document);
     });
 
 
@@ -425,6 +425,10 @@
         };
         //replace validation settings function
         function OverrideUnobtrusiveSettings(formElement) {
+            var $formValidator = $.data(formElement, 'validator');
+            if (!$formValidator) {
+                return;
+            }
             var settngs = $.data(formElement, 'validator').settings;
             //standard qTip2 stuff copied from sample
             settngs.errorPlacement = function (error, element) {
@@ -462,7 +466,7 @@
 
             settngs.success = $.noop;
         }
-         
+
 
     });
 }(jQuery));
