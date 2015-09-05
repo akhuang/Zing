@@ -192,8 +192,15 @@
     <Compile Include="Data\Providers\SessionFactoryParameters.cs" />
     <Compile Include="Data\Providers\SqlServerDataServicesProvider.cs" />
     <Compile Include="Data\Providers\SqlServerStatementProvider.cs" />
+    <Compile Include="Data\Query\DefaultAliasFactory.cs" />
+    <Compile Include="Data\Query\DefaultHqlExpressionFactory.cs" />
+    <Compile Include="Data\Query\DefaultHqlQuery.cs" />
+    <Compile Include="Data\Query\IAlias.cs" />
+    <Compile Include="Data\Query\IAliasFactory.cs" />
+    <Compile Include="Data\Query\IHqlCriterion.cs" />
+    <Compile Include="Data\Query\IHqlExpressionFactory.cs" />
+    <Compile Include="Data\Query\IHqlQuery.cs" />
     <Compile Include="Data\Repository.cs" />
-    <Compile Include="Data\RepositoryBase.cs" />
     <Compile Include="Data\SessionConfigurationCache.cs" />
     <Compile Include="Environment\AutofacUtil\ConfigurationSettingsReaderConstants.cs" />
     <Compile Include="Environment\AutofacUtil\DynamicProxy2\DynamicProxyExtensions.cs" />

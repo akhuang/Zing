@@ -25,6 +25,6 @@ namespace Zing.Data
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip, int count);
 
-        IHqlQuery HqlQuery();
+        int Count();
     }
 }

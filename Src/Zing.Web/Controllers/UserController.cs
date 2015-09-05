@@ -64,9 +64,9 @@ namespace Zing.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Query()
+        public JsonResult Query(string vf)
         {
-           
+            _membershipSer.Count();
             return Json(new { });
         }
     }

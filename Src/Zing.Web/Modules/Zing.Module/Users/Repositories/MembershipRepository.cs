@@ -11,18 +11,16 @@ using Zing.Modules.Users.Models;
 
 namespace Zing.Modules.Users.Repositories
 {
-    public class MembershipRepository : RepositoryBase<UserEntity>, IMembershipRepository
+    public class MembershipRepository : Repository<UserEntity>, IMembershipRepository
     {
-        private readonly IRepository<UserEntity> _rep;
-        public MembershipRepository(IRepository<UserEntity> rep)
-            : base(rep)
+        public MembershipRepository(ISessionLocator sessionLocator)
+            : base(sessionLocator)
         {
-            _rep = rep;
-        }
 
+        }
         public IUser Add(IUser model)
-        { 
-            _rep.Create(model as UserEntity);
+        {
+            base.Create(model as UserEntity);
 
             return model;
         }

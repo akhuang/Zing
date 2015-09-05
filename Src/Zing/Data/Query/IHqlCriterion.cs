@@ -8,12 +8,12 @@ namespace Zing.Data.Query
 {
     public interface IHqlCriterion
     {
-        string ToSql(IAlias alias);
+        string ToHql(IAlias alias);
     }
 
     public abstract class HqlCriterion : IHqlCriterion
     {
-        public abstract string ToSql(IAlias alias);
+        public abstract string ToHql(IAlias alias);
     }
 
     public class BinaryExpression : HqlCriterion
@@ -31,7 +31,7 @@ namespace Zing.Data.Query
         public string Value { get; set; }
         public Func<string, string> ProcessPropertyName { get; set; }
 
-        public override string ToSql(IAlias alias)
+        public override string ToHql(IAlias alias)
         {
             var processed = string.Concat(alias.Name, ",", PropertyName);
             if (ProcessPropertyName != null)

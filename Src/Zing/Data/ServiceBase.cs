@@ -96,5 +96,10 @@ namespace Zing
         {
             return Fetch(null);
         }
+
+        public int Count()
+        {
+            return _rep.Count();
+        }
     }
 }

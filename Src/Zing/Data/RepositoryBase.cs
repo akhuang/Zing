@@ -81,12 +81,6 @@ namespace Zing.Data
             return _rep.Fetch(predicate, order, skip, count).ToReadOnlyCollection();
         }
 
-        public int Count()
-        {
-            IHqlQuery hqlQuery = _rep.HqlQuery(); 
-            hqlQuery.Where(x => x.Named("a"), y => y.Eq("published", "true"));
-            hqlQuery.Count();
-            return hqlQuery.Count();
-        }
+        
     }
 }

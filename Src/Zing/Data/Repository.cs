@@ -14,7 +14,7 @@ namespace Zing.Data
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ISessionLocator _sessionLocator;
-
+         
         public Repository(ISessionLocator sessionLocator)
         {
             _sessionLocator = sessionLocator;
@@ -178,7 +178,15 @@ namespace Zing.Data
         }
 
 
-        public IHqlQuery HqlQuery()
+        public int Count()
+        {
+            IHqlQuery hqlQuery = HqlQuery();
+            hqlQuery.Where(x => x.Named("a"), y => y.Eq("UserName", "admin"));
+            hqlQuery.Count();
+            return hqlQuery.Count();
+        }
+
+        IHqlQuery HqlQuery()
         {
             return new DefaultHqlQuery(typeof(T).Name, Session);
         }

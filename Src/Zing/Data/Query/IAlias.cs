@@ -7,10 +7,7 @@ namespace Zing.Data.Query
 {
     public interface IAlias
     {
-        public string Name
-        {
-            get;
-        }
+        string Name { get; }
     }
     public class Alias : IAlias
     {
