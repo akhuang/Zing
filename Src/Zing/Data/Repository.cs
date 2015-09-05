@@ -7,6 +7,7 @@ using System.Text;
 using Zing.Logging;
 using NHibernate.Linq;
 using Zing.Utility.Extensions;
+using Zing.Data.Query;
 
 namespace Zing.Data
 {
@@ -177,6 +178,9 @@ namespace Zing.Data
         }
 
 
-
+        public IHqlQuery HqlQuery()
+        {
+            return new DefaultHqlQuery(typeof(T).Name, Session);
+        }
     }
 }

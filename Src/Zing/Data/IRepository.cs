@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Zing.Data.Query;
 
 namespace Zing.Data
 {
@@ -23,5 +24,7 @@ namespace Zing.Data
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip, int count);
+
+        IHqlQuery HqlQuery();
     }
 }

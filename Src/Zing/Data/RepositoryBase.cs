@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Zing.Data.Query;
 using Zing.Logging;
 using Zing.Utility.Extensions;
 
@@ -78,6 +79,14 @@ namespace Zing.Data
         public IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip, int count)
         {
             return _rep.Fetch(predicate, order, skip, count).ToReadOnlyCollection();
+        }
+
+        public int Count()
+        {
+            IHqlQuery hqlQuery = _rep.HqlQuery(); 
+            hqlQuery.Where(x => x.Named("a"), y => y.Eq("published", "true"));
+            hqlQuery.Count();
+            return hqlQuery.Count();
         }
     }
 }

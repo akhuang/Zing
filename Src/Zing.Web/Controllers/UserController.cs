@@ -13,6 +13,7 @@ using AutoMapper;
 using Zing.Data;
 using Zing.Modules.Data;
 using System.Reflection;
+using Zing.Data.Query;
 
 namespace Zing.Web.Controllers
 {
@@ -62,10 +63,11 @@ namespace Zing.Web.Controllers
             return View(listRecordEntry);
         }
 
-        //[HttpPost]
-        //public JsonResult Query()
-        //{
-        //    return Json(new { });
-        //}
+        [HttpPost]
+        public JsonResult Query()
+        {
+           
+            return Json(new { });
+        }
     }
 }
