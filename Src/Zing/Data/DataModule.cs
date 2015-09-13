@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Zing.Data.Providers;
+using Zing.Data.Query.Services;
 using Module = Autofac.Module;
 
 namespace Zing.Data
@@ -14,6 +15,9 @@ namespace Zing.Data
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerDependency();
+
+            builder.RegisterType<HqlQueryManager>().As<IHqlQueryManager>();
+            //builder.RegisterType<HqlQueryManager>().As<Ifilter>();
 
         }
         protected override void AttachToComponentRegistration(Autofac.Core.IComponentRegistry componentRegistry, Autofac.Core.IComponentRegistration registration)

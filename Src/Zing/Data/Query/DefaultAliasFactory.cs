@@ -13,6 +13,7 @@ namespace Zing.Data.Query
         public DefaultAliasFactory(DefaultHqlQuery query)
         {
             this._query = query;
+            Current = _query.BindFromPath();
         }
         public IAliasFactory Property(string propertyName, string alias)
         {
@@ -21,7 +22,8 @@ namespace Zing.Data.Query
 
         public IAliasFactory Named(string alias)
         {
-            throw new NotImplementedException();
+            Current = new Alias(alias);
+            return this;
         }
     }
 }

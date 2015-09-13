@@ -19,9 +19,16 @@ namespace Zing.Data.Query
             private set;
         }
 
-        public DefaultHqlQuery(string tableName, ISession session)
+        public string FromAliasName
+        {
+            get;
+            private set;
+        }
+
+        public DefaultHqlQuery(string tableName, string fromAliasName, ISession session)
         {
             this.TableName = tableName;
+            this.FromAliasName = fromAliasName;
             this._session = session;
         }
         public int Count()
@@ -34,7 +41,6 @@ namespace Zing.Data.Query
 
         public string ToHql()
         {
-            EnsureFrom();
             var sb = new StringBuilder();
 
             sb.Append("select count(1) ").AppendLine();
@@ -59,12 +65,19 @@ namespace Zing.Data.Query
             return sb.ToString();
         }
 
-        private void EnsureFrom()
+        internal IAlias BindFromPath()
         {
             if (_from == null)
             {
-                _from = new Join(TableName, "a");
+                _from = new Join(TableName, FromAliasName);
             }
+
+            return _from;
+        }
+        public IHqlQuery Where(Action<IHqlExpressionFactory> predicate)
+        {
+            Where(_from, predicate);
+            return this;
         }
 
         public IHqlQuery Where(Action<IAliasFactory> alias, Action<IHqlExpressionFactory> predicate)

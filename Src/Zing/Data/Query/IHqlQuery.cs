@@ -15,6 +15,8 @@ namespace Zing.Data.Query
         /// <param name="alias">An expression pointing to the joined relationship.</param>
         /// <param name="predicate">A predicate expression.</param>
         IHqlQuery Where(Action<IAliasFactory> alias, Action<IHqlExpressionFactory> predicate);
+
+        IHqlQuery Where(Action<IHqlExpressionFactory> predicate);
     }
 
     public interface IHqlQuery<T> : IHqlQuery where T : class

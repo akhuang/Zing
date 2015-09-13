@@ -8,16 +8,20 @@ using Zing.Logging;
 using NHibernate.Linq;
 using Zing.Utility.Extensions;
 using Zing.Data.Query;
+using Zing.Data.Query.Services;
+using Zing.Data.Query.Models;
+using Newtonsoft.Json;
 
 namespace Zing.Data
 {
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ISessionLocator _sessionLocator;
-         
-        public Repository(ISessionLocator sessionLocator)
+        private readonly IHqlQueryManager _hqlQueryManager;
+        public Repository(ISessionLocator sessionLocator, IHqlQueryManager hqlQueryManager)
         {
             _sessionLocator = sessionLocator;
+            _hqlQueryManager = hqlQueryManager;
             Logger = NullLogger.Instance;
         }
 
@@ -181,14 +185,30 @@ namespace Zing.Data
         public int Count()
         {
             IHqlQuery hqlQuery = HqlQuery();
-            hqlQuery.Where(x => x.Named("a"), y => y.Eq("UserName", "admin"));
-            hqlQuery.Count();
+            //hqlQuery.Where(x => x.Named("a"), y => y.Eq("UserName", "admin")); 
+            QueryRecord record = new QueryRecord();
+            FilterGroupRecord group = new FilterGroupRecord();
+            var state = new
+            {
+                Description = "test",
+                Operator = "Equals",
+                Value = "phoenix"
+            };
+            group.Filters.Add(new FilterRecord()
+            {
+                Category = "UserEntity",
+                PropertyName = "UserName",
+                State = JsonConvert.SerializeObject(state)
+            });
+            record.FilterGroups.Add(group);
+            _hqlQueryManager.GetQuery(hqlQuery, record);
+
             return hqlQuery.Count();
         }
 
         IHqlQuery HqlQuery()
         {
-            return new DefaultHqlQuery(typeof(T).Name, Session);
+            return new DefaultHqlQuery(typeof(T).FullName, typeof(T).Name, Session);
         }
     }
 }
