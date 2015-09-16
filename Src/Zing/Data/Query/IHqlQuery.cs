@@ -9,6 +9,8 @@ namespace Zing.Data.Query
     {
         int Count();
 
+        IEnumerable<T> Get<T>(int pageIndex, int pageSize);
+
         /// <summary>
         /// Adds a where constraint to the query.
         /// </summary>

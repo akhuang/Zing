@@ -32,7 +32,17 @@ namespace Zing.Data.Query
                ;
         }
 
-        public string ToHql(bool count)
+        public IEnumerable<T> Get<T>(int pageIndex, int pageSize)
+        {
+            var firstResult = (pageIndex - 1) * pageSize + 1;
+            return _session.CreateQuery(ToHql())
+                .SetCacheable(true)
+                .SetFirstResult(firstResult)
+                .SetMaxResults(pageSize)
+                .List<T>();
+        }
+
+        public string ToHql(bool count = false)
         {
             var sb = new StringBuilder();
 
