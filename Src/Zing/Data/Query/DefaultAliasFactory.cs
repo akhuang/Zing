@@ -22,7 +22,7 @@ namespace Zing.Data.Query
 
         public IAliasFactory Named(string alias)
         {
-            Current = new Alias(alias);
+            Current = _query.BindNamedAlias(alias);
             return this;
         }
     }

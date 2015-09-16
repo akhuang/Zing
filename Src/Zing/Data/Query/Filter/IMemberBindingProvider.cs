@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Zing.Data.Query.Filter
 {
-    public interface IMemberBindingProvider
+    public interface IMemberBindingProvider : IDependency
     {
         void GetMemberBindings(BindingBuilder builder);
     }

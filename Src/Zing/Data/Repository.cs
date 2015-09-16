@@ -208,7 +208,7 @@ namespace Zing.Data
 
         IHqlQuery HqlQuery()
         {
-            return new DefaultHqlQuery(typeof(T).FullName, typeof(T).Name, Session);
+            return new DefaultHqlQuery(typeof(T).FullName, Session);
         }
     }
 }

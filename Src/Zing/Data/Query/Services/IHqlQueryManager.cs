@@ -6,7 +6,7 @@ using Zing.Data.Query.Models;
 
 namespace Zing.Data.Query.Services
 {
-    public interface IHqlQueryManager
+    public interface IHqlQueryManager : IDependency
     {
         void GetQuery(IHqlQuery query, QueryRecord queryRecord);
     }

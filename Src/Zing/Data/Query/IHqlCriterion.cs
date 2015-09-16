@@ -33,7 +33,7 @@ namespace Zing.Data.Query
 
         public override string ToHql(IAlias alias)
         {
-            var processed = string.Concat(alias.Name, ",", PropertyName);
+            var processed = string.Concat(alias.Name, ".", PropertyName);
             if (ProcessPropertyName != null)
             {
                 processed = ProcessPropertyName(processed);
@@ -86,7 +86,7 @@ namespace Zing.Data.Query
                     break;
                 case TypeCode.String:
                     {
-                        return EncodeQuotes(Convert.ToString(value, CultureInfo.InvariantCulture));
+                        return string.Concat("'", EncodeQuotes(Convert.ToString(value, CultureInfo.InvariantCulture)), "'");
                     }
                 case TypeCode.UInt16:
                     break;

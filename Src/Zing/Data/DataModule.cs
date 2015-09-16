@@ -17,13 +17,7 @@ namespace Zing.Data
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerDependency();
-
-            builder.RegisterType<HqlQueryManager>().As<IHqlQueryManager>();
-            builder.RegisterType<MemberBindingFilter>().As<IFilterProvider>();
-            builder.RegisterType<StringFilterForm>().As<IFormProvider>();
-            builder.RegisterType<DefaultHqlQuery>().As<IHqlQuery>();
-            builder.RegisterType<MemberBindingFilter>().As<IMemberBindingProvider>();
+            builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerDependency(); 
         }
         protected override void AttachToComponentRegistration(Autofac.Core.IComponentRegistry componentRegistry, Autofac.Core.IComponentRegistration registration)
         {

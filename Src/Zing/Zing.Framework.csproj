@@ -205,6 +205,7 @@
     <Compile Include="Data\Query\FilterEditors\IFilterCoordinator.cs" />
     <Compile Include="Data\Query\FilterEditors\IFilterEditor.cs" />
     <Compile Include="Data\Query\FilterEditors\StringFilterEditor.cs" />
+    <Compile Include="Data\Query\Filter\CustomMemberBindingProvider.cs" />
     <Compile Include="Data\Query\Filter\DescribeFilterFor.cs" />
     <Compile Include="Data\Query\Filter\FilterContext.cs" />
     <Compile Include="Data\Query\Filter\FilterDescriptor.cs" />

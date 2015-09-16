@@ -19,31 +19,27 @@ namespace Zing.Data.Query
             private set;
         }
 
-        public string FromAliasName
-        {
-            get;
-            private set;
-        }
-
-        public DefaultHqlQuery(string tableName, string fromAliasName, ISession session)
+        public DefaultHqlQuery(string tableName, ISession session)
         {
             this.TableName = tableName;
-            this.FromAliasName = fromAliasName;
             this._session = session;
         }
         public int Count()
         {
-            return Convert.ToInt32(_session.CreateQuery(ToHql())
+            return Convert.ToInt32(_session.CreateQuery(ToHql(true))
                           .SetCacheable(true)
                           .UniqueResult())
                ;
         }
 
-        public string ToHql()
+        public string ToHql(bool count)
         {
             var sb = new StringBuilder();
 
-            sb.Append("select count(1) ").AppendLine();
+            if (count)
+            {
+                sb.Append("select count(Id) ").AppendLine();
+            }
             sb.Append("from ").Append(_from.TableName).Append(" as ").Append(_from.Name).AppendLine();
 
             if (_wheres.Any())
@@ -69,13 +65,33 @@ namespace Zing.Data.Query
         {
             if (_from == null)
             {
-                _from = new Join(TableName, FromAliasName);
+                _from = new Join(TableName, GetFromAliasName(TableName));
             }
 
             return _from;
         }
+
+        internal IJoin BindNamedAlias(string alias)
+        {
+            if (_from.Name == alias)
+            {
+                return _from;
+            }
+            throw new NullReferenceException();
+        }
+
+        private string GetFromAliasName(string tableName)
+        {
+            return tableName.Substring(tableName.LastIndexOf(".") + 1);
+        }
+
         public IHqlQuery Where(Action<IHqlExpressionFactory> predicate)
         {
+            if (_from == null)
+            {
+                BindFromPath();
+            }
+
             Where(_from, predicate);
             return this;
         }

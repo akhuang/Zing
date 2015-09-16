@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Zing.Data.Query.Filter
 {
-    public interface IFilterProvider
+    public interface IFilterProvider : IDependency
     {
         void Describe(DescribeFilterContext describe);
     }

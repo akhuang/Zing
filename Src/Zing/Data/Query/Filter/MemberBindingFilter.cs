@@ -51,7 +51,7 @@ namespace Zing.Data.Query.Filter
         {
             var predicate = _filterCoordinator.Filter(property.PropertyType, property.Name, context.State);
             Action<IAliasFactory> alias = x => x.Named(property.DeclaringType.Name);
-            context.Query = context.Query.Where(predicate);
+            context.Query = context.Query.Where(alias, predicate);
         }
     }
 }
