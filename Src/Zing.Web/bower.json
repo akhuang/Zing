@@ -1,0 +1,30 @@
+{
+    "name": "Zing.Web",
+    "version": "1.0.0",
+    "homepage": "https://github.com/fy24h/Zing",
+    "authors": [
+        "phoenix <fy24h.huang@gmail.com>"
+    ],
+    "description": "zing",
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "angularjs": "~1.4.7",
+        "jQuery": "~2.1.4",
+        "jquery-validation-unobtrusive": "~3.2.2",
+        "bootstrap": "~3.3.5", 
+        "qtip2": "~2.2.1",
+        "momentjs": "~2.10.6",
+        "fontawesome": "~4.4.0",
+        "angular-bootstrap": "~0.13.1",
+        "angular-ui-sortable": "~0.13.4",
+        "angular-route": "~1.4.4",
+        "lodash": "~3.10.1"
+    }
+}
