@@ -9,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>登录</title>
-    @Styles.Render("~/Content/css")
-    @Styles.Render("~/Scripts/qTip/jquery.qtip.css")
+    @Styles.Render("~/Content/bootstrap.min.css")
+    @Styles.Render("~/Content/site.css")
     @Styles.Render("~/Content/Logon.css")
 </head>
 <body>
@@ -19,43 +19,43 @@
             <div class="header">
             </div>
             <form name="loginForm" id="loginForm" action="" method="post">
-            <div class="legend">
-                登录中心
-            </div>
-            <hr>
-            <hr class="decoration">
-            <div class="hint">
-                @Html.ValidationSummary(true)
-            </div>
-            <fieldset>
-                <div id="container">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="icon-user"></i></span>
-                        <input type="text" class="form-control" name="userName" id="userName" placeholder="Username"
-                            data-val="true" data-val-required="用户名不能为空" />
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="icon-key"></i></span>
-                        <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="Password"
-                            data-val="true" data-val-required="密码不能为空" />
-                    </div>
+                <div class="legend">
+                    登录中心
                 </div>
-                <label class="checkbox" id="keepLogin">
-                    @Html.CheckBox("rememberMe", false, new { style = "margin: 0; position: static;" })
-                    <!--   <input type="checkbox" id="rememberMe" name="rememberMe" style="margin: 0; position: static;"
-                        value="false" />-->
+                <hr>
+                <hr class="decoration">
+                <div class="hint">
+                    @Html.ValidationSummary(true)
+                </div>
+                <fieldset>
+                    <div id="container">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon-user"></i></span>
+                            <input type="text" class="form-control" name="userName" id="userName" placeholder="Username"
+                                   data-val="true" data-val-required="用户名不能为空" />
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="icon-key"></i></span>
+                            <input type="password" id="userPwd" name="userPwd" class="form-control" placeholder="Password"
+                                   data-val="true" data-val-required="密码不能为空" />
+                        </div>
+                    </div>
+                    <label class="checkbox" id="keepLogin">
+                        @Html.CheckBox("rememberMe", false, new { style = "margin: 0; position: static;" })
+                        <!--   <input type="checkbox" id="rememberMe" name="rememberMe" style="margin: 0; position: static;"
+                            value="false" />-->
                         &nbsp;保持登录
-                </label>
-                <button type="submit" class="btn-login">
-                    登录
-                </button>
-            </fieldset>
+                    </label>
+                    <button type="submit" class="btn-login">
+                        登录
+                    </button>
+                </fieldset>
             </form>
         </div>
     </div>
     @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/Scripts/qTip/jquery.qtip.js")
+    @Scripts.Render("~/Scripts/jQuery.min.js")
+    @Scripts.Render("~/Scripts/jquery.qtip.min.js")
+    @Scripts.Render("~/Scripts/util.js")
 </body>
 </html>

@@ -41,13 +41,13 @@ namespace Zing.Modules.Users.ViewModels
                 .MinimumLength(7);
 
             Configure(x => x.Password)
-                .DisplayName("密码")
+                .DisplayName("密码").Hide()
                 .AsPassword()
                 .MaximumLength(50)
                 .MinimumLength(7);
 
             Configure(x => x.ConfirmPassword)
-                .DisplayName("确认密码")
+                .DisplayName("确认密码").Hide()
                 .AsPassword()
                 .Compare("Password");
 

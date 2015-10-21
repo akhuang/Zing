@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/bootstrap.min.css") 
     @Styles.Render("~/Content/kendo/css")
     @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/jquery")
+    @Styles.Render("~/Content/site.css")
+    @Scripts.Render("~/Scripts/jQuery.min.js")
     @Scripts.Render("~/bundles/kendo")
 </head>
 <body>
@@ -445,8 +446,7 @@
             </div>
         </div>
     </div>
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/bootstrap.min.js")
     @Scripts.Render("~/Scripts/app.js")
     @RenderSection("ScriptAssets", required: false)
     @RenderSection("ScriptBlock", required: false)
