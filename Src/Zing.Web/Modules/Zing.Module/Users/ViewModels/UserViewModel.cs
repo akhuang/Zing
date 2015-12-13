@@ -36,9 +36,7 @@ namespace Zing.Modules.Users.ViewModels
                 .Required();
 
             Configure(x => x.NormalizedUserName)
-                .DisplayName("用户登录名")
-                .MaximumLength(50)
-                .MinimumLength(7);
+                .DisplayName("用户登录名");
 
             Configure(x => x.Password)
                 .DisplayName("密码").Hide()

@@ -41,6 +41,25 @@ namespace Zing.Mvc
             return false;
         }
 
+        protected bool TryResolve<T>(WorkContext workContext, Type serviceType, out T instance)
+        {
+            if (workContext != null && serviceType != null)
+            {
+                //var key = new KeyedService(serviceType, typeof(T));
+
+                object value;
+                if (workContext.Resolve<ILifetimeScope>().TryResolveService(new TypedService(serviceType), out value))
+                {
+                    instance = (T)value;
+                    return true;
+                }
+            }
+
+            instance = default(T);
+            return false;
+        }
+
+
         /// <summary>
         /// Returns the controller type based on the name of both the controller and area.
         /// </summary>
@@ -49,22 +68,26 @@ namespace Zing.Mvc
         /// <returns>The controller type.</returns>
         /// <example>ControllerName: Item, Area: Containers would return the type for the ItemController class.</example>
         protected override Type GetControllerType(RequestContext requestContext, string controllerName)
-        { 
-            var routeData = requestContext.RouteData;
+        {
+            //var routeData = requestContext.RouteData;
+            var controllerType = base.GetControllerType(requestContext, controllerName);
 
             // Determine the area name for the request, and fall back to stock orchard controllers
-            var areaName = routeData.GetAreaName();
+            //var areaName = routeData.GetAreaName();
 
-            // Service name pattern matches the identification strategy
-            var serviceKey = (areaName + "/" + controllerName).ToLowerInvariant();
-            serviceKey = (controllerName + "Controller").ToLowerInvariant();
+            //// Service name pattern matches the identification strategy
+            //var serviceKey = (areaName + "/" + controllerName).ToLowerInvariant();
+            //serviceKey = (controllerName + "Controller").ToLowerInvariant();
             // Now that the request container is known - try to resolve the controller information
-            Meta<Lazy<IController>> info;
+
+            //Meta<Lazy<IController>> info;
+            IController info;
             var workContext = requestContext.GetWorkContext();
 
-            if (TryResolve(workContext, serviceKey, out info))
+            if (TryResolve(workContext, controllerType, out info))
             {
-                return (Type)info.Metadata["ControllerType"];
+                //return (Type)info.Metadata["ControllerType"];
+                return info.GetType();
             }
 
 

@@ -19,7 +19,7 @@ namespace Zing.Web
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         private static Starter<IZingHost> _starter;
 
@@ -73,24 +73,24 @@ namespace Zing.Web
 
         static void ControllerRegisteration(ContainerBuilder builder)
         {
-            //builder.RegisterControllers(typeof(MvcApplication).Assembly).InstancePerMatchingLifetimeScope("shell");
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);//.InstancePerMatchingLifetimeScope("shell");
 
             //foreach (var item in blueprint.Controllers)
             //{
-            IEnumerable<Type> controllerTypes = typeof(MvcApplication).Assembly.GetExportedTypes().Where(t => typeof(IController).IsAssignableFrom(t) &&
-                   t.Name.EndsWith("Controller", StringComparison.Ordinal));
+            //IEnumerable<Type> controllerTypes = typeof(MvcApplication).Assembly.GetExportedTypes().Where(t => typeof(IController).IsAssignableFrom(t) &&
+            //       t.Name.EndsWith("Controller", StringComparison.Ordinal));
 
-            foreach (var item in controllerTypes)
-            {
-                var serviceKeyName = (item.Name).ToLowerInvariant();
-                var serviceKeyType = item;
-                RegisterType(builder, item)
-                    .Keyed<IController>(serviceKeyName)
-                    .Keyed<IController>(serviceKeyType)
-                    .WithMetadata("ControllerType", item)
-                    .InstancePerDependency()
-                    ;
-            }
+            //foreach (var item in controllerTypes)
+            //{
+            //    var serviceKeyName = (item.Name).ToLowerInvariant();
+            //    var serviceKeyType = item;
+            //    RegisterType(builder, item)
+            //        .Keyed<IController>(serviceKeyName)
+            //        .Keyed<IController>(serviceKeyType)
+            //        .WithMetadata("ControllerType", item)
+            //        .InstancePerDependency()
+            //        ;
+            //}
 
             //}
 
@@ -109,7 +109,7 @@ namespace Zing.Web
         static void MvcSingletons(ContainerBuilder builder)
         {
             var assembly = typeof(UserViewModel).Assembly;
-            builder.RegisterAssemblyModules(assembly);
+            builder.RegisterAssemblyModules(assembly); 
             builder.Register(ctx => RouteTable.Routes).SingleInstance();
             builder.Register(ctx => ModelBinders.Binders).SingleInstance();
             builder.Register(ctx => ViewEngines.Engines).SingleInstance();
