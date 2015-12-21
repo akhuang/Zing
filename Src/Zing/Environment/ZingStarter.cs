@@ -61,15 +61,15 @@ namespace Zing.Environment
             }
 
             builder.RegisterType<RunningShellTable>().As<IRunningShellTable>().SingleInstance();
-            builder.RegisterType<DefaultZingShell>().As<IZingShell>().InstancePerMatchingLifetimeScope("shell");
-            builder.RegisterType<SessionConfigurationCache>().As<ISessionConfigurationCache>().InstancePerMatchingLifetimeScope("shell");
+            builder.RegisterType<DefaultZingShell>().As<IZingShell>();//.InstancePerMatchingLifetimeScope("shell");
+            builder.RegisterType<SessionConfigurationCache>().As<ISessionConfigurationCache>();//.InstancePerMatchingLifetimeScope("shell");
 
             registrations(builder);
             controllerRegisteration(builder);
 
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
 
-            ControllerBuilder.Current.SetControllerFactory(new ZingControllerFactory());
+            //ControllerBuilder.Current.SetControllerFactory(new ZingControllerFactory());
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
