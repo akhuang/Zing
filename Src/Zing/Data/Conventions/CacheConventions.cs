@@ -4,7 +4,7 @@ using FluentNHibernate.Conventions;
 using FluentNHibernate.Conventions.AcceptanceCriteria;
 using FluentNHibernate.Conventions.Inspections;
 using FluentNHibernate.Conventions.Instances;
-using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.Configuration;
 
 namespace Zing.Data.Conventions
 {

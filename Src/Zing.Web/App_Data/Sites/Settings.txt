@@ -3,8 +3,7 @@ DataProvider: SqlServer
 DataConnectionString: Data Source=.;Initial Catalog=zing;Persist Security Info=True;User ID=sa;Password=sa@123
 DataPrefix: null
 RequestUrlHost: null
-RequestUrlPrefix: null
-State: Running
+RequestUrlPrefix: null 
 EncryptionAlgorithm: AES
 EncryptionKey: 06B215AF3BAFF334F4389A4CD49A5142A4C4A1520B1A3B18ACA5B8D0EAB30038
 HashAlgorithm: HMACSHA256

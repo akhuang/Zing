@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using Zing.Data.Providers;
 using Zing.Environment.Configuration;
-using Zing.Environment.ShellBuilder.Models;
 using Zing.FileSystems.AppData;
 using Zing.Logging;
 using Zing.Utility.Extensions;
@@ -28,18 +27,16 @@ namespace Zing.Data
         private ISessionFactory _sessionFactory;
         private Configuration _configuration;
         private readonly ShellSettings _shellSettings;
-        private readonly ShellBlueprint _shellBlueprint;
-        private readonly IAppDataFolder _appDataFolder;
+        private readonly IEnumerable<RecordBlueprint> _records;
         private readonly ISessionConfigurationCache _sessionConfigurationCache;
         private readonly IDatabaseCacheConfiguration _cacheConfiguration;
         private readonly IDataServicesProviderFactory _dataServicesProviderFactory;
 
-        public SessionFactoryHolder(ShellSettings shellSetting, ShellBlueprint shellBluePrint, IAppDataFolder appDataFolder,
+        public SessionFactoryHolder(ShellSettings shellSetting, IEnumerable<RecordBlueprint> records,
             ISessionConfigurationCache sessionConfigurationCache, IDataServicesProviderFactory dataServicesProviderFactory, IDatabaseCacheConfiguration cacheConfiguration)
         {
             _shellSettings = shellSetting;
-            _shellBlueprint = shellBluePrint;
-            _appDataFolder = appDataFolder;
+            _records = records;
             _sessionConfigurationCache = sessionConfigurationCache;
             _dataServicesProviderFactory = dataServicesProviderFactory;
             _cacheConfiguration = cacheConfiguration;
@@ -139,18 +136,18 @@ namespace Zing.Data
 
         public SessionFactoryParameters GetSessionFactoryParameters()
         {
-            var shellPath = _appDataFolder.Combine("Sites", _shellSettings.Name);
-            _appDataFolder.CreateDirectory(shellPath);
+            //var shellPath = _appDataFolder.Combine("Sites", _shellSettings.Name);
+            //_appDataFolder.CreateDirectory(shellPath);
 
-            var shellFolder = _appDataFolder.MapPath(shellPath);
+            //var shellFolder = _appDataFolder.MapPath(shellPath);
 
             return new SessionFactoryParameters
             {
                 //Configurers = _configurers(),
                 Provider = _shellSettings.DataProvider,
-                DataFolder = shellFolder,
+                //DataFolder = shellFolder,
                 ConnectionString = _shellSettings.DataConnectionString,
-                RecordDescriptors = _shellBlueprint.Records,
+                RecordDescriptors = _records
             };
         }
     }

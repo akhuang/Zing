@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Dependencies>
-  <Dependency>
-    <ModuleName>Zing.Module</ModuleName>
-    <VirtualPath>~/bin/Zing.Module.dll</VirtualPath>
-    <LoaderName>ReferencedExtensionLoader</LoaderName>
-    <References />
-  </Dependency>
-</Dependencies>

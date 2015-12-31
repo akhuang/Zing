@@ -41,9 +41,9 @@ namespace Zing.Environment.Configuration
                         case "DataProvider":
                             shellSettings.DataProvider = value;
                             break;
-                        case "State":
-                            shellSettings.State = new TenantState(value);
-                            break;
+                        //case "State":
+                        //    shellSettings.State = new TenantState(value);
+                        //    break;
                         case "DataConnectionString":
                             shellSettings.DataConnectionString = value;
                             break;
@@ -90,7 +90,7 @@ namespace Zing.Environment.Configuration
                                  settings.DataTablePrefix ?? EmptyValue,
                                  settings.RequestUrlHost ?? EmptyValue,
                                  settings.RequestUrlPrefix ?? EmptyValue,
-                                 settings.State != null ? settings.State.ToString() : String.Empty,
+                                 //settings.State != null ? settings.State.ToString() : String.Empty,
                                  settings.EncryptionAlgorithm ?? EmptyValue,
                                  settings.EncryptionKey ?? EmptyValue,
                                  settings.HashAlgorithm ?? EmptyValue,

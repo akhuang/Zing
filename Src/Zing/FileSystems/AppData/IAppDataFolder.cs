@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Zing.Caching;
 
 namespace Zing.FileSystems.AppData
@@ -30,7 +31,9 @@ namespace Zing.FileSystems.AppData
 
         void CreateDirectory(string path);
         bool DirectoryExists(string path);
+
         IVolatileToken WhenPathChanges(string path);
+
         string MapPath(string path);
         string GetVirtualPath(string path);
     }

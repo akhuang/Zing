@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Environment.Configuration;
-using Zing.Environment.ShellBuilder;
+using Zing.Environment.Configuration; 
 
 namespace Zing.Environment
 {
@@ -24,13 +23,6 @@ namespace Zing.Environment
         /// Called each time a request ends to deterministically commit and dispose outstanding activity
         /// </summary>
         void EndRequest();
-
-        ShellContext GetShellContext(ShellSettings shellSettings);
-
-        /// <summary>
-        /// Can be used to build an temporary self-contained instance of a shell's configured code.
-        /// Services may be resolved from within this instance to configure and initialize it's storage.
-        /// </summary>
-        //IWorkContextScope CreateStandaloneEnvironment(ShellSettings shellSettings);
+         
     }
 }

@@ -15,14 +15,11 @@ namespace Zing.Security
     public class FormsAuthenticationService : IAuthenticationService
     {
         private ShellSettings _setting;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private IUser _signedInUser;
         private bool _isAuthenticated;
 
-        public FormsAuthenticationService(IHttpContextAccessor httpContextAccessor)
+        public FormsAuthenticationService()
         {
-            //_setting = settings;
-            _httpContextAccessor = httpContextAccessor;
             ExpirationTimeSpan = TimeSpan.FromDays(30);
         }
 
@@ -55,7 +52,7 @@ namespace Zing.Security
                 Path = FormsAuthentication.FormsCookiePath
             };
 
-            var httpContext = _httpContextAccessor.Current();
+            var httpContext = HttpContext.Current;
 
             //if (!string.IsNullOrEmpty(_setting.RequestUrlPrefix))
             //{

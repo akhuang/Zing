@@ -73,39 +73,9 @@ namespace Zing.Web
 
         static void ControllerRegisteration(ContainerBuilder builder)
         {
-            builder.RegisterControllers(typeof(MvcApplication).Assembly);//.InstancePerMatchingLifetimeScope("shell");
-
-            //foreach (var item in blueprint.Controllers)
-            //{
-            //IEnumerable<Type> controllerTypes = typeof(MvcApplication).Assembly.GetExportedTypes().Where(t => typeof(IController).IsAssignableFrom(t) &&
-            //       t.Name.EndsWith("Controller", StringComparison.Ordinal));
-
-            //foreach (var item in controllerTypes)
-            //{
-            //    var serviceKeyName = (item.Name).ToLowerInvariant();
-            //    var serviceKeyType = item;
-            //    RegisterType(builder, item)
-            //        .Keyed<IController>(serviceKeyName)
-            //        .Keyed<IController>(serviceKeyType)
-            //        .WithMetadata("ControllerType", item)
-            //        .InstancePerDependency()
-            //        ;
-            //}
-
-            //}
-
-
-
-            //return builder.RegisterAssemblyTypes(controllerAssemblies)
-            //    .Where(t => typeof(IController).IsAssignableFrom(t) &&
-            //        t.Name.EndsWith("Controller", StringComparison.Ordinal));
+            builder.RegisterControllers(typeof(MvcApplication).Assembly); 
         }
-        private static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterType(ContainerBuilder builder, Type item)
-        {
-            return builder.RegisterType(item)
-                .WithProperty("Feature", item.Name)
-                .WithMetadata("Feature", item.Name).InstancePerMatchingLifetimeScope("shell");
-        }
+         
         static void MvcSingletons(ContainerBuilder builder)
         {
             var assembly = typeof(UserViewModel).Assembly;
@@ -113,8 +83,7 @@ namespace Zing.Web
             builder.Register(ctx => RouteTable.Routes).SingleInstance();
             builder.Register(ctx => ModelBinders.Binders).SingleInstance();
             builder.Register(ctx => ViewEngines.Engines).SingleInstance();
-
-
+             
         }
     }
 }

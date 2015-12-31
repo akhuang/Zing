@@ -16,7 +16,7 @@ namespace Zing.Environment.Configuration
 
         public ShellSettings()
         {
-            State = new TenantState("Invalid");
+            //State = new TenantState("Invalid");
             Themes = new string[0];
         }
 
@@ -32,7 +32,7 @@ namespace Zing.Environment.Configuration
             EncryptionKey = settings.EncryptionKey;
             HashAlgorithm = settings.HashAlgorithm;
             HashKey = settings.HashKey;
-            State = settings.State;
+            //State = settings.State;
             Themes = settings.Themes;
         }
 
@@ -87,10 +87,5 @@ namespace Zing.Environment.Configuration
         /// List of available themes for this tenant
         /// </summary>
         public string[] Themes { get; set; }
-
-        /// <summary>
-        /// The state is which the tenant is
-        /// </summary>
-        public TenantState State { get; set; }
     }
 }

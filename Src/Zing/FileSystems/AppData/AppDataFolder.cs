@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Zing.Caching;
+using Zing.FileSystems.VirtualPath;
 using Zing.Logging;
 using Zing.Validation;
 
@@ -12,9 +14,12 @@ namespace Zing.FileSystems.AppData
     public class AppDataFolder : IAppDataFolder
     {
         private readonly IAppDataFolderRoot _root;
-        public AppDataFolder(IAppDataFolderRoot root)
+        private readonly IVirtualPathMonitor _virtualPathMonitor;
+
+        public AppDataFolder(IAppDataFolderRoot root, IVirtualPathMonitor virtualPathMonitor)
         {
             _root = root;
+            _virtualPathMonitor = virtualPathMonitor;
             Logger = NullLogger.Instance;
         }
 
@@ -101,18 +106,19 @@ namespace Zing.FileSystems.AppData
         {
             return PathValidation.ValidatePath(RootFolder, Path.Combine(RootFolder, Path.Combine(paths)).Replace('/', Path.DirectorySeparatorChar));
         }
-        public IVolatileToken WhenPathChanges(string path)
-        {
-            //var virtualPath = GetVirtualPath(path);
-            //return _virtualPathMonitor.WhenPathChanges(virtualPath);
-            return null;
-        }
+
         /// <summary>
         /// Combine a set of virtual paths into a virtual path relative to "~/App_Data"
         /// </summary>
         public string Combine(params string[] paths)
         {
             return Path.Combine(paths).Replace(Path.DirectorySeparatorChar, '/');
+        }
+
+        public IVolatileToken WhenPathChanges(string path)
+        {
+            var virtualPath = GetVirtualPath(path);
+            return _virtualPathMonitor.WhenPathChanges(virtualPath);
         }
 
         public string GetVirtualPath(string path)
@@ -158,7 +164,7 @@ namespace Zing.FileSystems.AppData
 
             var destinationFileName = CombineToPhysicalPath(destinationPath);
             MakeDestinationFileNameAvailable(destinationFileName);
-            File.Copy(sourceFileName, destinationFileName);
+            File.Copy(sourceFileName, destinationFileName, true);
         }
 
         public void DeleteFile(string path)

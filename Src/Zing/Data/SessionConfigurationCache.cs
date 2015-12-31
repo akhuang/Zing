@@ -7,7 +7,6 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Zing.Environment.Configuration;
-using Zing.Environment.ShellBuilder.Models;
 using Zing.FileSystems.AppData;
 using Zing.Logging;
 using Zing.Utility;
@@ -18,16 +17,16 @@ namespace Zing.Data
     public class SessionConfigurationCache : ISessionConfigurationCache
     {
         private readonly ShellSettings _shellSettings;
-        private readonly ShellBlueprint _shellBlueprint;
-        private readonly IAppDataFolder _appDataFolder;
         //private readonly IHostEnvironment _hostEnvironment;
         private readonly IEnumerable<ISessionConfigurationEvents> _configurers;
         private ConfigurationCache _currentConfig;
+        private IEnumerable<RecordBlueprint> _records;
+        private IAppDataFolder _appDataFolder;
 
-        public SessionConfigurationCache(ShellSettings shellSettings, ShellBlueprint shellBlueprint, IAppDataFolder appFolder, IEnumerable<ISessionConfigurationEvents> configurers)
+        public SessionConfigurationCache(ShellSettings shellSettings, IEnumerable<RecordBlueprint> records, IAppDataFolder appFolder, IEnumerable<ISessionConfigurationEvents> configurers)
         {
             _shellSettings = shellSettings;
-            _shellBlueprint = shellBlueprint;
+            _records = records;
             _appDataFolder = appFolder;
             _configurers = configurers;
             _currentConfig = null;
@@ -170,12 +169,12 @@ namespace Zing.Data
             hash.AddString(_shellSettings.Name);
 
             // Assembly names, record names and property names
-            foreach (var tableName in _shellBlueprint.Records.Select(x => x.TableName))
+            foreach (var tableName in _records.Select(x => x.TableName))
             {
                 hash.AddString(tableName);
             }
 
-            foreach (var recordType in _shellBlueprint.Records.Select(x => x.Type))
+            foreach (var recordType in _records.Select(x => x.Type))
             {
                 hash.AddTypeReference(recordType);
 

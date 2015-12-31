@@ -2,11 +2,6 @@
 
 @{
     ViewBag.Title = "Index";
-
-    var workContext = WorkContext;
-
-    var httpContext = workContext.HttpContext;
-
 }
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { role = "form", @class = "form-horizontal" }))

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.Configuration;
 
 namespace Zing.Data.Conventions
 {

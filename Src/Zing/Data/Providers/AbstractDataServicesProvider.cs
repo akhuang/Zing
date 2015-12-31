@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Zing.Data.Conventions;
-using Zing.Environment.ShellBuilder.Models;
+using Zing.Environment.Configuration; 
 using Zing.Logging;
 using Zing.Utility.Extensions;
 
