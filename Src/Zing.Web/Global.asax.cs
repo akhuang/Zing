@@ -73,17 +73,17 @@ namespace Zing.Web
 
         static void ControllerRegisteration(ContainerBuilder builder)
         {
-            builder.RegisterControllers(typeof(MvcApplication).Assembly); 
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
         }
-         
+
         static void MvcSingletons(ContainerBuilder builder)
         {
-            var assembly = typeof(UserViewModel).Assembly;
-            builder.RegisterAssemblyModules(assembly); 
+            //var assembly = typeof(UserViewModel).Assembly;
+            //builder.RegisterAssemblyModules(assembly); 
             builder.Register(ctx => RouteTable.Routes).SingleInstance();
             builder.Register(ctx => ModelBinders.Binders).SingleInstance();
             builder.Register(ctx => ViewEngines.Engines).SingleInstance();
-             
+
         }
     }
 }

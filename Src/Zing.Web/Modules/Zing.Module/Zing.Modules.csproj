@@ -126,10 +126,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Module.txt" />
-    <Content Include="Users\Module.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Zing\Zing.Framework.csproj">
       <Project>{9b0546ff-2871-4e97-8448-bb3ad038f0fa}</Project>
       <Name>Zing.Framework</Name>

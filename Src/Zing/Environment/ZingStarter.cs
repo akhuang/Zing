@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using Autofac;
 using Zing.Logging;
-using Zing.Environment.Configuration; 
+using Zing.Environment.Configuration;
 using Zing.FileSystems.AppData;
 using Zing.Caching;
 using System.Web.Mvc;
 using Autofac.Integration.Mvc;
 using Zing.Mvc;
 using Zing.Data;
-using Zing.Security;  
-using Zing.FileSystems.VirtualPath; 
-using Zing.FileSystems; 
+using Zing.Security;
+using Zing.FileSystems.VirtualPath;
+using Zing.FileSystems;
 using System.Web.Compilation;
 using System.Reflection;
 using Autofac.Core;
 using Zing.Utility.Extensions;
 using System.Web.Hosting;
-using System.IO; 
+using System.IO;
 
 namespace Zing.Environment
 {
@@ -28,50 +28,20 @@ namespace Zing.Environment
         public static IContainer CreateHostContainer(Action<ContainerBuilder> registrations, Action<ContainerBuilder> controllerRegisteration)
         {
             var builder = new ContainerBuilder();
-            //builder.RegisterModule(new LoggingModule());
-            //builder.RegisterModule(new DataModule());
-            //builder.RegisterModule(new WorkContextModule());
-            //builder.RegisterModule(new MvcModule());
-            //builder.RegisterModule(new CacheModule());
+
             RegisterModule(builder);
 
             RegisterConfiguration(builder);
-             
-            //builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance(); 
-
             FluentMetadataConfiguration.RegisterEachConfigurationWithContainer(r => builder.RegisterType(r.MetadataConfigurationType).As(r.InterfaceType));
-
-            //builder.RegisterModule(new FileSystemsModule());
-            //builder.RegisterModule(new ExtensionsModule());
 
             builder.RegisterType<DefaultZingHost>().As<IZingHost>().SingleInstance();
 
-            //builder.RegisterType<DefaultZingHost>().As<IZingHost>().SingleInstance();
-            //{
-            //    builder.RegisterType<ShellSettingsManager>().As<IShellSettingsManager>().SingleInstance();
-
-            //    builder.RegisterType<ShellContextFactory>().As<IShellContextFactory>().SingleInstance();
-            //    {
-            //        builder.RegisterType<ShellDescriptorCache>().As<IShellDescriptorCache>().SingleInstance();
-            //        builder.RegisterType<CompositionStrategy>().As<ICompositionStrategy>().SingleInstance();
-            //        {
-            //            builder.RegisterType<ExtensionLoaderCoordinator>().As<IExtensionLoaderCoordinator>();
-            //            builder.RegisterType<ShellContainerRegistrations>().As<IShellContainerRegistrations>().SingleInstance();
-            //        }
-            //        builder.RegisterType<ShellContainerFactory>().As<IShellContainerFactory>().SingleInstance();
-            //    }
-            //}
-
-            //builder.RegisterType<RunningShellTable>().As<IRunningShellTable>().SingleInstance();
-            //builder.RegisterType<DefaultZingShell>().As<IZingShell>();//.InstancePerMatchingLifetimeScope("shell");
             builder.RegisterType<SessionConfigurationCache>().As<ISessionConfigurationCache>().SingleInstance();
 
             registrations(builder);
             controllerRegisteration(builder);
 
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
-
-            //ControllerBuilder.Current.SetControllerFactory(new ZingControllerFactory());
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
@@ -106,6 +76,11 @@ namespace Zing.Environment
                     .Where(itf => typeof(IDependency).IsAssignableFrom(itf)))
                 {
                     registration.As(interfaceType);
+
+                    if (typeof(ISingletonDependency).IsAssignableFrom(interfaceType))
+                    {
+                        registration = registration.SingleInstance();
+                    }
                 }
             }
         }
