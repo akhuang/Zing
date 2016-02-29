@@ -18,6 +18,13 @@ namespace Zing.Data
     {
         private readonly ISessionLocator _sessionLocator;
         private readonly IHqlQueryManager _hqlQueryManager;
+
+        public Repository(ISessionLocator sessionLocator)
+        {
+            _sessionLocator = sessionLocator;
+            Logger = NullLogger.Instance;
+        }
+
         public Repository(ISessionLocator sessionLocator, IHqlQueryManager hqlQueryManager)
         {
             _sessionLocator = sessionLocator;

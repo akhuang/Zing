@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+Msg:@TempData["msg"]
+
+@using (Html.BeginForm())
+{
+    <button type="submit"> Create </button>
+}
+

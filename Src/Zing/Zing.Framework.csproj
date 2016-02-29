@@ -170,7 +170,9 @@
     <Compile Include="Caching\IVolatileToken.cs" />
     <Compile Include="Caching\Signals.cs" />
     <Compile Include="Caching\Weak.cs" />
+    <Compile Include="Data\Conventions\AttributeCollectionConvention.cs" />
     <Compile Include="Data\Conventions\CacheConventions.cs" />
+    <Compile Include="Data\Conventions\CascadeAllDeleteOrphanAttribute.cs" />
     <Compile Include="Data\Conventions\RecordTableNameConvention.cs" />
     <Compile Include="Data\DataModule.cs" />
     <Compile Include="Data\DefaultDatabaseCacheConfiguration.cs" />
