@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Query;
+using Zing.Data.Query;
 
 namespace Zing.Modules.ViewFilter
 {

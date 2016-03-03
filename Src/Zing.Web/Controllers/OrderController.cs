@@ -27,7 +27,7 @@ namespace Zing.Web.Controllers
         {
             OrderEntity order = new OrderEntity();
             order.Name = "Order";
-            order.OrderDetails.Add(new OrderDetailEntity()
+            order.AddOrderDetail(new OrderDetailEntity()
             {
                 Name = "OrderDetail"
             });

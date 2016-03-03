@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zing.Query;
+using Zing.Data.Query;
 
 namespace Zing.Modules.ViewFilter
 {
@@ -15,7 +15,7 @@ namespace Zing.Modules.ViewFilter
             _filterEditors = filterEditors;
         }
 
-        public Action<IHqlExpressionFactory> Filter(Type type, string property, dynamic formState)
+        public Action<IHqlExpressionFactory> Filter(Type type, string property, dynamic formState) 
         {
             var filterEditor = _filterEditors.FirstOrDefault(x => x.CanHandle(type));
 

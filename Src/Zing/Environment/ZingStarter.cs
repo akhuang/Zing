@@ -20,6 +20,7 @@ using Autofac.Core;
 using Zing.Utility.Extensions;
 using System.Web.Hosting;
 using System.IO;
+using System.Configuration;
 
 namespace Zing.Environment
 {
@@ -51,8 +52,19 @@ namespace Zing.Environment
 
         private static void RegisterConfiguration(ContainerBuilder builder)
         {
-            string physicalFile = HostingEnvironment.MapPath("~/App_Data/Sites/Settings.txt");
-            var setting = ShellSettingsSerializer.ParseSettings(File.ReadAllText(physicalFile));
+            //string physicalFile = HostingEnvironment.MapPath("~/App_Data/Sites/Settings.txt");
+            //var setting = ShellSettingsSerializer.ParseSettings(File.ReadAllText(physicalFile));
+            var defaultConn = ConfigurationManager.ConnectionStrings["DefaultConnection"];
+            var setting = new ShellSettings()
+            {
+                Name = "Default",
+                DataProvider = defaultConn.ProviderName,
+                DataConnectionString = defaultConn.ConnectionString,
+                EncryptionAlgorithm = "AES",
+                EncryptionKey = "06B215AF3BAFF334F4389A4CD49A5142A4C4A1520B1A3B18ACA5B8D0EAB30038",
+                HashAlgorithm = "HMACSHA256",
+                HashKey = "57F4FC5F8AB6E4B2A5810BAC0525F3AF08AECE85B1581E4E05D2DE0071342D6EF3614BE15E941284AEAB4C9F59459F53BD5D1DF07E31FD916CF8E04F62FA10AA"
+            };
 
             builder.Register(ctx => setting);
         }
