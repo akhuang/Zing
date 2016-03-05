@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/bootstrap.min.css") 
-    @Styles.Render("~/Content/kendo/css")
-    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/bootstrap.min.css")
     @Styles.Render("~/Content/site.css")
     @Scripts.Render("~/Scripts/jQuery.min.js")
-    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
     <div class="wrapper">
@@ -19,7 +17,7 @@
             <div class="top-navbar-inner">
                 <!-- Begin Logo brand -->
                 <div class="logo-brand">
-                    <a href="index.html" class="logo-text">ZING WEB</a>
+                    <a href="index.html" class="logo-text">Zing.Web</a>
                 </div>
                 <!-- /.logo-brand -->
                 <!-- End Logo brand -->
@@ -46,9 +44,7 @@
                     <!-- Begin user session nav -->
                     <ul class="nav-user navbar-right">
                         <li class="dropdown">
-                            <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="http://diliat.in/themeforest/sentir/1.0.0/assets/img/avatar/avatar-1.jpg"
-                                     class="avatar img-circle" alt="Avatar">
+                            <a href="#fakelink" class="dropdown-toggle" data-toggle="dropdown"> 
                                 Hi, <strong>Paris Hawker</strong>
                             </a>
                             <ul class="dropdown-menu square primary margin-list-rounded with-triangle">
@@ -326,105 +322,7 @@
         <!-- END TOP NAV -->
         <div class="sidebar-left sidebar-nicescroller" tabindex="5000" style="overflow: hidden;
             outline: none;">
-            <ul class="sidebar-menu">
-                <li><a href="@Url.Content("~/")"><i class="fa fa-dashboard icon-sidebar"></i>首页</a></li>
-                <li>
-                    <a href="#fakelink">
-                        <i class="fa fa-desktop icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-                        </i>Layout template <span class="badge badge-warning span-sidebar">3</span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="#fakelink">Default layout<span class="label label-success span-sidebar">CURRENT</span></a></li>
-                        <li><a href="layout-no-sidebar-right.html">No sidebar right</a></li>
-                        <li><a href="layout-profile-left.html">Profile summary left</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#fakelink">
-                        <i class="fa fa-flask icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-                        </i>Widget UI kits
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="widget-default.html">Default</a></li>
-                        <li><a href="widget-store.html">Store</a></li>
-                        <li>
-                            <a href="widget-real-estate.html">
-                                Real estate <span class="label label-danger span-sidebar">
-                                    HOT
-                                </span>
-                            </a>
-                        </li>
-                        <li><a href="widget-blog.html">Blog</a></li>
-                        <li>
-                            <a href="widget-social.html">
-                                Social <span class="label label-danger span-sidebar">
-                                    HOT
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#fakelink">
-                        <i class="fa fa-folder icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-                        </i>Basic elements <span class="label label-info span-sidebar">BS3</span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="element-typography.html">Typography</a></li>
-                        <li><a href="element-form.html">Form element</a></li>
-                        <li><a href="element-form-example.html">Form example</a></li>
-                        <li><a href="element-wyswyg.html">Form WYSWYG</a></li>
-                        <li><a href="element-validation.html">Form validation</a></li>
-                        <li><a href="element-button.html">Button</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#fakelink">
-                        <i class="fa fa-folder-open icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-                        </i>More elements
-                    </a>
-                    <ul class="submenu">
-                        <li>
-                            <a href="element-icon.html">
-                                Icons <span class="badge badge-warning span-sidebar">
-                                    3
-                                </span>
-                            </a>
-                        </li>
-                        <li><a href="element-box-panel.html">Box &amp; panel</a></li>
-                        <li><a href="element-nav-dropdown.html">Nav &amp; dropdown</a></li>
-                        <li><a href="element-breadcrumb-pagination.html">Breadcrumb &amp; pagination</a></li>
-                        <li><a href="element-thumbnail-jumbotron.html">Jumbotron &amp; thumbnail</a></li>
-                        <li><a href="element-alert-progress-bar.html">Alert &amp; progress bar</a></li>
-                        <li><a href="element-list-media.html">List group &amp; media object</a></li>
-                        <li><a href="element-collapse.html">Collapse</a></li>
-                        <li><a href="element-grid-masonry.html">Grid &amp; masonry</a></li>
-                        <li><a href="element-extra.html">Extra custom elements</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#fakelink">
-                        <i class="fa fa-table icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-                        </i>Tables
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="table-static.html">Static table</a></li>
-                        <li><a href="table-color.html">Table color</a></li>
-                        <li><a href="table-datatable.html">Jquery datatable</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#fakelink">
-                        <i class="fa fa-bar-chart-o icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-                        </i>用户
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="@Url.Content("~/User/Index")">用户管理</a></li>
-                        <li><a href="@Url.Content("~/Role/Index")">角色管理</a></li>
-                        <li><a href="@Url.Content("~/User/Query")">Query</a></li>
-                    </ul>
-                </li>
-            </ul>
+            @Html.Partial("_menu")
         </div>
         <div class="page-content">
             <div class="page-subheading page-subheading-md">

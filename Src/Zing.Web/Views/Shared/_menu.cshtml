@@ -1,0 +1,32 @@
+﻿@using Zing.UI.Navigation
+@{
+    INavigationMananger navMananger = DependencyResolver.Current.GetService<INavigationMananger>();
+
+    var menus = navMananger.BuildMenu();
+}
+<ul class="sidebar-menu">
+    <li><a href="@Url.Content("~/")"><i class="fa fa-dashboard icon-sidebar"></i>首页</a></li>
+    <li>
+        <a href="#fakelink">
+            <i class="fa fa-desktop icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+            </i>Layout template
+        </a>
+        <ul class="submenu">
+            <li><a href="#fakelink">Default layout<span class="label label-success span-sidebar">CURRENT</span></a></li>
+            <li><a href="layout-no-sidebar-right.html">No sidebar right</a></li>
+            <li><a href="layout-profile-left.html">Profile summary left</a></li>
+        </ul>
+    </li>
+
+    @*<li>
+            <a href="#fakelink">
+                <i class="fa fa-bar-chart-o icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
+                </i>用户
+            </a>
+            <ul class="submenu">
+                <li><a href="@Url.Content("~/User/Index")">用户管理</a></li>
+                <li><a href="@Url.Content("~/Role/Index")">角色管理</a></li>
+                <li><a href="@Url.Content("~/User/Query")">Query</a></li>
+            </ul>
+        </li>*@
+</ul>
