@@ -351,6 +351,7 @@
     <Compile Include="Security\MembershipSettings.cs" />
     <Compile Include="Services\Clock.cs" />
     <Compile Include="Services\IClock.cs" />
+    <Compile Include="UI\Navigation\INavigationMananger.cs" />
     <Compile Include="UI\Navigation\INavigationProvider.cs" />
     <Compile Include="UI\Navigation\Menu.cs" />
     <Compile Include="UI\Navigation\NavigationBuilder.cs" />

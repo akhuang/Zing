@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Zing.UI.Navigation
 {
-    public class NavigationManager
+    public class NavigationManager : INavigationMananger
     {
         private IEnumerable<INavigationProvider> _providers;
         public NavigationManager(IEnumerable<INavigationProvider> providers)
@@ -16,7 +16,7 @@ namespace Zing.UI.Navigation
 
         public IEnumerable<MenuItem> BuildMenu()
         {
-            return GetSources().SelectMany(x => x);
+            return GetSources().SelectMany(x => x).OrderBy(x => x.Priority);
 
         }
 

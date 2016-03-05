@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Zing.UI.Navigation
 {
-    public interface INavigationProvider : IDependency
+    public interface INavigationMananger : IDependency
     {
-        void GetNavigation(NavigationBuilder builder);
+        IEnumerable<MenuItem> BuildMenu();
     }
 }

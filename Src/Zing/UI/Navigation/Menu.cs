@@ -11,6 +11,7 @@ namespace Zing.UI.Navigation
     {
         public string Name { get; set; }
         public string Url { get; set; }
+        public string Priority { get; set; }
         public RouteValueDictionary RouteValues { get; set; }
     }
 }
