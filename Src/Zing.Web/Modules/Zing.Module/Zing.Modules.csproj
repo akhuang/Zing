@@ -105,11 +105,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contract\Menu.cs" />
+    <Compile Include="Customer\Menu.cs" />
+    <Compile Include="Customer\Models\CustomerEntity.cs" />
+    <Compile Include="Customer\Services\ICustomerService.cs" />
+    <Compile Include="Customer\ViewModels\CustomerViewModel.cs" />
     <Compile Include="Data\RecordEntry.cs" />
+    <Compile Include="Order\Menu.cs" />
     <Compile Include="Order\Models\OrderDetailEntity.cs" />
     <Compile Include="Order\Models\OrderEntity.cs" />
     <Compile Include="Order\Services\IOrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test\Models\AteEntity.cs" />
+    <Compile Include="Test\Models\UserAteRelEntity.cs" />
+    <Compile Include="Test\Services\IUserAteRelService.cs" />
+    <Compile Include="Test\Services\IAteService.cs" />
     <Compile Include="Users\Models\UserEntity.cs" />
     <Compile Include="Users\Models\UserStatus.cs" />
     <Compile Include="Users\Repositories\IMembershipRepository.cs" />
@@ -136,6 +146,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Customer\Repositories\" />
     <Folder Include="Order\Repositories\" />
     <Folder Include="Order\ViewModels\" />
   </ItemGroup>

@@ -43,7 +43,7 @@ namespace Zing.Environment
             controllerRegisteration(builder);
 
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>();
-
+            builder.RegisterModule<AutofacWebTypesModule>(); 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 

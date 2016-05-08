@@ -175,7 +175,6 @@
     <Compile Include="Data\Conventions\RecordTableNameConvention.cs" />
     <Compile Include="Data\DataModule.cs" />
     <Compile Include="Data\DefaultDatabaseCacheConfiguration.cs" />
-    <Compile Include="Data\EntityBase.cs" />
     <Compile Include="Data\IDatabaseCacheConfiguration.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\ISessionConfigurationCache.cs" />
@@ -221,6 +220,7 @@
     <Compile Include="Data\Query\Services\IHqlQueryManager.cs" />
     <Compile Include="Data\Repository.cs" />
     <Compile Include="Data\SessionConfigurationCache.cs" />
+    <Compile Include="DomainModel\IEntityWithTypedId.cs" />
     <Compile Include="Environment\AutofacUtil\ConfigurationSettingsReaderConstants.cs" />
     <Compile Include="Environment\AutofacUtil\DynamicProxy2\DynamicProxyExtensions.cs" />
     <Compile Include="Environment\AutofacUtil\DynamicProxy2\ConstructorFinderWrapper.cs" />
@@ -355,6 +355,7 @@
     <Compile Include="UI\Navigation\INavigationProvider.cs" />
     <Compile Include="UI\Navigation\Menu.cs" />
     <Compile Include="UI\Navigation\NavigationBuilder.cs" />
+    <Compile Include="UI\Navigation\NavigationItemBuilder.cs" />
     <Compile Include="UI\Navigation\NavigationManager.cs" />
     <Compile Include="UI\Navigation\Pager.cs" />
     <Compile Include="UI\Navigation\PagerParameters.cs" />

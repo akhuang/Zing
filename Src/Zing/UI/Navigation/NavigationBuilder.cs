@@ -9,33 +9,68 @@ namespace Zing.UI.Navigation
 {
     public class NavigationBuilder
     {
-        List<MenuItem> _menus = new List<MenuItem>();
+        List<MenuItem> Contained { get; set; }
 
         public NavigationBuilder()
         {
+            Contained = new List<MenuItem>();
         }
 
-        public void AddMenu(string name, string actionName, string controllerName)
+        public NavigationBuilder Add(string caption, string position, Action<NavigationItemBuilder> itemBuilder, IEnumerable<string> classes = null)
         {
-            MenuItem menu = new MenuItem();
-            menu.Name = name;
+            var childBuilder = new NavigationItemBuilder();
 
-            RouteValueDictionary routeValues = new RouteValueDictionary();
-            if (!string.IsNullOrEmpty(actionName))
-            {
-                routeValues["action"] = actionName;
-            }
-            if (!string.IsNullOrEmpty(controllerName))
-            {
-                routeValues["controller"] = controllerName;
-            }
-            menu.RouteValues = routeValues;
+            childBuilder.Caption(caption);
+            childBuilder.Position(position);
+            itemBuilder(childBuilder);
+            Contained.AddRange(childBuilder.Build());
 
-            _menus.Add(menu);
+            if (classes != null)
+            {
+                foreach (var className in classes)
+                    childBuilder.AddClass(className);
+            }
+
+            return this;
         }
+
+        public NavigationBuilder Add(string caption, Action<NavigationItemBuilder> itemBuilder, IEnumerable<string> classes = null)
+        {
+            return Add(caption, null, itemBuilder, classes);
+        }
+        public NavigationBuilder Add(Action<NavigationItemBuilder> itemBuilder, IEnumerable<string> classes = null)
+        {
+            return Add(null, null, itemBuilder, classes);
+        }
+        public NavigationBuilder Add(string caption, string position, IEnumerable<string> classes = null)
+        {
+            return Add(caption, position, x => { }, classes);
+        }
+        public NavigationBuilder Add(string caption, IEnumerable<string> classes = null)
+        {
+            return Add(caption, null, x => { }, classes);
+        }
+
+        public NavigationBuilder Remove(MenuItem item)
+        {
+            Contained.Remove(item);
+            return this;
+        }
+
+        public NavigationBuilder AddImageSet(string imageSet)
+        {
+            //_imageSets.Add(imageSet);
+            return this;
+        }
+
         public IEnumerable<MenuItem> Build()
         {
-            return _menus;
+            return (Contained ?? Enumerable.Empty<MenuItem>()).ToList();
         }
+
+        //public IEnumerable<string> BuildImageSets()
+        //{
+        //    return _imageSets.Distinct();
+        //}
     }
 }

@@ -6,17 +6,15 @@
 }
 <ul class="sidebar-menu">
     <li><a href="@Url.Content("~/")"><i class="fa fa-dashboard icon-sidebar"></i>首页</a></li>
-    <li>
-        <a href="#fakelink">
-            <i class="fa fa-desktop icon-sidebar"></i><i class="fa fa-angle-right chevron-icon-sidebar">
-            </i>Layout template
-        </a>
-        <ul class="submenu">
-            <li><a href="#fakelink">Default layout<span class="label label-success span-sidebar">CURRENT</span></a></li>
-            <li><a href="layout-no-sidebar-right.html">No sidebar right</a></li>
-            <li><a href="layout-profile-left.html">Profile summary left</a></li>
-        </ul>
-    </li>
+    @foreach (var item in menus)
+    {
+        <li>
+            <a href="@item.Href">
+                @item.Text
+            </a>
+        </li>
+    }
+
 
     @*<li>
             <a href="#fakelink">

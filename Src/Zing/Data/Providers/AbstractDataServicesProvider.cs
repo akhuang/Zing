@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Zing.Data.Conventions;
-using Zing.Environment.Configuration; 
+using Zing.Environment.Configuration;
 using Zing.Logging;
 using Zing.Utility.Extensions;
 
@@ -40,12 +40,20 @@ namespace Zing.Data.Providers
             var database = GetPersistenceConfigurer(parameters.CreateDatabase);
             var persistenceModel = CreatePersistenceModel(parameters.RecordDescriptors.ToList());
 
+            //foreach (var recordType in parameters.RecordDescriptors.Select(x => x.Type).Distinct())
+            //{
+            //    persistenceModel.Override(recordType);
+            //}
+
             var config = Fluently.Configure();
 
             parameters.Configurers.Invoke(c => c.Created(config, persistenceModel), Logger);
 
             config = config.Database(database)
-                           .Mappings(m => m.AutoMappings.Add(persistenceModel))
+                           .Mappings(m =>
+                           {
+                               m.AutoMappings.Add(persistenceModel);
+                           })
                            .ExposeConfiguration(cfg =>
                            {
                                cfg

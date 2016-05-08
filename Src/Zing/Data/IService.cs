@@ -23,6 +23,7 @@ namespace Zing
 
         int Count(Expression<Func<T, bool>> predicate);
         IEnumerable<T> Fetch();
+        IQueryable<T> FetchQueryable(Expression<Func<T, bool>> predicate);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order);
         IEnumerable<T> Fetch(Expression<Func<T, bool>> predicate, Action<Orderable<T>> order, int skip, int count);

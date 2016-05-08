@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Zing.Data;
 using Zing.Data.Conventions;
+using Zing.DomainModel;
 
 namespace Zing.Modules.Order.Models
 {

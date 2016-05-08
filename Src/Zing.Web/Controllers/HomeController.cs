@@ -13,6 +13,8 @@ using Zing.UI.Navigation;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using Zing.Security;
+using Zing.Modules.Customer.Services;
+using Zing.Modules.Test.Services;
 
 namespace Zing.Web.Controllers
 {
@@ -26,12 +28,18 @@ namespace Zing.Web.Controllers
 
         private readonly IMembershipService _membershipService;
         private readonly IMembershipServiceInModule _membershipServiceInModule;
+        private readonly ICustomerService _custService;
 
-        public HomeController(IMembershipService membershipService, IMembershipServiceInModule membershipServiceInModule)
+        private readonly IAteService _ateService;
+
+
+        public HomeController(IMembershipService membershipService, IMembershipServiceInModule membershipServiceInModule, ICustomerService custService, IAteService ateService)
         {
             Logger = NullLogger.Instance;
             _membershipService = membershipService;
             _membershipServiceInModule = membershipServiceInModule;
+            _custService = custService;
+            _ateService = ateService;
         }
 
         [ChildActionOnly]
@@ -48,16 +56,18 @@ namespace Zing.Web.Controllers
                 new SelectListItem(){ Text="ddd",Value="2" },
                 new SelectListItem(){ Text="cc",Value="1" }
             };
-             
+
             ////Pager pager = new Pager(1, 10);
             //membershipService.Fetch(null, null, pager.GetStartIndex(), 10);
+            //_custService.Fetch();
 
+            _ateService.GetList();
             return View();
         }
 
         [HttpPost]
         public ActionResult Index(UserViewModel userInfo)
-        { 
+        {
             //CreateUserParams userParas = new CreateUserParams(userInfo.NormalizedUserName, userInfo.UserName, userInfo.Password, userInfo.Email);
             //membershipService.CreateUser(userParas);
 
@@ -111,7 +121,7 @@ namespace Zing.Web.Controllers
         }
         private static IEnumerable<UserViewModel> GetCustomers()
         {
-            IEnumerable<UserViewModel> list = new List<UserViewModel>() { 
+            IEnumerable<UserViewModel> list = new List<UserViewModel>() {
                 new UserViewModel()
                 {
                     UserName="p",Email="p@p.com",NormalizedUserName="Customers_Readphoenix"

@@ -81,6 +81,11 @@ namespace Zing
             return _rep.Fetch(predicate, order, skip, count).ToReadOnlyCollection();
         }
 
+        public IQueryable<T> FetchQueryable(Expression<Func<T, bool>> predicate)
+        {
+            return _rep.FetchQueryable(predicate);
+        }
+
         #region IService<T> Members
 
 
