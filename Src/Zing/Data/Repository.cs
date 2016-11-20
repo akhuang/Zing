@@ -112,7 +112,7 @@ namespace Zing.Data
             return Fetch(predicate, order, skip, count).ToReadOnlyCollection();
         }
 
-        public IEnumerable<T> FetchQueryable(Expression<Func<T,bool>> predicate,Action<IQuery)
+        //public IEnumerable<T> FetchQueryable(Expression<Func<T,bool>> predicate,Action<IQuery)
         public IQueryable<T> FetchQueryable(Expression<Func<T, bool>> predicate)
         {
             return Fetch(predicate);
